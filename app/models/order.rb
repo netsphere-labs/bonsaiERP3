@@ -14,9 +14,6 @@ class Order < BusinessRecord
   ########################################
   # Relationships
 
-  # 親
-  belongs_to :contact
-
   has_many :details, -> {order('id ASC')},
            class_name: "MovementDetail", dependent: :destroy
 
@@ -60,10 +57,7 @@ class Order < BusinessRecord
 #    end
 #  end
 
-#  def to_s
-#    ref_number
-#  end
-
+  
   def to_param
     "#{id}"
   end
@@ -86,14 +80,6 @@ class Order < BusinessRecord
       self.state = 'approved'
     elsif state.blank?
       self.state = 'draft'
-    end
-  end
-
-  def paid
-    if balance >= 0
-      total - balance
-    else
-      -(balance - total)
     end
   end
 =end
@@ -120,6 +106,26 @@ class Order < BusinessRecord
     end
   end
 
+  
+  # PO: 購買入庫から呼び出される
+  def update_state!
+    qty_received = 0
+    ttl_balance = 0   
+    details.each do |det|
+      qty_received += (det.quantity - det.balance)
+      ttl_balance += det.balance.abs # 過剰と未受領がありえる
+    end
+
+    if ttl_balance == 0
+      self.state = 'delivered'
+    elsif qty_received > 0
+      self.state = 'partial'
+    end
+    
+    save!
+  end
+
+  
   def null!
     if can_null?
       update(state: 'nulled', nuller_id: UserSession.id, nuller_datetime: Time.zone.now)
@@ -139,11 +145,6 @@ class Order < BusinessRecord
     details.any? { |det| det.quantity != det.balance }
   end
 
-=begin
-  def can_pay?
-    !is_nulled? && !is_paid? && !is_draft?
-  end
-=end
   
   def can_devolution?
     return false  if is_draft? || is_nulled?

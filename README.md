@@ -6,8 +6,12 @@
 
 <i>bonsaiERP 3</i> is a simple ERP multitenant system written with [Ruby on Rails](https://rubyonrails.org/) and includes the following functions:
 
-入出庫に伴って, どのように記帳するか, 収支ダッシュボードをどのように作るか, が中心.
-インボイス機能は持たない
+ - 入出庫に伴って, どのように記帳するか, 収支ダッシュボードをどのように作るか, が中心.
+ - ATP, Available-To-Promise
+ - インボイス機能は持たない
+
+
+## 機能
 
  - Dashboard
    + Profit report
@@ -29,29 +33,36 @@
    + Currency
    + Tax
    + ✅ Chart of Accounts
+   + ✅ Item Accounting Rule. 品目クラスに勘定科目を紐付ける.
    + Tags   --- どんな機能性だろう?
-   + ❌ General Ledger
+   + ✅ General Ledger  総勘定元帳
+   + ❌ Journal Entry  仕訳
    
  - Sales
    + ✅ Sales Order
-   + In-Store Sales w/o order
-   + Customer Return
+   + Customer Return Request
    
  - Purchasing
-   + ✅ Purchase Order and Cancel
+   + ✅ Purchase Order
      - If there is an under-delivery, the system should be able to modify the order and close it, but the system has not been implemented.
    + Purchases in Transit: When an invoice is received *before* the goods have arrived, the invoice is posted in the *Purchases in Transit* account but has no assignment to a goods receipt at this point.
      - TODO: mockup of invoice.
-     
+   + Goods Return Request
+
+ - Inventory
+   + Inventory Transfer Request
+   
  - In-Store/Warehouse Operations
+   + In-Store Sales w/o order
    + ✅ Goods Receipt PO
      - <s>TODO: PO balance 減算</s> fixed.
      - <s>TODO: 仕訳の生成. </s> fixed.
      - 数量が異なる場合の考慮.
    + Goods Return 仕入戻し
-   + Delivery
-   + Transfer Stock - Out
-   + Transfer Stock - In
+   + Delivery  出荷/納入
+   + Transfer Stock in 2-steps - Out
+   + Transfer Stock in 2-steps - In
+   + Transfer in 1-step w/o order
    + Inventory Count and Adjustment
    + Material Documents 入出庫伝票
    + Stock

@@ -2,16 +2,11 @@
 - @page_title = "Purchase Order"
 
 - content_for :links do
-  %ul.breadcrumbs.span6
-    %li
-      &nbsp;
-
-
-%div.row
-  %div.btn-list
+  %div.btn-group{role:"group"}
     = link_to "Export", export_expenses_path, class: 'btn btn-secondary' 
 
     = link_to "New Purchase Order...", new_purchase_order_path, class: 'btn btn-secondary'
+
 
 
 

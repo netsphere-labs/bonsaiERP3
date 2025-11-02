@@ -13,6 +13,9 @@ class SalesOrder < Order
   ########################################
   # Relationships
 
+  # 親
+  belongs_to :contact
+
   # ship_from: sales only
   belongs_to :store, optional:true
 

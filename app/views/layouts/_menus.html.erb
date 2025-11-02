@@ -42,7 +42,7 @@
 	      
 	    <li><hr class="dropdown-divider"></li>
 	    <li><a class="dropdown-item" href="/accounts/">Chart of Accounts</a>
-            <li><%= link_to "Item Accounting", item_accountings_path,
+            <li><%= link_to "Item Accounting Rule", item_accountings_path,
                             class:"dropdown-item" %>
 	    <li><a class="dropdown-item" href="/transferences/">Journal Entry</a>
             <li><%= link_to "General Ledger", account_ledgers_path,
@@ -68,8 +68,7 @@
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="/sales_orders/">Sales Order</a>
-            <li><a class="dropdown-item" href="●●">● In-Store Sales w/o order</a>
-            <li><a class="dropdown-item" href="/customer_returns/">Customer Return</a>
+            <li><a class="dropdown-item" href="/devolutions/">Customer Return Request</a>
           </ul>
         </li>
 
@@ -80,6 +79,7 @@
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="/purchase_orders/">Purchase Order</a>
+            <li><a class="dropdown-item" href="/goods_return_requests/">Goods Return Request</a>
           </ul>
         </li>
 
@@ -89,7 +89,7 @@
             Inventory
           </a>
           <ul class="dropdown-menu">
-	    <li><a class="dropdown-item" href="/transfer_requests/">Transfer Requests</a>
+	    <li><a class="dropdown-item" href="/transfer_requests/">Inv. Transfer Requests</a>
 	    <li><hr class="dropdown-divider"></li>
 <% Store.all.each do |store| %>            
             <li><%= link_to store.name, store, class:"dropdown-item" %>

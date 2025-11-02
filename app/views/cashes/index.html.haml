@@ -2,11 +2,7 @@
 - @page_title = "Cash / Bank Account"
 
 - content_for :links do
-  %ul.breadcrumbs.span6
-    %li ""
-
-.row-fluid
-  .span6.r
+  %div.btn-group{role: "group"}
     = link_to "New cash/bank account...", new_cash_path 
 
 %ul#banks.accounts_list

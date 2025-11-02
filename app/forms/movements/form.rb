@@ -26,7 +26,7 @@ class Movements::Form < BaseForm
 
   
   def initialize order
-    raise TypeError if !(order.is_a?(SalesOrder) || order.is_a?(PurchaseOrder))
+    raise TypeError if !order.is_a?(Order) 
     super()
     @model_obj = order
     @details = order.details
@@ -71,8 +71,13 @@ class Movements::Form < BaseForm
   
 private
 
-  # for `validate()`
+  # for `validate()`. 親側の validation は `save!` のなかで実行する.
   def validate_models
+    if details.empty?
+      errors.add(:details, "need at_least_one_item")
+      return
+    end
+    
     # run validations for all nested objects
     err_count = details.count {|detail|
       # only useful when `:autosave` option is enabled.

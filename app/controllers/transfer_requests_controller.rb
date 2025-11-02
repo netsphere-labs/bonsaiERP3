@@ -1,11 +1,14 @@
 
 # inventory transfer requests (order)
+# 倉庫の入出庫 (2-steps) は `InventoryOutsController`, `InventoryInsController`
 class TransferRequestsController < ApplicationController
-  before_action :set_transfer_request, only: %i[ show edit update destroy ]
+  before_action :set_transfer_request,
+                only: %i[ show edit update destroy ]
 
+  
   # GET /transfer_requests or /transfer_requests.json
   def index
-    @transfer_requests = TransferRequest.all
+    @transfer_requests = TransferRequest.order(date: :desc).page(params[:page])
   end
 
   # GET /transfer_requests/1 or /transfer_requests/1.json
@@ -14,7 +17,9 @@ class TransferRequestsController < ApplicationController
 
   # GET /transfer_requests/new
   def new
-    @transfer_request = TransferRequest.new
+    # Use the form object.
+    @transfer_request = Movements::Form.new(TransferRequest.new date: Date.today,
+                                                                state: 'draft')
   end
 
   # GET /transfer_requests/1/edit

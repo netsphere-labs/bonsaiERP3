@@ -1,6 +1,9 @@
-# encoding: utf-8
+
 # author: Boris Barroso
 # email: boriscyber@gmail.com
+
+# 倉庫での Inventory transfer in two-steps - in   TODO: いろいろ兼ねられる?
+# order は `TransferRequestsController`
 class InventoryInsController < ApplicationController
   before_action :check_store
 

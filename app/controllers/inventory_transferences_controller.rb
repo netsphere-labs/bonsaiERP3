@@ -1,7 +1,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# 倉庫での転送出庫、転送入庫
+# 倉庫での one-step transfer w/o order.
 class InventoryTransferencesController < ApplicationController
   before_action :set_store, only: [:new, :create]
 

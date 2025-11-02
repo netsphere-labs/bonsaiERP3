@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# 発注
+# 発注 (order). 購買入庫は `GoodsReceiptPosController`
 class PurchaseOrdersController < ApplicationController
   include Controllers::TagSearch
 
@@ -34,7 +34,9 @@ class PurchaseOrdersController < ApplicationController
   def new
     # Use the form object.
     # TODO: default currency = partner's one.
-    @order = Movements::Form.new(PurchaseOrder.new date: Time.now, state: 'draft')
+    # TODO: タイムゾーンの考慮?
+    @order = Movements::Form.new(PurchaseOrder.new date: Date.today,
+                                                   state: 'draft')
     #@order_details = []
   end
 
@@ -59,7 +61,7 @@ class PurchaseOrdersController < ApplicationController
         @order.save!
       end
     rescue ActiveRecord::RecordInvalid => e
-      raise @order.errors.inspect
+      #raise @order.errors.inspect
       render :new, status: :unprocessable_entity
       return
     end
@@ -129,7 +131,8 @@ class PurchaseOrdersController < ApplicationController
     authorize @order
     
     @order.destroy!
-    #TODO impl.
+    redirect_to purchase_orders_path,
+                notice: "PO was successfully destroyed.", status: :see_other 
   end
 
   

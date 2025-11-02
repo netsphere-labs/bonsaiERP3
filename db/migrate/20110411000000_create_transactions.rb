@@ -9,14 +9,18 @@ class CreateTransactions < ActiveRecord::Migration[5.2]
         # order_date: datetime はやりすぎ。`date` で十分
         t.date :date, null:false
 
-        # purchase order: vendor, sales order: customer
-        t.references :contact, type: :integer, null:false, foreign_key:true
+        # purchase order: vendor NOT NULL
+        # sales order: customer NOT NULL
+        # trans / prod order: nullable
+        t.references :contact, type: :integer, foreign_key:true
 
         # purchase order: ship_to (NOT NULL), sales order: ship_from (nullable).
         t.references :store, type: :integer, foreign_key: true
 
         # trans. request
         t.references :trans_to, type: :integer, foreign_key:{to_table:'stores'}
+
+        t.references :prod_item, type: :integer, foreign_key: {to_table:'items'}
         
         # before discount
         t.decimal :gross_total, precision: 14, scale: 2, default: 0.0

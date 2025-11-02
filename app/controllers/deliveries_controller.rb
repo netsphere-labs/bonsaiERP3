@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# 出荷/納入
+# 倉庫での出荷/納入. 受注 (Sales Order) は `SalesOrdersController`
 class DeliveriesController < ApplicationController
   before_action :set_store
   

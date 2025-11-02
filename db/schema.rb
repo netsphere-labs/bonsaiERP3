@@ -300,9 +300,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_26_084238) do
   create_table "orders", id: :serial, force: :cascade do |t|
     t.string "type", limit: 80, null: false
     t.date "date", null: false
-    t.integer "contact_id", null: false
+    t.integer "contact_id"
     t.integer "store_id"
     t.integer "trans_to_id"
+    t.integer "prod_item_id"
     t.decimal "gross_total", precision: 14, scale: 2, default: "0.0"
     t.decimal "total", precision: 14, scale: 2, default: "0.0", null: false
     t.string "currency", limit: 3, null: false
@@ -327,6 +328,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_26_084238) do
     t.datetime "updated_at", precision: nil, null: false
     t.boolean "no_inventory", default: false, null: false
     t.index ["contact_id"], name: "index_orders_on_contact_id"
+    t.index ["prod_item_id"], name: "index_orders_on_prod_item_id"
     t.index ["store_id"], name: "index_orders_on_store_id"
     t.index ["trans_to_id"], name: "index_orders_on_trans_to_id"
   end
@@ -473,6 +475,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_26_084238) do
   add_foreign_key "movement_details", "items"
   add_foreign_key "movement_details", "orders"
   add_foreign_key "orders", "contacts"
+  add_foreign_key "orders", "items", column: "prod_item_id"
   add_foreign_key "orders", "stores"
   add_foreign_key "orders", "stores", column: "trans_to_id"
 end

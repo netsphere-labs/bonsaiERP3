@@ -72,16 +72,6 @@ resources :transferences #, only: [:new, :create]
 
 resources :item_accountings
 
-# 「devolution」のスペイン語訳は、文脈によって異なりますが、「返却・払い戻し」を意味するdevolución（発音は「デボルーショーン」）や、
-resources :devolutions, only: [] do
-  member do
-    get :new_income
-    post :income
-    get :new_expense
-    post :expense
-  end
-end
-
 resources :payments  do
   member do
     get :new_income
@@ -147,7 +137,15 @@ resources :sales_orders do
   end
 end
 
-resources :customer_returns
+# 「devolution」のスペイン語訳は、文脈によって異なりますが、「返却・払い戻し」を意味するdevolución（発音は「デボルーショーン」）や、
+resources :devolutions do
+  member do
+    get :new_income
+    post :income
+    get :new_expense
+    post :expense
+  end
+end
 
 
 ######################################################################
@@ -161,8 +159,8 @@ resources :purchase_orders do
   end
 end
 
-
-resources :goods_returns
+resources :goods_return_requests do
+end
 
 
 ######################################################################
@@ -178,6 +176,9 @@ resources :stores do
     end
   end
 
+  # return to supplier
+  resources :goods_returns
+
   # 出荷/納入
   resources :deliveries do
     member do
@@ -185,6 +186,13 @@ resources :stores do
     end
   end
 
+  resources :customer_returns
+
+  # inventory transfer in two-steps
+  resources :inventory_outs
+  resources :inventory_ins
+
+  # one-step transfer w/o order
   resources :inventory_transferences #, only: [:new, :create, :show]
 end
 
@@ -197,10 +205,6 @@ resources :inventories, only: [:index, :show] do
   get :show_movement, on: :member
   get :show_trans, on: :member
 end
-
-resources :inventory_outs
-
-resources :inventory_ins
 
 
 ######################################################################

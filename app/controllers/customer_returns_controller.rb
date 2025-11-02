@@ -2,7 +2,8 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# Devolutions of inventory for Income
+# 倉庫での顧客返品の受取り. Devolutions of inventory for Income
+# Customer Return Request (order) は `DevolutionsController`
 class CustomerReturnsController < ApplicationController
   #before_action :set_store_and_income
 

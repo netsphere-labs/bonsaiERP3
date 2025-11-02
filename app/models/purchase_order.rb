@@ -21,6 +21,9 @@ class PurchaseOrder < Order
   #accepts_nested_attributes_for :expense_details, allow_destroy: true,
   #                              reject_if: proc { |det| det.fetch(:item_id).blank? }
 
+  # 親
+  belongs_to :contact
+
   has_many :payments, -> { where(operation: 'payout') },
            class_name: 'AccountLedger', foreign_key: :account_id
   has_many :devolutions, -> { where(operation: 'devin') },

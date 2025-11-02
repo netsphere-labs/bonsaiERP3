@@ -1,16 +1,22 @@
-<h1>transfer_requests</h1>
 
-<%= link_to 'New Transfer request', new_transfer_request_path, :class => 'new' %>
+<% @page_title = "Inventory Transfer Requests" %>
 
-<table class="decorated nwl">
+<% content_for :links do %>
+  <div class="btn-group" role="group">
+    <%= link_to 'New Transfer request...', new_transfer_request_path,
+                :class => 'new' %>
+  </div>
+<% end %>
+
+
+<table class="table">
   <tr>
     <th></th>
   </tr>
 
 <% @transfer_requests.each do |transfer_request| %>
   <tr>
-        <td><%= bonsai_links(transfer_request) %></td>
-  </tr>
+    <td><%= link_to transfer_request.id, transfer_request %>
 <% end %>
 </table>
 

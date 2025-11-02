@@ -2,9 +2,9 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# Customer Return Request (order).
-# 倉庫での顧客返品の受取りは `CustomerReturnsController`
-class DevolutionsController < ApplicationController
+# Goods Return Requests (order). 倉庫からの出庫は goods_returns
+class GoodsReturnRequestsController < ApplicationController
+  
   # GET /devolutions/:id/new_income
   def new_income
     @devolution = Incomes::Devolution.new(account_id: params[:id], date: Date.today)

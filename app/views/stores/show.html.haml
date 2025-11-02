@@ -35,18 +35,20 @@
 
   %ul
     %li= link_to "Goods Receipt PO", {controller:"goods_receipt_pos", action:"index", store_id: @store.id} 
+    %li= link_to "仕入戻し", {controller:"goods_returns", action:"index", store_id:@store.id} 
+
     %li= link_to "出荷/納入", {controller:"deliveries", action:"index", store_id: @store.id}
+    %li= link_to "Customer Return", {controller:"customer_returns", action:"index", store_id:@store.id}
 
     %li
-      = link_to "Transfer Stock - In...", new_inventory_in_path 
+      = link_to "Transfer Stock in 2-steps - In...", {controller:"inventory_ins", action:"index", store_id:@store.id}
     %li
-      = link_to "Transfer Stock - Out...", new_inventory_out_path 
+      = link_to "Transfer Stock in 2-steps - Out...", {controller:"inventory_outs", action:"index", store_id:@store.id}
+    %li
+      = link_to "Transfer in 1-step w/o order", {controller:"inventory_transferences", action:"index", store_id:@store.id}
 
     %li
       = "●●未着品の入庫"
-    %li= "/goods_returns/  仕入戻し"
-    %li= "/inventory_outs/ Transfer Stock - Out"
-    %li= "/inventory_ins/ Transfer Stock - In"
     %li= "●●Inventory Count &amp; Adjustment"
     %li= link_to "入出庫伝票", inventories_path 
     %li= "/stocks/    Stock"

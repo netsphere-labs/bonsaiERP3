@@ -1,17 +1,31 @@
-- inventory = present inventory
-%li.row-fluid
-  .span6
-    %h4.n.ib(title='Código operación inventario')
-      = link_to inventory.ref_number, inventory.link
-    %strong(title='Tipo de operación')= inventory.operation_tag
-    .clearfix
-    %i= lo inventory.date
-    .clearfix
 
-    %span.muted Almacen:
-    = link_to inventory.store, inventory.store
-  .span6
-    .clearfix
-    = inventory.creator_label
+-# `purchase_orders#show` の明細行から呼び出される
+-# @param inventory
+
+
+%div.row
+  %div.col-1
+    = link_to inventory.id, {controller:"goods_receipt_pos", action:"show", store_id: inventory.store_id, id: inventory.id}, class: 'no-tab' 
+
+  %div.col-3
+    %strong(title='Tipo de operación')= inventory.operation
+
+  %div.col-1
+    %i= inventory.date
+
+  %div.col-2
+    %span.muted
+      Almacen:
+      = link_to inventory.store, inventory.store
+
+  %div.col-3
     %i.icon-file.muted(title='Description')
-    = inventory.description
+      = inventory.description
+
+
+- inventory.details.each do |inv_det|
+  %div.row
+    %div.col-3
+      = inv_det.item.name
+    %div.col-3
+      = inv_det.quantity

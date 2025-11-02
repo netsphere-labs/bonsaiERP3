@@ -11,6 +11,9 @@
   %div.btn-group{role: "group"}
     = button_to 'Confirm', confirm_purchase_order_path(@order.id), class: 'btn btn-success', method: :patch  if policy(@order).confirm?
 
+    = button_to 'Destroy', purchase_order_path(@order.id), method: :delete, class: 'btn btn-danger',
+      data:{turbo_confirm: 'Sure?'}  if policy(@order).destroy?
+
     = button_to 'Void', void_purchase_order_path(@order.id), method: :patch, class: 'btn btn-danger',
       data:{turbo_confirm: 'Esta segur@ de anular el Ingreso?'}  if policy(@order).void?
 
@@ -49,13 +52,11 @@
 = render "movements/items"
 
 
-- unless @order.draft?
-  .row-fluid
-    .span6.bg-white
-      -#= render 'ledger_details', expense: @expense
+%h2 Goods Receipt PO
 
-    #inventory.span6.bg-white
-      -#= render 'inventory_details', expense: @expense
+- @order.inventories.each do |inv|
+  = render 'inventories/movement', inventory: inv
+
 
 
 

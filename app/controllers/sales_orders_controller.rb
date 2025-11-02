@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# Sales Orders
+# Sales Orders. 倉庫からの出庫は `DeliveriesController`
 class SalesOrdersController < ApplicationController
   include Controllers::TagSearch
   include Controllers::Print

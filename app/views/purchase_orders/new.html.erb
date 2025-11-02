@@ -1,11 +1,8 @@
 
 <% @page_title = "New Purchase Order" %>
+<% @crumbs = [
+     ['Purchase Orders', purchase_orders_path] ] %>
 
-<% content_for :links do %>
-  <ul class="breadcrumbs span6">
-    <li><%= link_to 'Purchase Orders', purchase_orders_path %>
-  </ul>
-<% end %>
 
 <%= render 'form' %>
 

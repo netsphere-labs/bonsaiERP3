@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# 購買入庫
+# 倉庫での購買入庫. PO は `PurchaseOrdersController`
 class GoodsReceiptPosController < ApplicationController
   before_action :set_store
 
@@ -10,7 +10,8 @@ class GoodsReceiptPosController < ApplicationController
 
   
   def index
-    @orders = PurchaseOrder.confirmed.where(store_id: @store.id)
+    @orders = PurchaseOrder.where(state: ['confirmed', 'partial'],
+                                 store_id: @store.id)
     @invs = Inventory.where(operation: 'exp_in').page(params[:page])
   end
 
@@ -46,22 +47,6 @@ class GoodsReceiptPosController < ApplicationController
       ActiveRecord::Base.transaction do
         # atomic save in form object
         @inv.save!
-
-        # TODO:
-        # To prevent double submissions, the balances is subtracted even in
-        # draft state. It also needs to update them when updating. This is not
-        # efficient.
-        
-        # subtract from the order balance.
-        @inv.model_obj.details.each do |inv_detail|
-          m = MovementDetail.where(order_id: @inv.model_obj.order_id,
-                                   item_id: inv_detail.item_id).take ||
-              MovementDetail.new(order_id: @inv.model_obj.order_id,
-                                 item_id: inv_detail.item_id,
-                                 price: inv_detail.price) # new price
-          m.balance -= inv_detail.quantity
-          m.save!
-        end
       end
     rescue ActiveRecord::RecordInvalid => e
       render :new, status: :unprocessable_entity
@@ -96,6 +81,18 @@ class GoodsReceiptPosController < ApplicationController
         @inv.confirm! current_user
         @inv.save!
 
+        # データの安定のために, confirm 時に `order.balance` を減らす
+        @inv.details.each do |inv_detail|
+          m = MovementDetail.where(order_id: @inv.order_id,
+                                   item_id: inv_detail.item_id).take ||
+              MovementDetail.new(order_id: @inv.order_id,
+                                 item_id: inv_detail.item_id,
+                                 price: inv_detail.price) # new price
+          m.balance -= inv_detail.quantity
+          m.save!
+        end
+        @inv.order.update_state!
+      
         entry_no = rand(2_000_000_000)
         # Dr.
         sum_amt = 0

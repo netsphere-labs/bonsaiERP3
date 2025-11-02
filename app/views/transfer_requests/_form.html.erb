@@ -1,7 +1,8 @@
 
-<%= simple_form_for(@transfer_request) do |f| %>
-  <%= f.error_notification %>
-  <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
+<%= bootstrap_form_with model: @transfer_request, url:{action:"create"},
+                        layout: :horizontal do |f| %>
+  <%= error_messages_for 'transfer_request' %>
+
 
   <div class="form-inputs">
   </div>

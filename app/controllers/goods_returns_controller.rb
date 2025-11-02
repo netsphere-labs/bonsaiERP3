@@ -2,7 +2,8 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# Return to supplier
+# 倉庫からの return to supplier.
+# Goods Return Request (order) は `GoodsReturnRequestsController`
 class GoodsReturnsController < ApplicationController
   before_action :set_store_and_expense
 
