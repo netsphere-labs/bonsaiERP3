@@ -5,14 +5,15 @@
 # 倉庫での顧客返品の受取り. Devolutions of inventory for Income
 # Customer Return Request (order) は `DevolutionsController`
 class CustomerReturnsController < ApplicationController
-  #before_action :set_store_and_income
+  before_action :set_store
 
-  before_action :set_order,
-                only: [:show, :edit, :update, :destroy, :confirm, :void ]
+  before_action :set_inv,
+                only: %i[show edit update destroy confirm void]
+
 
   def index
-    @search = Movements::Search.new  # TODO:
-    @orders = 
+    @orders = CustomerReturnRequest.where(store_id: @store.id)
+    @invs = Inventory.where(operation:'inc_in').page(params[:page])
   end
 
   def show
@@ -60,7 +61,16 @@ class CustomerReturnsController < ApplicationController
 
   
 private
-  
+
+  def set_store
+    @store = Store.find params[:store_id]
+  end
+
+  def set_inv
+    @inv = Inventory.where(operation: 'inc_in', id: params[:id]).take
+    raise ActiveRecord::RecordNotFound if !@inv
+  end
+    
 =begin
     def set_store_and_income
       @income = Income.active.find(params[:income_id])

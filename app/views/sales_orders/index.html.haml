@@ -2,12 +2,7 @@
 - @page_title = "Sales Order"
 
 - content_for :links do
-  %ul.breadcrumbs.span6
-    %li
-      = ""
-
-%div.row
-  %div.btn-list
+  %div.btn-group{role:"group"}
     = link_to t("general.export"), export_incomes_path, class:"btn btn-secondary"
 
     = link_to "New Sales Order...", new_sales_order_path, class: 'btn btn-secondary'

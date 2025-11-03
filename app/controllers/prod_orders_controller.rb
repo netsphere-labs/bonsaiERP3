@@ -3,19 +3,20 @@
 # email: boriscyber@gmail.com
 
 =begin
-このプロジェクトは、単に経費を括るだけのもの。タスク管理・進捗管理も何もない
-
--> Production Order として作り直す
+v2 の `Project` は、単に経費を括るだけのもの。タスク管理・進捗管理も何もない
+  -> Production Order として作り直す
+  
 Production Process がどのようなものか、については、例えば
 https://learning.sap.com/courses/managing-logistics-in-sap-business-one/running-the-production-process-in-sap-business-one
 =end
 
 
 class ProdOrdersController < ApplicationController
-  before_action :set_project, :only => [:show, :edit, :update, :destroy]
+  before_action :set_order, only: %i[show edit update destroy]
+  
   # GET /projects
   def index
-    @projects = Project.page(@page)
+    @orders = ProdOrder.page(params[:page])
   end
 
   # GET /projects/1
@@ -60,11 +61,12 @@ class ProdOrdersController < ApplicationController
     redirect_ajax @project
   end
 
-  private
+  
+private
 
-    def set_project
-      @project = Project.find(params[:id])
-    end
+  def set_order
+    @order = ProdOrder.find(params[:id])
+  end
 
     def project_params
       params.require(:project).permit(:name, :active, :date_start,

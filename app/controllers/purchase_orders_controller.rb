@@ -2,12 +2,13 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# 発注 (order). 購買入庫は `GoodsReceiptPosController`
+# 発注 (order). モデル = `PurchaseOrder`. form object = `Movements::Form`
+# 購買入庫は `GoodsReceiptPosController`
 class PurchaseOrdersController < ApplicationController
   include Controllers::TagSearch
 
   before_action :set_order,
-                only: [:show, :edit, :update, :destroy, :confirm, :void, :inventory]
+                only: %i[show edit update destroy confirm void inventory]
 
   # GET /expenses
   def index
@@ -72,7 +73,8 @@ class PurchaseOrdersController < ApplicationController
   
   # PATCH /expenses/:id
   def update
-    #@es = Expenses::Form.find(params[:id])
+    # wrap
+    @order = Movements::Form.new(@order)
     
     if update_or_approve
       redirect_to expense_path(@es.expense), notice: 'El Egreso fue actualizado!.'
@@ -166,7 +168,7 @@ private
                   :incoterms, :delivery_date, :store_id)
   end
 
-  # before_action()
+  # for `before_action()`
   def set_order
     @order = PurchaseOrder.find params[:id]
   end

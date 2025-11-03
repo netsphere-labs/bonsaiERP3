@@ -3,9 +3,19 @@
 # email: boriscyber@gmail.com
 
 # 倉庫での Inventory transfer in two-steps - in   TODO: いろいろ兼ねられる?
-# order は `TransferRequestsController`
+# order controller = `TransferRequestsController`
 class InventoryInsController < ApplicationController
-  before_action :check_store
+  before_action :set_store
+  
+  before_action :set_inv,
+                only: %i[show edit update destroy confirm void]
+
+  #before_action :check_store
+
+  def index
+    @invs = Inventory.where(operation: 'in', store_id: @store.id)
+  end
+
 
   def new
     @inv = Inventories::In.new(store_id: params[:store_id], date: Date.today,
@@ -24,7 +34,38 @@ class InventoryInsController < ApplicationController
     end
   end
 
+
+  def show
+  end
+
+  def edit
+  end
+
+  def update
+  end
+
+  def destroy
+  end
+
+  def confirm
+  end
+
+  def void
+  end
+
+  
 private
+  
+  def set_store
+    @store = Store.find params[:store_id]
+  end
+
+  def set_inv
+    @inv = Inventory.where(operation: 'in', id: params[:id]).take
+    raise ActiveRecord::RecordNotFound if !@inv
+  end
+
+  
   def check_store
     Store.find(params[:store_id])
   rescue

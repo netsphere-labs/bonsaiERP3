@@ -5,8 +5,16 @@
 # 倉庫からの return to supplier.
 # Goods Return Request (order) は `GoodsReturnRequestsController`
 class GoodsReturnsController < ApplicationController
-  before_action :set_store_and_expense
+  before_action :set_store
+  
+  #before_action :set_store_and_expense
 
+  def index
+    @orders = GoodsReturnRequest.where(state:['confirmed', 'partial'],
+                                       store_id: @store.id)
+  end
+
+  
   # GET
   # /expenses_inventory_ins/new?store_id=:store_id&expense_id=:expense_id
   def new
@@ -29,8 +37,13 @@ class GoodsReturnsController < ApplicationController
     end
   end
 
-  private
+  
+private
 
+  def set_store
+    @store = Store.find params[:store_id]
+  end
+  
     def set_store_and_expense
       @expense = Expense.active.find(params[:expense_id])
       @store = Store.active.find(params[:store_id])

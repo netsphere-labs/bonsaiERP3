@@ -45,7 +45,8 @@ class Account < ApplicationRecord
     r.validates_presence_of :currency
     r.validates_inclusion_of :currency, in: CURRENCIES.keys
   end
-  
+
+  # TODO: `account_types` 表で設定可能にする
   SUBTYPES = {
     # Assets / Liabilities
     'CASH' => 'Assets:Cash and Bank Account',
@@ -55,7 +56,9 @@ class Account < ApplicationRecord
     # P/L
     'REV' => 'Revenue',
     'VC' => 'Expenses:Variable Cost',
-    'NON-VC' => 'Expenses:Non-Variable Costs'
+    'NON-VC' => 'Expenses:Non-Variable Costs',
+    'INTEREST' => '利息',
+    'GAIN_LOSS' => '評価損益・売却損益'
   }
   validates_inclusion_of :subtype, in: SUBTYPES.keys
   

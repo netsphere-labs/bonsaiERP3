@@ -13,7 +13,7 @@ class Inventory < BusinessRecord
   # inc_in  顧客返品
   # in 転送入庫
   # out 転送出庫
-  # trans ?
+  # trans  1-step transfer
   OPERATIONS = %w(in out inc_in inc_out exp_in exp_out trans).freeze
 
   STATES = %w(draft confirmed void).freeze

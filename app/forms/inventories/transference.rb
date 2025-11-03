@@ -1,6 +1,9 @@
-# encoding: utf-8
+
 # author: Boris Barroso
 # email: boriscyber@gmail.com
+
+# 倉庫内の transfer in 1-step の form object
+# controller = `InventoryTransferencesController`
 class Inventories::Transference < Inventories::Form
   attribute :store_to_id, Integer
 

@@ -1,10 +1,19 @@
 
-- @page_title = "Sales Order ##{@order.id}"
+:ruby
+  @page_title = "Sales Order ##{@order.id}"
+  @crumbs = [
+    ["Sales Orders", sales_orders_path] ]
 
 - content_for :links do
-  %ul.breadcrumbs.span6
-    %li
-      = link_to "Sales Orders", sales_orders_path
+  %div.btn-group{role:"group"}
+    = button_to 'Confirm', confirm_sales_order_path(@order), method: :patch, class: 'btn btn-success'  if policy(@order).confirm?
+    -# Null form
+    = button_to 'Void', void_sales_order_path(@order), method: :patch, class: 'btn btn-danger', data: { turbo_confirm: 'Esta segur@ de anular' }  if policy(@order).void?
+
+    = link_to "Edit this SO...", edit_sales_order_path(@order.id), class: 'btn' if policy(@order).update?
+
+    = link_to "Print Order", sales_order_path(@order.id, format: 'print'), class: 'btn' 
+
 
 
 .row-fluid
@@ -25,19 +34,6 @@
       = render_if @order.delivery_date do
         = @order.delivery_date
 
-
-  .span6.r.buttons
-    %input.row-check.hidden(type='checkbox' id="#{@order.id}" checked='checked')
-    %tags(model='Income' hide-filter='true' tag-ids='false')
-
-    -# Approve form
-    = button_to 'Confirm', confirm_sales_order_path(@order), method: :patch, class: 'btn btn-success'  if policy(@order).confirm?
-    -# Null form
-    = button_to 'Void', void_sales_order_path(@order), method: :patch, class: 'btn btn-danger', data: { turbo_confirm: 'Esta segur@ de anular' }  if policy(@order).void?
-
-    = link_to "Edit this SO...", edit_sales_order_path(@order.id), class: 'btn' if policy(@order).update?
-
-    = link_to "Print Order", sales_order_path(@order.id, format: 'print'), class: 'btn' 
 
 
 .row-fluid

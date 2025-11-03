@@ -2,6 +2,7 @@
 # email: boriscyber@gmail.com
 
 # 倉庫での one-step transfer w/o order.
+# form object = `Inventories::Transference`
 class InventoryTransferencesController < ApplicationController
   before_action :set_store, only: [:new, :create]
 

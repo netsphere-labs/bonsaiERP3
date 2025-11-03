@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# フォームオブジェクト for 出荷/納入
+# フォームオブジェクト for 倉庫からの出荷/納入
 class Incomes::InventoryOut < Inventories::Form
 
   #validate :valid_quantities

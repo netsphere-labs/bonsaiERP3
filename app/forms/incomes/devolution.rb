@@ -1,13 +1,14 @@
-# encoding: utf-8
+
 # Creates a devolution that updates the Income#total and creates an
 # instance of AccountLedger with the devolution data
-class Incomes::Devolution < Devolution
+# controller = `DevolutionsController`, model = `CustomerReturnRequest`
+class Incomes::Devolution < Movements::Form
 
   # Validations
-  validates_presence_of :income
+  #validates_presence_of :income
 
   # Delegations
-  delegate :total, :balance, :currency, to: :income, prefix: true, allow_nil: true
+  #delegate :total, :balance, :currency, to: :income, prefix: true, allow_nil: true
 
   # Updates Income#total and creates and AccountLedger object with the
   # devolution data
@@ -22,12 +23,13 @@ class Incomes::Devolution < Devolution
     end
   end
 
-  def income
-    @income ||= Income.active.where(id: account_id).first
-  end
-  alias :movement :income
+  #def income
+  #  @income ||= Income.active.where(id: account_id).first
+  #end
+  #alias :movement :income
 
-  private
+
+private
 
     def save_income
       update_movement

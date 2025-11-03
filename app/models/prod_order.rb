@@ -11,10 +11,4 @@ class ProdOrder < Order
   belongs_to :prod_item, class_name:"Item"
   
   validates_lengths_from_database
-
-  scope :active, -> { where(active: true) }
-
-  def to_param
-    "#{id}-#{to_s}".parameterize
-  end
 end

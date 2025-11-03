@@ -1,0 +1,4 @@
+
+
+class GoodsReturnRequest < Order
+end

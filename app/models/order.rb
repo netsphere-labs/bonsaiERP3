@@ -94,6 +94,7 @@ class Order < BusinessRecord
 
 
   # `save()` must be done by caller.
+  # activerecord `enum` は, `confirmed?` と `confirmed!` (edが付く) を生やす
   def confirm! user
     raise TypeError if !user.is_a?(User)
     

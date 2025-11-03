@@ -2,7 +2,26 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# Form object for SalesOrder/PurchaseOrder
+=begin
+contact_id が必須の 4 種類
+
+1. PurchaseOrder
+
+2. コントローラ `GoodsReturnRequestsController`, model = `GoodsReturnRequest`
+   form object = `Expenses::Devolution`
+
+3. SalesOrder
+
+4. controller = `DevolutionsController`, model = `CustomerReturnRequest`
+   form object = `Incomes::Devolution`
+
+# "条件付買取仕入" は, 販売期間終了後に, 返品することができる取引形態
+# 百貨店での, 季節商品やファッション商品で見られる
+# 百貨店には、保管責任はあるが、在庫リスクはない。
+# See https://www.s-terada.com/%E5%AE%9F%E5%8B%99%E8%AB%96%E6%96%87/%E7%99%BE%E8%B2%A8%E5%BA%97%E7%B4%8D%E5%85%A5%E6%A5%AD%E8%80%85%E3%81%AE%E4%BC%9A%E8%A8%88%E3%81%A8%E7%A8%8E%E5%8B%99-%E6%B6%88%E5%8C%96%E4%BB%95%E5%85%A5%E3%81%A8%E3%83%9E%E3%83%8D%E3%82%AD%E3%83%B3/
+=end
+
+
 class Movements::Form < BaseForm
   # SalesOrder or PurchaseOrder
   attr_reader :model_obj

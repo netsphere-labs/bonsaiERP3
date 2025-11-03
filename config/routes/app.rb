@@ -160,6 +160,10 @@ resources :purchase_orders do
 end
 
 resources :goods_return_requests do
+  member do
+    patch :confirm
+    patch :void
+  end
 end
 
 

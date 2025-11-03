@@ -2,17 +2,26 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# Customer Return Request (order).
+# Customer Return Request (order). model = `CustomerReturnRequest`
+# form object = `Incomes::Devolution`
 # 倉庫での顧客返品の受取りは `CustomerReturnsController`
 class DevolutionsController < ApplicationController
+  before_action :set_order, only: %i[show edit update destroy]
+
+  
+  def index
+    @orders = CustomerReturnRequest.page(params[:page])
+  end
+
+  
   # GET /devolutions/:id/new_income
-  def new_income
+  def new
     @devolution = Incomes::Devolution.new(account_id: params[:id], date: Date.today)
     check_income
   end
 
   # POST /devolutions/:id/income
-  def income
+  def create
     @devolution = Incomes::Devolution.new(income_params)
     check_income
 
@@ -24,6 +33,19 @@ class DevolutionsController < ApplicationController
     end
   end
 
+  def show
+  end
+
+  def edit
+  end
+
+  def update
+  end
+
+  def destroy
+  end
+  
+=begin
   # GET /devolutions/:id/new_expense
   def new_expense
     @devolution = Expenses::Devolution.new(account_id: params[:id], date: Date.today)
@@ -42,7 +64,9 @@ class DevolutionsController < ApplicationController
       render :new_expense
     end
   end
+=end
 
+  
   private
 
     def income_params

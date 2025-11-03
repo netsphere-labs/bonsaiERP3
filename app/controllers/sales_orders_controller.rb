@@ -2,7 +2,8 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# Sales Orders. 倉庫からの出庫は `DeliveriesController`
+# Sales Orders. model = `SalesOrder`. form object = `Movements::Form`
+# 倉庫からの出庫は `DeliveriesController`
 class SalesOrdersController < ApplicationController
   include Controllers::TagSearch
   include Controllers::Print

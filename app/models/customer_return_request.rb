@@ -1,0 +1,3 @@
+
+class CustomerReturnRequest < Order
+end

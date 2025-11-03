@@ -1,5 +1,5 @@
 
-# inventory transfer requests (order)
+# inventory transfer requests (order). model = `TransferRequest`
 # 倉庫の入出庫 (2-steps) は `InventoryOutsController`, `InventoryInsController`
 class TransferRequestsController < ApplicationController
   before_action :set_transfer_request,

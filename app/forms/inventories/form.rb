@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# フォームオブジェクトの基底クラス
+# "form object for 倉庫からの入出庫" の基底クラス
 class Inventories::Form < BaseForm
   # `Inventory` 入出庫伝票
   attr_reader :model_obj
