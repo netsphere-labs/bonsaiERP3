@@ -1,20 +1,29 @@
 
 <% @page_title = "Goods Receipt PO ##{@inv.id}" %>
+<% @crumbs = [
+     ["Store/Warehouse", stores_path],
+     [@store.name, @store],
+     ["Goods Receipt PO", {action:"index"}] ] %>
 
-<table>
-  <tr><th>Account: <td><%= @inv.account.name %>
-  <tr><th>State: <td><%= @inv.state %>
-</table>
-
-<div class="row">
+<% content_for :links do %>
+  <div class="btn-group" role="group">
 <% if policy(@inv).update? %>
   <%= link_to 'Edit...', {action:"edit", id:@inv} %>
 <% end %>
 <% if policy(@inv).confirm? %>
   <%= button_to 'Confirm', {action:"confirm", id:@inv} %>
 <% end %>
-</div>
+  </div>
+<% end %>
 
+
+<table>
+  <tr><th>Account: <td><%= @inv.account.name %>
+  <tr><th>State: <td><%= @inv.state %>
+</table>
+
+
+  
 <table class="table">
   <% @inv.details.each do |detail| %>
   <tr>

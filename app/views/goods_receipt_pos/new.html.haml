@@ -1,14 +1,9 @@
 
-- @page_title = "購買入庫"
+:ruby
+  @page_title = "購買入庫"
+  @crumbs = [
+    ["Back", {action:"index"}] ]
 
-- content_for :links do
-  %ul.breadcrumbs.span6
-    %li
-      =link_to @inv.store, @inv.store
-    %li
-      %i.icon-caret-right
-    %li
-      Ingreso de items
 
 .row-fluid
   .span12
