@@ -156,6 +156,7 @@ resources :purchase_orders do
     patch :confirm
     patch :void
     patch :inventory
+    post :force_close
   end
 end
 

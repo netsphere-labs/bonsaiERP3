@@ -12,6 +12,7 @@
   %div.card
     %div.card-body
       %h5.card-title Contact Account
+      %p Bank Information is needed for suppliers
       = f.fields_for @contact_account do |caf|
         = render partial: 'contact_accounts/form', locals:{f:caf}
 

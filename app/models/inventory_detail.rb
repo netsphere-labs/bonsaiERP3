@@ -31,5 +31,8 @@ class InventoryDetail < ApplicationRecord
   validates_presence_of :quantity
   #validates_numericality_of :quantity, greater_than: 0
 
+  # for form dummy
+  attribute :line_total, :decimal 
+
   attr_accessor :available
 end

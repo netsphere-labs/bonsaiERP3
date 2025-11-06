@@ -11,10 +11,13 @@ class Expenses::InventoryIn < Inventories::Form
   def self.create_details_from_params detail_params, store_id
     ary = []
     detail_params.each do |_lineno, h|
-      m = InventoryDetail.new h.permit(:item_id, :price, :quantity)
+      m = InventoryDetail.new h.permit(:item_id, :price, :quantity, :line_total)
       m.movement_type = 101  # supplier -> unrestricted stock
       m.store_id = store_id
-      (ary << m) if m.quantity != 0.0
+      if m.quantity != 0.0
+        m.price = m.line_total / m.quantity if !h[:line_total].blank?
+        ary << m
+      end
     end
 
     return ary

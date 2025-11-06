@@ -1,7 +1,8 @@
 
-<%= bootstrap_form_with model: @order, url:{action:"create"},
-                        layout: :horizontal do |f| %>
   <%= error_messages_for 'order' %>
+
+
+  <%= f.date_field :date, label: "Order Date:" %>
 
 <% if ['new', 'create'].include?(action_name) %>
   <%= f.select :contact_id,
@@ -13,8 +14,6 @@
     <%= @order.contact.name %>
   </div>
 <% end %>
-
-  <%= f.date_field :date, label: "Order Date:" %>
 
   
   <%= render 'movements/form_direct_payment', f: f %>
@@ -39,5 +38,4 @@
       <%= f.submit 'Save', class: 'btn btn-primary ' %>
     <% end %>
   </div>
-<% end %>
   

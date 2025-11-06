@@ -36,6 +36,9 @@ class Movements::Form < BaseForm
   # PO only
   delegate :store_id, :delivery_loc, :incoterms, :delivery_date,
            to: :model_obj, allow_nil:true
+
+  # Transfer Request Only
+  delegate :trans_to_id, to: :model_obj, allow_nil:true
   
   # for field required star
   validates_presence_of :date

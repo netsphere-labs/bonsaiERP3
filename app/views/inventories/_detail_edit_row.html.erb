@@ -1,5 +1,6 @@
 
 <% # @param lineno 行番号. 1始まり
+   # @param @order order
    # @param detail_obj 詳細行オブジェクト 
    # goods_receipt_pos/_form から呼び出される
   %>
@@ -14,38 +15,50 @@
   </div>
 <% end %>
 
-  <div class="row border-bottom border-primary"
+  <div class="row border-bottom border-primary g-0"
        data-controller="inv-detail-row">
-<%    if detail_obj.item %>
+<% if detail_obj.item %>
+<%   order_det = MovementDetail.where(order_id: @order.id,
+                                      item_id: detail_obj.item_id).take %>
     <div class="col-3">
       <%= df.hidden_field :item_id %>
       <%= detail_obj.item.name %>
+    </div>
+    <div class="col-1">
+      <%= order_det.quantity %>
+    </div>
+    <div class="col-1">
+      <%= order_det.item.unit.symbol %>
+    </div>
+    <div class="col-1">
+      <%= order_det.balance %>
     </div>
     <div class="col-2">
       <%= df.hidden_field :price %>
       <%= detail_obj.price %>
     </div>
-<%    else %>
+<% else %>
     <div class="col-3">
       <%= df.select :item_id,
-                options_from_collection_for_select(Item.all, :id, :name, detail_obj.item_id) %>
+                    options_from_collection_for_select(Item.all, :id, :name,
+                                                       detail_obj.item_id) %>
     </div>
+    <div class="col-1"></div>
+<% # TODO: display item's uom #' %>
+    <div class="col-1"></div>  
+    
+    <div class="col-1"> </div>
     <div class="col-2">
-      <%= df.number_field :price %>
+      <%= df.number_field :price, class:"form-control" %>
     </div>
 <% end %>
-    
-    <div class="col-2">
-<%    if detail_obj.item %>
-      <%= MovementDetail.where(order_id: @order.id, item_id: detail_obj.item_id).take.balance %>
-<%    end %>
-    </div>
-    <div class="col-2">
-      <%= df.number_field :quantity %>
-      <%= df.text_field :uom, value:"uom", disabled:true %>
-    </div>
 
-    <div class="col-3"></div>
+    <div class="col-2">
+      <%= df.number_field :quantity, class:"form-control" %>
+    </div>
+    <div class="col-2">
+      <%= df.number_field :line_total, class:"form-control" %>
+    </div>
   </div>
 <%   end # fields_for %>
 </div>

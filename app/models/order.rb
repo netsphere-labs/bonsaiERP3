@@ -111,7 +111,7 @@ class Order < BusinessRecord
   # PO: 購買入庫から呼び出される
   def update_state!
     qty_received = 0
-    ttl_balance = 0   
+    ttl_balance = 0 # qty
     details.each do |det|
       qty_received += (det.quantity - det.balance)
       ttl_balance += det.balance.abs # 過剰と未受領がありえる

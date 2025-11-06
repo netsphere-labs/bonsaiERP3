@@ -4,9 +4,12 @@
      ['Purchase Orders', purchase_orders_path] ] %>
 
 
-<%= render 'form' %>
-
-
 <p>CIF での引渡し地点と納期の考え方は, 例えば <a href="https://note.com/h_s597/n/n86386eb6fcc9">インコタームズの実務</a>
+
+<%= bootstrap_form_with model: @order, url:{action:"create"},
+                        layout: :horizontal do |f| %>
+  <%= render 'form', f:f %>
+
+<% end %>
 
   

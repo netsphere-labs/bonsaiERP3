@@ -1,9 +1,9 @@
 
-- @page_title = "New Cash/Bank Account"
+:ruby
+  @page_title = "New Cash/Bank Account"
+  @crumbs = [
+    ['Cash / Bank Account', cashes_path] ]
 
-- content_for :links do
-  %ul.breadcrumbs.span6
-    %li #{link_to 'Cash / Bank Account', cashes_path}
 
 = render "cashes/form"
 

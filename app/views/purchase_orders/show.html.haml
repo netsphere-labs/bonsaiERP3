@@ -16,7 +16,7 @@
 
     = button_to 'Void', void_purchase_order_path(@order.id), method: :patch, class: 'btn btn-danger',
       data:{turbo_confirm: 'Esta segur@ de anular el Ingreso?'}  if policy(@order).void?
-
+    = button_to 'Force Close', {action:"force_close"}
     = link_to "Edit...", edit_purchase_order_path(@order.id), class: 'btn'  if policy(@order).update?
 
 

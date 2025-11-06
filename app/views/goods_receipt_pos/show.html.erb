@@ -27,6 +27,9 @@
 <table class="table">
   <% @inv.details.each do |detail| %>
   <tr>
-    <td><%= detail.inspect %>
+    <td><%= detail.item.name %>
+    <td><%= detail.price %>
+    <td><%= detail.quantity %>
+    <td><%= detail.price * detail.quantity %>
   <% end %>
 </table>

@@ -2,13 +2,12 @@
 # inventory transfer requests (order). model = `TransferRequest`
 # 倉庫の入出庫 (2-steps) は `InventoryOutsController`, `InventoryInsController`
 class TransferRequestsController < ApplicationController
-  before_action :set_transfer_request,
-                only: %i[ show edit update destroy ]
+  before_action :set_order, only: %i[ show edit update destroy ]
 
   
   # GET /transfer_requests or /transfer_requests.json
   def index
-    @transfer_requests = TransferRequest.order(date: :desc).page(params[:page])
+    @orders = TransferRequest.order(date: :desc).page(params[:page])
   end
 
   # GET /transfer_requests/1 or /transfer_requests/1.json
@@ -18,7 +17,7 @@ class TransferRequestsController < ApplicationController
   # GET /transfer_requests/new
   def new
     # Use the form object.
-    @transfer_request = Movements::Form.new(TransferRequest.new date: Date.today,
+    @order = Movements::Form.new(TransferRequest.new date: Date.today,
                                                                 state: 'draft')
   end
 
@@ -28,15 +27,15 @@ class TransferRequestsController < ApplicationController
 
   # POST /transfer_requests or /transfer_requests.json
   def create
-    @transfer_request = TransferRequest.new(transfer_request_params)
+    @order = TransferRequest.new(transfer_request_params)
 
     respond_to do |format|
-      if @transfer_request.save
-        format.html { redirect_to @transfer_request, notice: "Transfer request was successfully created." }
-        format.json { render :show, status: :created, location: @transfer_request }
+      if @order.save
+        format.html { redirect_to @order, notice: "Transfer request was successfully created." }
+        format.json { render :show, status: :created, location: @order }
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @transfer_request.errors, status: :unprocessable_entity }
+        format.json { render json: @order.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -44,19 +43,19 @@ class TransferRequestsController < ApplicationController
   # PATCH/PUT /transfer_requests/1 or /transfer_requests/1.json
   def update
     respond_to do |format|
-      if @transfer_request.update(transfer_request_params)
-        format.html { redirect_to @transfer_request, notice: "Transfer request was successfully updated.", status: :see_other }
-        format.json { render :show, status: :ok, location: @transfer_request }
+      if @order.update(transfer_request_params)
+        format.html { redirect_to @order, notice: "Transfer request was successfully updated.", status: :see_other }
+        format.json { render :show, status: :ok, location: @order }
       else
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @transfer_request.errors, status: :unprocessable_entity }
+        format.json { render json: @order.errors, status: :unprocessable_entity }
       end
     end
   end
 
   # DELETE /transfer_requests/1 or /transfer_requests/1.json
   def destroy
-    @transfer_request.destroy!
+    @order.destroy!
 
     respond_to do |format|
       format.html { redirect_to transfer_requests_path, notice: "Transfer request was successfully destroyed.", status: :see_other }
@@ -64,11 +63,12 @@ class TransferRequestsController < ApplicationController
     end
   end
 
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_transfer_request
-      @transfer_request = TransferRequest.find(params.expect(:id))
-    end
+  
+private
+  # Use callbacks to share common setup or constraints between actions.
+  def set_order
+    @order = TransferRequest.find(params.expect(:id))
+  end
 
     # Only allow a list of trusted parameters through.
     def transfer_request_params

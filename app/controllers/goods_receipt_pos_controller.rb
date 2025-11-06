@@ -90,7 +90,7 @@ class GoodsReceiptPosController < ApplicationController
               MovementDetail.new(order_id: @inv.order_id,
                                  item_id: inv_detail.item_id,
                                  price: inv_detail.price) # new price
-          m.balance -= inv_detail.quantity
+          m.balance -= inv_detail.quantity  # not amount
           m.save!
         end
         @inv.order.update_state!
