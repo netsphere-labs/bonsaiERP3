@@ -1,6 +1,6 @@
 
 import { Controller } from "@hotwired/stimulus"
-import ApexCharts from 'apexcharts';
+//import ApexCharts from 'apexcharts';
 
 /*
   actual values (AC)

@@ -16,7 +16,8 @@
 <% end %>
 
   
-  <%= render 'movements/form_direct_payment', f: f %>
+  <%= f.select :currency,
+            options_from_collection_for_select(Currency.all, :code, :to_s, @order.currency) %>
 
   <%= f.date_field :ship_date, label: "Delivery Date:",
                    help:"If FOB and *CIF*, the date on the port of departure" %>
@@ -29,8 +30,9 @@
             options_from_collection_for_select(Store.all, :id, :name, @order.store_id), required:false, label:"Ship To:" %>
 
   <%# Render items %>
-  <%= render 'movements/form_items', f: f  %>
+  <%= render 'orders/form_items', f: f  %>
 
+  
   <div class="form-actions">
     <% if @order.draft? %>
       <%= f.submit 'Save (draft)', class: 'btn btn-primary', name: 'commit_save' %>

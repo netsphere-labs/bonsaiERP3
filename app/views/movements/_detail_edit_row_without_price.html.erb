@@ -1,0 +1,37 @@
+
+<% # @param lineno 行番号. 1始まり
+   # @param detail_obj 詳細行オブジェクト 
+   # sales_orders/_form -> movements/_form_items から呼び出される
+  %>
+
+<div id="<%= "detail_#{lineno}" %>" >
+  <%= fields_for "detail[#{lineno}]", detail_obj do |f| %>
+<% if !detail_obj.errors.empty? %>
+  <div style="color:red">
+<%   detail_obj.errors.full_messages.each do |msg| %>
+    <%= msg %>
+<%   end %>
+  </div>
+<% end %>
+
+<div class="row border-bottom border-primary"
+     data-controller="order-detail-row">
+  <div class="col-3">
+    <%= f.select :item_id,
+                options_from_collection_for_select(Item.all, :id, :name,
+                                                   detail_obj.item_id) %>
+  </div>
+
+  <div class="col-1">
+    <%= f.number_field :quantity %>
+    <%= f.text_field :uom, value:"uom", disabled:true %>
+  </div>
+  <div class="col-4">
+    <%= f.text_field :description %>
+  </div>
+
+</div>  <!-- /.row -->
+
+<%   end  # of fields_for %>
+</div>
+

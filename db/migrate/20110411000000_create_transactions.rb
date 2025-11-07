@@ -29,7 +29,9 @@ class CreateTransactions < ActiveRecord::Migration[5.2]
         # Use Account#amount for total, create alias
         t.decimal :total, precision: 14, scale: 2, null:false, default: 0.0
 
-        t.column :currency, "CHAR(3) NOT NULL"
+        # PO/SO required
+        # trans. not needed
+        t.column :currency, "CHAR(3)"
 
         # Use Account#name for ref_number create alias
         t.string  :bill_number

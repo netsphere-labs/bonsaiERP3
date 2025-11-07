@@ -12,18 +12,13 @@
   <div class="col-3">
       <%= t('views.movements.form_items.item') %>
   </div>
-  <div class="col-1">
-      <%= t('views.movements.form_items.price') %>
-    </div>
+
   <div class="col-1">
       <%= t('views.movements.form_items.quantity') %>
       <br />
       UoM 
   </div>
   <div class="col-4">Description</div>
-  <div class="col-2">
-      <%= t('views.movements.form_items.line_total') %>
-    </div>
 </div>
 
 <% # 手抜いて, フォームをベタ書きする。
@@ -33,7 +28,7 @@
 <% (0.. lines - 1).each do |idx|
      detail_obj = @order.details[idx] ||
                   MovementDetail.new() %>
-  <%= render partial: "movements/detail_edit_row",
+  <%= render partial: "movements/detail_edit_row_without_price",
              locals: {lineno: idx + 1, detail_obj: detail_obj} %>
 <% end %>
   

@@ -8,9 +8,7 @@
     = link_to "New Purchase Order...", new_purchase_order_path, class: 'btn btn-secondary'
 
 
-
-
-= render partial: 'movements/search'
+= render partial: 'orders/search'
 
 
 - paginate_html = paginate @orders

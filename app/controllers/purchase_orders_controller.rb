@@ -35,7 +35,6 @@ class PurchaseOrdersController < ApplicationController
   def new
     # Use the form object.
     # TODO: default currency = partner's one.
-    # TODO: タイムゾーンの考慮?
     @order = Movements::Form.new(PurchaseOrder.new date: Date.today,
                                                    state: 'draft')
     #@order_details = []
@@ -147,6 +146,7 @@ class PurchaseOrdersController < ApplicationController
   
 private
 
+=begin
   # Creates or approves a Expenses::Form instance
     def create_or_approve
       if params[:commit_approve]
@@ -163,6 +163,7 @@ private
         @es.update(expense_params)
       end
     end
+=end
 
     def quick_expense_params
      params.require(:expenses_quick_form).permit(*movement_params.quick_income)

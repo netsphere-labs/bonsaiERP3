@@ -34,6 +34,9 @@ class PurchaseOrder < Order
 
   validates_presence_of :ship_date
 
+  validates_presence_of :currency
+  validates_inclusion_of :currency, in: CURRENCIES.keys
+  
   before_validation :set_delivery_date
 
   

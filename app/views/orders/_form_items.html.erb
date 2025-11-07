@@ -1,0 +1,83 @@
+
+<% # @param @order  order object.
+   # @param f  form object %>
+   
+<h2 class="dark" id="items-header">
+  <%= t('views.movements.form_items.items') %>
+  <span class="n" style="font-size: 13px"><%= link_to t('views.movements.form_items.view_items'), items_path, target: '_blank' %></span>
+</h2>
+
+
+<div class="row text-bg-secondary">
+  <div class="col-3">
+      <%= t('views.movements.form_items.item') %>
+  </div>
+  <div class="col-1">
+      <%= t('views.movements.form_items.price') %>
+    </div>
+  <div class="col-1">
+      <%= t('views.movements.form_items.quantity') %>
+      <br />
+      UoM 
+  </div>
+  <div class="col-4">Description</div>
+  <div class="col-2">
+      <%= t('views.movements.form_items.line_total') %>
+    </div>
+</div>
+
+<% # 手抜いて, フォームをベタ書きする。
+  %>
+
+<% lines = [@order.details.length + 2, 6].max %>
+<% (0.. lines - 1).each do |idx|
+     detail_obj = @order.details[idx] ||
+                  MovementDetail.new() %>
+  <%= render partial: "orders/detail_edit_row",
+             locals: {lineno: idx + 1, detail_obj: detail_obj} %>
+<% end %>
+  
+
+    <div class="span2 r">
+      <label class="visible-phone"><%= t('views.movements.form_items.line_total_label') %></label>
+      <div class="input total-line">
+        {{ detail.subtotal() | decimal }}
+      </div>
+      <span class="space">
+        <a class="dark" href="javascript:;" ng-click="destroy($index)" tabindex="-1">
+          <%= icon_delete %>
+        </a>
+      </span>
+    </div>
+  </li>
+
+  <li class="row-fluid subtotal">
+    <div class="span6">
+      &nbsp;
+      <a id="add-item-link" class="btn" ng-click="addDetail()">
+        <i class="icon-plus-sign"></i>
+        <%= t('views.movements.form_items.new_line') %>
+      </a>
+    </div>
+    <div class="span2">
+      &nbsp;
+    </div>
+    <div class="span2 r">
+      <%= t('views.movements.form_items.subtotal') %>
+      <span class="currency"></span>
+    </div>
+    <div class="span2 r">
+      <span class="subtotal">{{ subtotal() | decimal }}</span>
+      <span class="space">&nbsp;</span>
+    </div>
+  </li>
+
+</ul>
+
+<script type="text/javascript">
+  $(function() {
+    $('.movement-details').on('click', "input[type='number']", function(event) {
+      $(this).select();
+    });
+  })
+</script>

@@ -15,16 +15,16 @@
 
   <%= f.date_field :date, label: "Order Date:" %>
 
-  
-  <%= render 'movements/form_direct_payment', f: f %>
- 
+  <%= f.select :currency,
+            options_from_collection_for_select(Currency.all, :code, :to_s, @order.currency) %>
+
   <%= f.select :store_id,
             options_from_collection_for_select(Store.all, :id, :name, @order.store_id), required:false, label:"Ship From:" %>
 
   <%= f.date_field :ship_date, label: "Ship Date:" %>
   
   <%# Render items %>
-  <%= render 'movements/form_items', f: f %>
+  <%= render 'orders/form_items', f: f %>
 
 
   <div class="form-actions">

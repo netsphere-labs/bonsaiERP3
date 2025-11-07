@@ -49,6 +49,9 @@ class SalesOrder < Order
     r.validates_presence_of :ship_date
   end
 
+  validates_presence_of :currency
+  validates_inclusion_of :currency, in: CURRENCIES.keys
+
   
   def subtotal
     self.income_details.inject(0) {|sum, det| sum += det.total }

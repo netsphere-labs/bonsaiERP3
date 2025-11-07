@@ -1,6 +1,11 @@
 
 <% @page_title = "P/L: #{@date_range.date_start}..#{@date_range.date_end}" %>
 
+<% content_for :head do %>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<% end %>
+
+
 <% content_for :links do %>
   <ul class="breadcrumbs span6">
     <li></li>
