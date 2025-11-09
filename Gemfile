@@ -109,7 +109,13 @@ gem 'haml'
 gem 'kaminari', '~> 1.2' # Pagination
 
 # ActiveRecord Classes to encode in JSON
-gem 'active_model_serializers', '~> 0.10.15' 
+# v0.10.15  2024 Dec
+# コントローラで `render json: ar_obj` と書くと, シリアライザクラスで事前定義し
+# ていたフィールドだけを JSON で送信する.
+#   `app/serializers/` 以下にシリアライザクラスを置く.
+#   配列はどうするの? メソッドによって返したいフィールドが異なる場合は?
+#   -> jbuilder でやったほうがいい
+#gem 'active_model_serializers', '~> 0.10.15' 
 
 #gem 'resubject' # Cool presenter
 
