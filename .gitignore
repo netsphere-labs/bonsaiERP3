@@ -46,3 +46,5 @@ assets.tar.bz2
 *Thumbs.db
 *Thumbs.db:encryptable
 config/app_environment_variables.rb
+
+vendor/bundle
