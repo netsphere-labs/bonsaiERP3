@@ -21,10 +21,10 @@ class CreateInventoryOperations < ActiveRecord::Migration[5.2]
 
         t.string :description, null:false
 
-        t.decimal :total, :precision => 14, :scale => 2, default: 0
+        t.decimal :total, :precision => 14, :scale => 2, null:false, default: 0, comment: "機能通貨建ての金額"
 
         t.integer  :creator_id, null:false
-        t.integer  :transference_id
+        #t.integer  :transference_id
         t.integer  :store_to_id
         
         #t.references :project, type: :integer, foreign_key:true
@@ -34,17 +34,7 @@ class CreateInventoryOperations < ActiveRecord::Migration[5.2]
 
         t.timestamps
       end
-
-      #add_index :inventory_operations, :contact_id
-      #add_index :inventory_operations, :store_id
-      #add_index :inventory_operations, :account_id
-      #add_index :inventory_operations, :project_id
-
-      #add_index :inventory_operations, :date
-      #add_index :inventory_operations, :ref_number
-      #add_index :inventory_operations, :operation
-      #add_index :inventory_operations, :state
-      #add_index :inventory_operations, :has_error
     end
   end
+  
 end

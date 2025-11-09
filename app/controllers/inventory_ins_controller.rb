@@ -7,31 +7,53 @@
 class InventoryInsController < ApplicationController
   before_action :set_store
   
-  before_action :set_inv,
-                only: %i[show edit update destroy confirm void]
+  before_action :set_inv, only: %i[show edit update destroy confirm void]
 
-  #before_action :check_store
 
   def index
+    # `partial` を "shipped" の意味で使う
+    @orders = TransferRequest.where(state:['partial'], trans_to_id: @store.id)
+    # TODO: 品目元帳として表示すべき
     @invs = Inventory.where(operation: 'in', store_id: @store.id)
+                     .page(params[:page])
   end
 
 
   def new
-    @inv = Inventories::In.new(store_id: params[:store_id], date: Date.today,
-                              description: "Ingreso de ítems")
-    2.times { @inv.details.build }
+    @order = TransferRequest.find params[:order_id]
+
+    # form object
+    @inv = Inventories::In.new(
+      Inventory.new store_id: @store.id, order: @order,
+                    date: Date.today,
+                    description: "Ingreso de ítems ##{@order.id}"
+    )
+    @inv.build_details_from_order
   end
 
+  
   def create
-    @inv = Inventories::In.new(inventory_params.merge(store_id: params[:store_id]))
+    @order = TransferRequest.find params[:order_id]
+    # wrap
+    @inv = Inventories::In.new(
+      Inventory.new store_id: @store.id, order: @order,
+                    creator_id: current_user.id,
+                    operation: 'in',
+                    state: 'draft' )
+    @inv.assign inventory_params, params.require(:detail), @store.id
 
-    if @inv.create
-      redirect_to inventory_path(@inv.inventory.id), notice: 'Se ha ingresado correctamente los items.'
-    else
-      @inv.details.build if @inv.details.empty?
-      render :new
+    begin
+      ActiveRecord::Base.transaction do
+        # atomic save in form object
+        @inv.save!
+      end
+    rescue ActiveRecord::RecordInvalid => e
+      render :new, status: :unprocessable_entity
+      return
     end
+
+    redirect_to({action:"show", id: @inv.model_obj},
+                notice: 'Se ha ingresado correctamente los items.' )
   end
 
 
@@ -65,7 +87,7 @@ private
     raise ActiveRecord::RecordNotFound if !@inv
   end
 
-  
+=begin  
   def check_store
     Store.find(params[:store_id])
   rescue
@@ -76,11 +98,12 @@ private
   def build_details
     @inv.details.build if @inv.details.empty?
   end
-
+=end
+  
   def inventory_params
     params.require(:inventories_in).permit(
-      :store_id, :date, :description,
-      inventory_details_attributes: [:item_id, :quantity, :_destroy]
+      :store_id, :date, :description
+      #inventory_details_attributes: [:item_id, :quantity, :_destroy]
     )
   end
 end

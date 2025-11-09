@@ -1,8 +1,9 @@
-# encoding: utf-8
+
 # author: Boris Barroso
 # email: boriscyber@gmail.com
+
+# in-store/warehouse operations
 class StoresController < ApplicationController
-  #before_action :set_date_range, :set_show_params, only: ['show']
   before_action :set_store, only: [:show, :edit, :update, :destroy]
   
   # GET /stores
@@ -13,7 +14,15 @@ class StoresController < ApplicationController
   
   # GET /stores/1
   def show
-    #@store = present Store.find(params[:id])
+    # 各レコードは, `TransferRequest` などの concrete class になってくれる
+    @outbound_orders = Order.where(<<EOS, @store.id)
+type IN ('SalesOrder', 'TransferRequest', 'GoodsReturnRequest') AND
+store_id = ? AND
+(CASE WHEN type = 'SalesOrder' OR type = 'GoodsReturnRequest'
+           THEN state IN ('confirmed', 'partial')
+      WHEN type = 'TransferRequest' THEN state IN ('confirmed')
+ END)
+EOS
   end
 
   # GET /stores/new

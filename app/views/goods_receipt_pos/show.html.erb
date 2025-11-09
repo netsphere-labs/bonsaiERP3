@@ -16,6 +16,10 @@
   </div>
 <% end %>
 
+<em style="color:red">● TODO:</em>
+<ul>
+  <li>受領登録のときの price は外貨建てだが, <code>InventoryDetail</code> クラスは機能通貨建て。ここで換算が必要
+</ul>
 
 <table>
   <tr><th>Account: <td><%= @inv.account.name %>
@@ -25,6 +29,12 @@
 
   
 <table class="table">
+  <tr>
+    <th>Item
+    <th>Price (機能通貨)
+    <th>Qty
+    <th>Amount
+      
   <% @inv.details.each do |detail| %>
   <tr>
     <td><%= detail.item.name %>

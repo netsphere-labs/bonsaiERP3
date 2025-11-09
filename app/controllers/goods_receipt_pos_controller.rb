@@ -75,7 +75,7 @@ class GoodsReceiptPosController < ApplicationController
       # 三分法でやってみる
       amt[detail.item.accounting.purchase_ac_id] =
                         (amt[detail.item.accounting.purchase_ac_id] || 0) +
-                        detail.price * detail.quantity
+                        detail.price * detail.quantity  # ここは機能通貨
     end
 
     begin
@@ -99,10 +99,13 @@ class GoodsReceiptPosController < ApplicationController
         # Dr.
         sum_amt = 0
         amt.each do |pur_ac_id, a|
+          # TODO: 金額は取引通貨でなければならない。が、機能通貨建てになっている
+          #       受入れのときに取引通貨と両方保存が必要
+          
           r = AccountLedger.new date: @inv.date, entry_no: entry_no,
                             operation: 'trans',
                             account_id: pur_ac_id,  # Dr.
-                            amount: a,  # 取引通貨
+                            amount: a,  
                             currency: @inv.order.currency,
                             description: "goods receipt po",
                             creator_id: current_user.id,

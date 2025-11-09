@@ -9,7 +9,7 @@ class SalesOrdersController < ApplicationController
   include Controllers::Print
 
   before_action :set_order,
-                only: [:show, :edit, :update, :destroy, :confirm, :void, :inventory ]
+                only: %i[show edit update destroy confirm void inventory]
 
   
   # GET /incomes

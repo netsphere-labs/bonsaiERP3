@@ -9,7 +9,7 @@
   <%= f.select :store_id,
             options_from_collection_for_select(Store.all, :id, :name, @order.store_id), required:false, label:"Issue From:" %>
 
-  <%= f.date_field :delivery_date, label:"Receiving Date:" %>
+  <%= f.date_field :delivery_date, label:"Receiving Date:", required:true %>
       
   <%= f.select :trans_to_id,
             options_from_collection_for_select(Store.all, :id, :name, @order.trans_to_id), required:false, label:"Receiving Store/WHS:" %>

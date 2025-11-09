@@ -6,6 +6,10 @@ class Order < BusinessRecord
 
   # `delivered` = closed
   # `partial`: PO = Partially Received, SO = Partially Fulfilled
+  # TODO: `partial` は, 納品スケジュール表が必要
+  #
+  # transfer: `partial` を "shipped" の意味で使う。社内なので、異なる数量を
+  #           出荷したり、本当に分割することはしない (MUST NOT)
   STATES = %w(draft confirmed partial delivered void).freeze
 
   # Callbacks
@@ -114,7 +118,7 @@ class Order < BusinessRecord
     ttl_balance = 0 # qty
     details.each do |det|
       qty_received += (det.quantity - det.balance)
-      ttl_balance += det.balance.abs # 過剰と未受領がありえる
+      ttl_balance += det.balance >= 0 ? det.balance : 0 # 過剰はそのまま, 未受領だけ加算
     end
 
     if ttl_balance == 0

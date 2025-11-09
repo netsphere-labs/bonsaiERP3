@@ -1,5 +1,25 @@
-<h1>transfer_request</h1>
+
+<% @page_title = "Transfer Request ##{@order.id}" %>
+<% @crumbs = [
+     ['Inventory Transfer Requests', transfer_requests_path] ] %>
+
+<% content_for :links do %>
+  <span class="<%= @order.display_state %>"><%= @order.state %></span>
+
+  <div class="btn-group" role="group">
+    <% if policy(@order).confirm? %>
+      <%= button_to 'Confirm', confirm_transfer_request_path(@order.id), class: 'btn btn-success', method: :patch   %>
+    <% end %>
+    <%= link_to 'Editar', edit_transfer_request_path(@order), :class => 'edit' %>
+  </div>
+<% end %>
+
+<table>
+  <tr><th>Transfer Request Date: <td><%= @order.date %>
+  <tr><th>Goods Issue Date: <td><%= @order.ship_date %>
+  <tr><th>Issue From: <td><%= @order.store.name %>
+  <tr><th>Receiving Date: <td><%= @order.delivery_date %>
+  <tr><th>Receiving Store/WHS: <td><%= @order.trans_to.name %>
+</table>
 
 
-<%= link_to 'Editar', edit_transfer_request_path(@transfer_request), :class => 'edit' %>
-<%= link_to 'Lista', transfer_requests_path, :class => 'list' %>

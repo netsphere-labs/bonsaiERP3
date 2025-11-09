@@ -171,7 +171,12 @@ end
 ######################################################################
 # Inventory
 
-resources :transfer_requests
+resources :transfer_requests do
+  member do
+    patch :confirm
+    patch :void
+  end
+end
 
 # In-Store Operations
 resources :stores do

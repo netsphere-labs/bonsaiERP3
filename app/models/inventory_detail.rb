@@ -21,7 +21,7 @@ class InventoryDetail < ApplicationRecord
 
   validates_presence_of :movement_type
 
-  # 単価
+  # 単価 (機能通貨建て)
   validates_presence_of :price
 
   #● TODO: 追加 valuation

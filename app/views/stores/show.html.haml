@@ -23,11 +23,13 @@
       .span8
         = nl2br @store.address
 
+%em{style:"color:red"}TODO:
+%ul
+  %li <code>Store</code> に店舗フラグを持たせる
 
 
 - if @store.active
   %h2 In-Store Operations
-
   %ul
     %li In-Store Sales w/o order  ● TODO: impl.
 
@@ -53,15 +55,9 @@
     %li= link_to "入出庫伝票", inventories_path 
     %li= "/stocks/    Stock"
 
+  %h3 Orders for Outbound Delivery
 
-%hr
-
-%ul#tabs.nav.nav-pills.fs150
-  %li
-    %a(href='#items-tab' data-toggle='tab') Items
-
-  %li
-    %a(href='#operations-tab' data-toggle='tab') Operaciones
+  = render 'orders_for_outbound'
 
 
 

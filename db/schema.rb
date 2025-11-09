@@ -188,9 +188,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_26_084238) do
     t.integer "store_id", null: false
     t.integer "account_id"
     t.string "description", null: false
-    t.decimal "total", precision: 14, scale: 2, default: "0.0"
+    t.decimal "total", precision: 14, scale: 2, default: "0.0", null: false, comment: "機能通貨建ての金額"
     t.integer "creator_id", null: false
-    t.integer "transference_id"
     t.integer "store_to_id"
     t.boolean "has_error", default: false, null: false
     t.jsonb "error_messages"
@@ -206,7 +205,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_26_084238) do
     t.integer "inventory_id", null: false
     t.integer "movement_type", limit: 2, null: false
     t.integer "item_id", null: false
-    t.decimal "price", precision: 14, scale: 2, default: "0.0", null: false
+    t.decimal "price", precision: 14, scale: 2, default: "0.0", null: false, comment: "機能通貨建ての単価"
     t.integer "store_id", null: false
     t.decimal "quantity", precision: 14, scale: 2, default: "0.0", null: false
     t.datetime "created_at", precision: nil, null: false
@@ -306,7 +305,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_26_084238) do
     t.integer "prod_item_id"
     t.decimal "gross_total", precision: 14, scale: 2, default: "0.0"
     t.decimal "total", precision: 14, scale: 2, default: "0.0", null: false
-    t.string "currency", limit: 3, null: false
+    t.string "currency", limit: 3
     t.string "bill_number"
     t.decimal "original_total", precision: 14, scale: 2, default: "0.0"
     t.decimal "balance_inventory", precision: 14, scale: 2, default: "0.0"

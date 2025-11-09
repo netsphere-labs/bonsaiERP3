@@ -1,0 +1,20 @@
+
+
+<% @page_title = "Transfer in 2 steps - out" %>
+
+<table class="table">
+  <tr>
+    <th>Request Date
+    <th>Issue Date
+    <th>Receiving Date
+    <th>Transfer To
+      
+  <% @orders.each do |order| %>
+  <tr>
+    <td><%= order.date %>
+    <td><%= order.ship_date %>
+    <td><%= order.delivery_date %>
+    <td><%= order.trans_to.name %>
+    <td><%= link_to "あたらしい転送出庫...", {action:"new", order_id:order.id} %>
+  <% end %>
+</table>

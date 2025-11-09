@@ -5,6 +5,8 @@
     ["Sales Orders", sales_orders_path] ]
 
 - content_for :links do
+  %span{class: @order.display_state}= @order.state
+
   %div.btn-group{role:"group"}
     = button_to 'Confirm', confirm_sales_order_path(@order), method: :patch, class: 'btn btn-success'  if policy(@order).confirm?
     -# Null form
@@ -17,22 +19,15 @@
 
 
 .row-fluid
-  .span6
-    %h1.ib
-      %strong(title='Código ingreso, Ingreso-Año-Número' data-toggle='tooltip')= @income
-      %small.state(title='Status' data-toggle='tooltip')= @order.state
+  %h4.ib
+    = link_to @order.contact, partner_path(@order.contact.id), title: 'Contacto', data: { toggle: 'tooltip' }
 
-    %h4.ib
-      = link_to @order.contact, partner_path(@order.contact.id), title: 'Contacto', data: { toggle: 'tooltip' }
 
-    .clearfix
-    -# %tagsfor(tag_ids="#{@income.tag_ids}" id="#{@income.id}")
-
-    %h5.n.ib
-      %span.muted Fecha:
-      %i= @order.date
-      = render_if @order.delivery_date do
-        = @order.delivery_date
+  %h5.n.ib
+    %span.muted Fecha:
+    %i= @order.date
+    = render_if @order.delivery_date do
+      = @order.delivery_date
 
 
 
@@ -55,8 +50,10 @@
     -#= link_to @order.project, @income.project if @income.project
     .clearfix
 
-%h2
-  Items
+%div.row
+  %div.col-3 Ship From:
+  %div.col-3= @order.store.name
+  %div.col-3= @order.ship_date
 
 = render "orders/items"
 

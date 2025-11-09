@@ -84,9 +84,14 @@ class TransferRequestsController < ApplicationController
 
   # POST
   def confirm
-    
+    authorize @order
+
+    @order.confirm! current_user
+    @order.save!
+    redirect_to transfer_request_path(@order)
   end
 
+  
   # POST
   def void
   end
