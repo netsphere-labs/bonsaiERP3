@@ -8,10 +8,12 @@ ruby '>= 3.1.0'
 gem 'rails', '~> 6.1.7'
 
 gem 'bootsnap', '~> 1.7.0', require: false
+
 # bootsnap が listen に依存
 gem 'listen', '~> 3.4.1' # Required for Rails 6.0 file watcher
-# active_support が logger に依存. logger 1.7.0 では動かない.
-# 対策: uninitialized constant ActiveSupport::LoggerThreadSafeLevel::Logger (NameError)
+
+# active_support が logger 1.4 に依存 (logger 1.7.0 では動かない).
+# Error: uninitialized constant ActiveSupport::LoggerThreadSafeLevel::Logger (NameError)
 gem 'logger', '~> 1.4.4'
 gem 'concurrent-ruby', '~> 1.1.10'  # Pin to avoid Logger issues with newer versions
 
