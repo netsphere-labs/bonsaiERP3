@@ -395,7 +395,7 @@ es:
     exchange_rate: 'tipo de cambio'
     tax_id: 'impuesto'
     description: 'descripción'
-    inventory: 'Inventario'
+    no_inventory: 'Inventario'
     tax_in_out: 'Impuesto por dentro'
     tax_percentage: 'Porcentaje impuesto'
 

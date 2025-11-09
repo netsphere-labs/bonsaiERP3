@@ -68,12 +68,11 @@ class ExpensesController < ApplicationController
   # PUT /expenses/:id/approve
   # Method that nulls or enables inventory
   def inventory
-    @expense.inventory = !@expense.inventory?
-    @expense.extras = @expense.extras.symbolize_keys
+    @expense.no_inventory = params[:no_inventory]
 
     if @expense.save
-      txt = @expense.inventory? ? 'activo' : 'desactivó'
-      flash[:notice] = "Se #{txt} los inventarios."
+      txt = @expense.no_inventory? ? 'desactivo' : 'activo'
+      flash[:notice] = "Se #{txt} los inventarios"
     else
       flash[:error] = 'Exisition un error'
     end
@@ -88,6 +87,16 @@ class ExpensesController < ApplicationController
     else
       redirect_to expense_path(@expense), error: 'Existio un error al anular el egreso.'
     end
+  end
+
+  # GET /incomes/:id/ledgers
+  def ledgers
+    @expense = present Expense.find(params[:id])
+  end
+
+  # GET /incomes/:id/inventories
+  def inventories
+    @expense = Expense.find(params[:id])
   end
 
   private
