@@ -1,4 +1,4 @@
-class UpdateMoneyStoreToHstore < ActiveRecord::Migration
+class UpdateMoneyStoreToHstore < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       # Bank

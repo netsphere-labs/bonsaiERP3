@@ -1,4 +1,4 @@
-class AddTransactionsNoInventory < ActiveRecord::Migration
+class AddTransactionsNoInventory < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       change_table :transactions do |t|

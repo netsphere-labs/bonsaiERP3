@@ -1,4 +1,4 @@
-class AddOrganisationsActiveInventory < ActiveRecord::Migration
+class AddOrganisationsActiveInventory < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas only: 'common' do
       change_table :organisations do |t|

@@ -1,4 +1,4 @@
-class CreateUserChanges < ActiveRecord::Migration
+class CreateUserChanges < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
 

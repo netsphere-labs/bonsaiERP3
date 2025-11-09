@@ -1,4 +1,4 @@
-class RenameInventoryOperations < ActiveRecord::Migration
+class RenameInventoryOperations < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       remove_index :inventory_operation_details, :inventory_operation_id

@@ -4,7 +4,7 @@
 class Organisation < ActiveRecord::Base
 
   DATA_PATH = "db/defaults"
-  self.table_name = 'common.organisations'
+  self.table_name = 'public.organisations'
 
   ########################################
   # Attributes
@@ -33,7 +33,8 @@ class Organisation < ActiveRecord::Base
   validates :tenant, uniqueness: true, format: { with: /\A[a-z0-9]+\z/ }, length: { in: 3...15 }
 
   validate  :valid_tenant_not_in_list
-  validates_email_format_of :email, if: 'email.present?', message: I18n.t('errors.messages.email')
+  validates_email_format_of :email, if: -> r {r.email.present?},
+                            message: I18n.t('errors.messages.email')
 
   with_options if: :persisted? do |val|
     val.validates_presence_of :country_code, :currency

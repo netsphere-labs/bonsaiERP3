@@ -1,4 +1,4 @@
-class RenameTransactionDetails < ActiveRecord::Migration
+class RenameTransactionDetails < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       rename_table :transaction_details, :movement_details

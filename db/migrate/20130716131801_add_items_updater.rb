@@ -1,4 +1,4 @@
-class AddItemsUpdater < ActiveRecord::Migration
+class AddItemsUpdater < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       change_table :items do |t|

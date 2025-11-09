@@ -1,4 +1,4 @@
-class UpdateAccountsDueDateExtrasIndex < ActiveRecord::Migration
+class UpdateAccountsDueDateExtrasIndex < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       execute 'UPDATE accounts a SET due_date = t.due_date FROM transactions t WHERE t.account_id = a.id'

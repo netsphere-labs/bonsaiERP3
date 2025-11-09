@@ -1,4 +1,4 @@
-class CreateHistories < ActiveRecord::Migration
+class CreateHistories < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       create_table :histories do |t|

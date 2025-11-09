@@ -16,6 +16,11 @@ source 'https://rubygems.org'
 #ruby '2.1.0'
 gem 'rails', '~> 6.1.7'
 
+# active_support が logger 1.4 に依存 (logger 1.7.0 では動かない).
+# Error: uninitialized constant ActiveSupport::LoggerThreadSafeLevel::Logger (NameError)
+gem 'logger', '~> 1.4.4'
+gem 'concurrent-ruby', '~> 1.1.10'  # Pin to avoid Logger issues with newer versions
+
 # Assets
 # sass-rails 4.0.5 depends railties < 5.0, >= 4.0.0
 gem 'sass-rails' , '~> 6.0'

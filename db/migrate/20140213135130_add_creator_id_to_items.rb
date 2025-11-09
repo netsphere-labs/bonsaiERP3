@@ -1,4 +1,4 @@
-class AddCreatorIdToItems < ActiveRecord::Migration
+class AddCreatorIdToItems < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       change_table :items do |t|

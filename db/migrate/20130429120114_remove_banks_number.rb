@@ -1,4 +1,4 @@
-class RemoveBanksNumber < ActiveRecord::Migration
+class RemoveBanksNumber < ActiveRecord::Migration[5.2]
   def up
     Organisation.pluck(:tenant).each do |tenant|
       if PgTools.schema_exists? tenant

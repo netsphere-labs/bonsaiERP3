@@ -1,4 +1,4 @@
-class RemoveUserChanges < ActiveRecord::Migration
+class RemoveUserChanges < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       drop_table :user_changes

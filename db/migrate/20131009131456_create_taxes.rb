@@ -1,4 +1,4 @@
-class CreateTaxes < ActiveRecord::Migration
+class CreateTaxes < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       create_table :taxes do |t|

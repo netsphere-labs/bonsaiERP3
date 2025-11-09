@@ -3,7 +3,7 @@
 # email: boriscyber@gmail.com
 class Link < ActiveRecord::Base
 
-  self.table_name = "common.links"
+  self.table_name = "public.links"
 
   belongs_to :organisation, inverse_of: :links
   belongs_to :user, inverse_of: :active_links

@@ -1,4 +1,4 @@
-class AddHistoriesKlassType < ActiveRecord::Migration
+class AddHistoriesKlassType < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       add_column :histories, :klass_type, :string

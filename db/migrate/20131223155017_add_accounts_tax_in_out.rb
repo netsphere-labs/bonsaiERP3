@@ -1,4 +1,4 @@
-class AddAccountsTaxInOut < ActiveRecord::Migration
+class AddAccountsTaxInOut < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       change_table :accounts do |t|

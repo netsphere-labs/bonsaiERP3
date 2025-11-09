@@ -1,4 +1,4 @@
-class AddAccountsHstoreExtras < ActiveRecord::Migration
+class AddAccountsHstoreExtras < ActiveRecord::Migration[5.2]
   def up
     PgTools.change_schema 'public'
     PgTools.all_schemas.each do |schema|

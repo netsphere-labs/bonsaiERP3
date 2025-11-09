@@ -30,6 +30,9 @@ module PgTools
   end
 
   def change_schema(schema_name)
+    # 単に無視する
+    return
+    
     connection.schema_search_path = [schema_name, 'public'].join(', ')
   end
   alias_method :change_tenant, :change_schema
@@ -48,6 +51,9 @@ module PgTools
   end
 
   def create_schema(schema_name)
+    # 簡単のため, スキーマを単に無視する
+    return 
+    
     raise "#{schema_name} already exists" if schema_exists?(schema_name)
 
     ActiveRecord::Base.logger.info "Create #{schema_name}"
@@ -189,6 +195,9 @@ BASH
   end
 
   def all_schemas
+    return ['public']
+    # 以下の SQL は、スキーマ名の取得として単におかしい
+=begin
     res = connection.select_values <<-SQL
     SELECT * FROM pg_namespace
     WHERE nspname NOT IN ('information_schema') AND nspname NOT LIKE 'pg%'
@@ -196,7 +205,8 @@ BASH
     pub = res.delete('public')
     res << 'public'  if pub
 
-    res
+   res
+=end
   end
 
   def current_schema
@@ -221,8 +231,9 @@ BASH
       puts "Working on schema '#{schema}'"
 
       change_schema schema
-      yield schema
+      #yield schema
     end
+    yield 'public'   # スキーマは一つだけ
     reset_schema_path
   end
 

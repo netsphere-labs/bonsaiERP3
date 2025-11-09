@@ -1,4 +1,4 @@
-class AddUsersOldEmails < ActiveRecord::Migration
+class AddUsersOldEmails < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas %w(common public) do
       add_column :users, :old_emails, :text, array: true, default: []

@@ -1,4 +1,4 @@
-class AddAccountsCreatorApproverUpdater < ActiveRecord::Migration
+class AddAccountsCreatorApproverUpdater < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do |t|
       change_table :accounts do |t|

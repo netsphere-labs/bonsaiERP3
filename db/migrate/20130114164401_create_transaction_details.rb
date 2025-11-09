@@ -1,4 +1,4 @@
-class CreateTransactionDetails < ActiveRecord::Migration
+class CreateTransactionDetails < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       create_table :transaction_details do |t|

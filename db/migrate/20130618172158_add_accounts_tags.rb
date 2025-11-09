@@ -1,4 +1,4 @@
-class AddAccountsTags < ActiveRecord::Migration
+class AddAccountsTags < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       add_column :accounts, :tag_ids, :integer, array: true, default: []

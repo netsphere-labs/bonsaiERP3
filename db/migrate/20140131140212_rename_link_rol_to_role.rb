@@ -1,4 +1,4 @@
-class RenameLinkRolToRole < ActiveRecord::Migration
+class RenameLinkRolToRole < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas only: ['common', 'public'] do
       rename_column :links, :rol, :role

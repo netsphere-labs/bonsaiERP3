@@ -1,4 +1,4 @@
-class CreateOrganisations < ActiveRecord::Migration
+class CreateOrganisations < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas only: ['common', 'public'] do
       create_table :organisations do |t|

@@ -1,4 +1,4 @@
-class CreateLinks < ActiveRecord::Migration
+class CreateLinks < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas only: ['common', 'public'] do
       create_table :links do |t|

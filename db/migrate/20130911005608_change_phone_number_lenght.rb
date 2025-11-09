@@ -1,4 +1,4 @@
-class ChangePhoneNumberLenght < ActiveRecord::Migration
+class ChangePhoneNumberLenght < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas only: ['common', 'public'] do
       change_column :organisations, :phone, :string, limit: 40

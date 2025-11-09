@@ -1,4 +1,4 @@
-class CreateMoneyStores < ActiveRecord::Migration
+class CreateMoneyStores < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       create_table :money_stores do |t|

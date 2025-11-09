@@ -1,4 +1,4 @@
-class CreateProjects < ActiveRecord::Migration
+class CreateProjects < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
 

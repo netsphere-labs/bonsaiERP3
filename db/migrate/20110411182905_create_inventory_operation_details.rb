@@ -1,4 +1,4 @@
-class CreateInventoryOperationDetails < ActiveRecord::Migration
+class CreateInventoryOperationDetails < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       create_table :inventory_operation_details do |t|

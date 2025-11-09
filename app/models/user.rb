@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 class User < ActiveRecord::Base
-  self.table_name = 'common.users'
+  self.table_name = 'public.users'
 
   # Includes
   include Models::User::Authentication
