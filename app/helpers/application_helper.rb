@@ -117,8 +117,8 @@ module ApplicationHelper
 
   # Get file with exchange_rates
   def set_exchange_rates
-    file1 = Rails.root.join('public', 'exchange_rates.json')
-    file2 = Rails.root.join('public', 'backup_rates.json')
+    file1 = Rails.root.join('lib', 'exchange_rates.json')
+    file2 = Rails.root.join('lib', 'backup_rates.json')
 
     if not(File.exist?(file1)) || (File.ctime(file1) < Time.now - 4.hours)
       begin

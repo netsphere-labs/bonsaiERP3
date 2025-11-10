@@ -51,7 +51,7 @@ gem 'simple_form'  #, '~> 3.5'
 
 gem 'haml', '>= 4.0.5'
 gem 'kaminari' # Pagination
-gem 'bcrypt-ruby', require: 'bcrypt'
+gem 'bcrypt', require: 'bcrypt'
 
 # ActiveRecord Classes to encode in JSON
 gem 'active_model_serializers', '~> 0.9.13' 
