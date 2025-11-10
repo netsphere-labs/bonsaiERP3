@@ -120,7 +120,7 @@ module ApplicationHelper
     file1 = Rails.root.join('public', 'exchange_rates.json')
     file2 = Rails.root.join('public', 'backup_rates.json')
 
-    if not(File.exists?(file1)) || (File.ctime(file1) < Time.now - 4.hours)
+    if not(File.exist?(file1)) || (File.ctime(file1) < Time.now - 4.hours)
       begin
         resp = ''
         Timeout.timeout(4) { resp = %x[curl http://openexchangerates.org/api/latest.json?app_id=e406e4769281493797fcfd45047773d5] }

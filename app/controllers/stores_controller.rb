@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 class StoresController < ApplicationController
-  before_filter :set_date_range, :set_show_params, only: ['show']
+  before_action :set_date_range, :set_show_params, only: ['show']
 
   # GET /stores
   # GET /stores.xml

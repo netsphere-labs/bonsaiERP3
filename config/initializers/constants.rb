@@ -3,7 +3,8 @@ DOMAIN = ENV['DOMAIN']
 
 USE_SUBDOMAIN = false
 
-DEV_DOMAIN = 'localhost.bom'
+DEV_DOMAIN = 'localhost'
+
 APP_NAME = 'bonsaiERP'
 ALLOW_REGISTRATIONS = true
 INPUT_SIZE=45

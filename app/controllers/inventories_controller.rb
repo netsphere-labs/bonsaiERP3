@@ -4,7 +4,7 @@
 class InventoriesController < ApplicationController
   include Controllers::Print
 
-  before_filter :set_date_range, only: [:index]
+  before_action :set_date_range, only: [:index]
 
   # GET /inventories
   def index

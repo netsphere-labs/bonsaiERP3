@@ -1,4 +1,4 @@
-@import compass
+/* @import compass */
 
 @mixin gradient($top, $bottom)
   background-color: $bottom
@@ -18,11 +18,11 @@
   //border: solid 2px darken($background, 3%)
   border-top: 2px solid 1px darken($background, 10%)
 
-  +border-radius(4px)
-  +box-shadow(0 1px 2px rgba(0,0,0,.2))
-  +text-shadow(0 1px 1px rgba(0,0,0,.3))
+  //+border-radius(4px)
+  //+box-shadow(0 1px 2px rgba(0,0,0,.2))
+  //+text-shadow(0 1px 1px rgba(0,0,0,.3))
   background-color: $background // Older IE
-  +background-image( linear-gradient(lighten($background, 13%), $background) )
+  //+background-image( linear-gradient(lighten($background, 13%), $background) )
 
   &:hover
     text-decoration: none
@@ -81,11 +81,11 @@ input[type="file"] > input[type="button"]
   //@height
   text-align: center
 
-  +border-radius(5px)
-  +box-shadow(rgba(255, 255, 255, 0.2) 0 1px 0 0 inset, rgba(0, 0, 0, .5) 1px 1px 10px 0, rgba(0, 0, 0, .4) -1px -1px 0 0 inset)
+  //+border-radius(5px)
+  //+box-shadow(rgba(255, 255, 255, 0.2) 0 1px 0 0 inset, rgba(0, 0, 0, .5) 1px 1px 10px 0, rgba(0, 0, 0, .4) -1px -1px 0 0 inset)
   background: -webkit-linear-gradient(top, #37352e, #2e2d26)
   background: -moz-linear-gradient(top, #37352e, #2e2d26)
-  +text-shadow(0 1px rgba(0,0,0,0.5) )
+  //+text-shadow(0 1px rgba(0,0,0,0.5) )
 
   transition: all 10ms
   &:hover
@@ -94,7 +94,7 @@ input[type="file"] > input[type="button"]
 
 .push-button:active
   background: linear-gradient(top, #2c2a23, #323028)
-  +box-shadow(0 -1px 0 0 rgba(255, 255, 255, .2) inset, 0 1px 10px 0 rgba(0, 0, 0, .4) inset)
+  //+box-shadow(0 -1px 0 0 rgba(255, 255, 255, .2) inset, 0 1px 10px 0 rgba(0, 0, 0, .4) inset)
   color: #686662
   opacity: .9
-  +text-shadow(0 -1px rgba(0,0,0,.5))
+  //+text-shadow(0 -1px rgba(0,0,0,.5))

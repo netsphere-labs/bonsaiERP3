@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 class ExpensesInventoryOutsController < ApplicationController
-  before_filter :set_store_and_expense
+  before_action :set_store_and_expense
 
   # GET
   # /expenses_inventory_ins/new?store_id=:store_id&expense_id=:expense_id

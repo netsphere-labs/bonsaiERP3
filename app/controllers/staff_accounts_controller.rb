@@ -1,5 +1,5 @@
 class StaffAccountsController < ApplicationController
-  before_filter :set_staff_account, only: [:show, :edit, :update, :destroy]
+  before_action :set_staff_account, only: [:show, :edit, :update, :destroy]
 
   include Controllers::Money
 

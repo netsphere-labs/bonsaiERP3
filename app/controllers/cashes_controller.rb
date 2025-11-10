@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 class CashesController < ApplicationController
-  before_filter :set_cash, only: [:show, :edit, :update, :destroy]
+  before_action :set_cash, only: [:show, :edit, :update, :destroy]
 
   include Controllers::Money
 

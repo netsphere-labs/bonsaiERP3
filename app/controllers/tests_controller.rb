@@ -1,5 +1,5 @@
 class TestsController < ApplicationController
-  skip_before_filter :set_tenant, :check_authorization!
+  skip_before_action :set_tenant, :check_authorization!
 
   def index
     params[:view] ||= 'email'

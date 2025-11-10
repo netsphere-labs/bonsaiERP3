@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 class BanksController < ApplicationController
-  before_filter :find_bank, only: [:show, :edit, :update, :destroy]
+  before_action :find_bank, only: [:show, :edit, :update, :destroy]
 
   # GET /banks
   def index

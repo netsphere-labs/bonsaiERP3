@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 class InventoryInsController < ApplicationController
-  before_filter :check_store
+  before_action :check_store
 
   def new
     @inv = Inventories::In.new(store_id: params[:store_id], date: Date.today,

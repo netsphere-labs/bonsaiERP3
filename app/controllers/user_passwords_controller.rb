@@ -1,7 +1,7 @@
 # encoding: utf-8
 class UserPasswordsController < ApplicationController
-  before_filter :check_change_password!, only: [:new, :create]
-  before_filter :check_change_default_password!, only: [:new_default, :create_default]
+  before_action :check_change_password!, only: [:new, :create]
+  before_action :check_change_default_password!, only: [:new_default, :create_default]
 
   # GET user_passwords/new
   def new

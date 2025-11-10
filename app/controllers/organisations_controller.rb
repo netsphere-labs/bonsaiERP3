@@ -2,8 +2,8 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 class OrganisationsController < ApplicationController
-  before_filter :check_tenant_creation, :check_user_master_account
-  skip_before_filter :set_tenant, :check_authorization!
+  before_action :check_tenant_creation, :check_user_master_account
+  skip_before_action :set_tenant, :check_authorization!
 
   # GET /organisations/new
   def new

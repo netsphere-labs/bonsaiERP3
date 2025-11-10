@@ -1,7 +1,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 class InventoryTransferencesController < ApplicationController
-  before_filter :set_store, only: [:new, :create]
+  before_action :set_store, only: [:new, :create]
 
   # GET /inventory_transferences/new
   def new

@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 class TransferencesController < ApplicationController
-  before_filter :find_account
+  before_action :find_account
 
   # GET /transferences?account_id
   def new

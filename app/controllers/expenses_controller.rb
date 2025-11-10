@@ -4,7 +4,7 @@
 class ExpensesController < ApplicationController
   include Controllers::TagSearch
 
-  before_filter :set_expense, only: [:approve, :null, :inventory]
+  before_action :set_expense, only: [:approve, :null, :inventory]
 
   # GET /expenses
   def index

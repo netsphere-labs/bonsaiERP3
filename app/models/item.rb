@@ -24,7 +24,7 @@ class Item < ActiveRecord::Base
   ##########################################
   # Validations
   validates_presence_of   :name, :unit, :unit_id
-  validates_uniqueness_of :code , if: "code.present?"
+  validates_uniqueness_of :code , if: -> r {r.code.present?}
   validates_uniqueness_of :name
 
   validates :price, numericality: { greater_than_or_equal_to: 0 }

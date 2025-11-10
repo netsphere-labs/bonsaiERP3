@@ -4,8 +4,8 @@
 class ResetPasswordsController < ApplicationController
   layout 'sessions'
 
-  skip_before_filter :set_tenant, :check_authorization!
-  before_filter :find_user_or_redirect!, only: [:edit, :update]
+  skip_before_action :set_tenant, :check_authorization!
+  before_action :find_user_or_redirect!, only: [:edit, :update]
 
   def index
   end

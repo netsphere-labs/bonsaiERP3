@@ -2,9 +2,9 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 class RegistrationsController < ApplicationController
-  skip_before_filter :set_tenant, :check_authorization!
-  before_filter :check_allow_registration
-  before_filter :check_registration_tenant, only: ['show']
+  skip_before_action :set_tenant, :check_authorization!
+  before_action :check_allow_registration
+  before_action :check_registration_tenant, only: ['show']
 
   layout 'sessions'
 

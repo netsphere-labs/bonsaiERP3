@@ -28,6 +28,9 @@ gem 'coffee-rails' , '~> 5.0'
 gem 'uglifier' #    , '>= 2.3.0'
 #gem 'jquery-rails'
 
+# sprockets v4 error
+gem 'sprockets', '~> 3.7.5'
+
 # gem 'turbo-sprockets-rails3'# Speed assets:precompile
 
 # ruby 3.x で動かない
@@ -42,7 +45,10 @@ gem 'virtus' # Model generation in simple way
 # 類似に "baby_squeel" gem があるが、書き方が異なる.
 #gem 'squeel' # Better SQL queries
 
-gem 'simple_form'
+# v5, v4: undefined method `default_input_size' for module SimpleForm
+# v3: depends actionpack < 5.2, > 4
+gem 'simple_form'  #, '~> 3.5'
+
 gem 'haml', '>= 4.0.5'
 gem 'kaminari' # Pagination
 gem 'bcrypt-ruby', require: 'bcrypt'
@@ -52,7 +58,9 @@ gem 'active_model_serializers', '~> 0.9.13'
 
 gem 'resubject' # Cool presenter
 
-gem 'validates_email_format_of', '~> 1.5.3'
+# v1.8 2024年4月
+gem 'validates_email_format_of' #, '~> 1.5.3'
+
 gem 'validates_lengths_from_database'
 
 group :production do
@@ -88,7 +96,10 @@ end
   gem 'capybara'
 group :test do
   gem 'database_cleaner'
-  gem 'factory_girl_rails', '~> 4.3.0'
+  
+  # ruby3 error: undefined method `exists?' for class File (NoMethodError)
+  #gem 'factory_girl_rails', '~> 4.3.0'
+  
   gem 'spork', '1.0.0rc4' # Newer version gives error with squeel
   gem 'shoulda-matchers' #, '1.4.2'
   gem 'valid_attribute'

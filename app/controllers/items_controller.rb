@@ -5,7 +5,7 @@ class ItemsController < ApplicationController
   include Controllers::TagSearch
   respond_to :html, :json
 
-  before_filter :set_item, only: [:show, :edit, :update, :destroy]
+  before_action :set_item, only: [:show, :edit, :update, :destroy]
 
   # GET /items
   def index

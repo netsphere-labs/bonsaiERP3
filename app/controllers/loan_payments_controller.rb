@@ -1,5 +1,5 @@
 class LoanPaymentsController < ApplicationController
-  before_filter :check_loan!
+  before_action :check_loan!
 
 
   #####################################

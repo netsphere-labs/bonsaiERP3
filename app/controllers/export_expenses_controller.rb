@@ -4,7 +4,7 @@
 class ExportExpensesController < ApplicationController
   include ::Controllers::DateRange
 
-  before_filter :set_date_range
+  before_action :set_date_range
 
   # GET /export_incomes
   def index

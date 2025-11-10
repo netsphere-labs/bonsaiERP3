@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 class IncomesInventoryOutsController < ApplicationController
-  before_filter :set_store_and_income
+  before_action :set_store_and_income
 
   # GET
   # /incomes_inventory_ins/new?store_id=:store_id&income_id=:income_id

@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 class ContactsController < ApplicationController
-  before_filter :find_contact, only: [:show, :edit, :update, :destroy, :incomes, :expenses]
+  before_action :find_contact, only: [:show, :edit, :update, :destroy, :incomes, :expenses]
 
   # GET /contacts
   def index

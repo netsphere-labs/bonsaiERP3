@@ -3,7 +3,7 @@
 # email: boriscyber@gmail.com
 # Devolutions of inventory for Income
 class IncomesInventoryInsController < ApplicationController
-  before_filter :set_store_and_income
+  before_action :set_store_and_income
 
   # GET
   # /incomes_inventory_ins/new?store_id=:store_id&income_id=:income_id

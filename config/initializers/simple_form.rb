@@ -104,3 +104,10 @@ SimpleForm.setup do |config|
   # When false, do not use translations for labels, hints or placeholders.
   # config.translate = true
 end
+
+# for compat.
+module SimpleForm
+  def self.default_input_size
+    return nil
+  end
+end
