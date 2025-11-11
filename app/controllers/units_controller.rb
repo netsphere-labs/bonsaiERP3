@@ -2,17 +2,16 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 class UnitsController < ApplicationController
-  respond_to :html, :json
+  #respond_to :html, :json
 
   # GET /units
   def index
-    @units = Unit.scoped
+    @units = Unit.all #scoped
   end
 
   # GET /units/1
   def show
     @unit = Unit.find(params[:id])
-    respond_with @unit
   end
 
   # GET /units/new
@@ -44,9 +43,9 @@ class UnitsController < ApplicationController
   # PUT /units/1
   def update
     @unit = Unit.find(params[:id])
-    @unit.update_attributes(unit_params)
+    @unit.update!(unit_params)
 
-    respond_with @unit
+    redirect_to @unit
   end
 
   # DELETE /units/1

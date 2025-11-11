@@ -1,4 +1,6 @@
-# *bonsaiERP*
+
+# *bonsaiERP* v2
+
 *bonsaiERP* is a simple ERP system to control the most basic stuff for a company, that includes:
 
 - Sales
@@ -6,6 +8,9 @@
 - Expenses
 - Bank accounts
 - Inventory
+
+
+<img src="menu.png" />
 
  The software is been improved as we move
 
