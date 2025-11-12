@@ -1,24 +1,10 @@
-- content_for :links do
-  %ul.breadcrumbs.span6
-    %li
-      =link_to 'Expenses', expenses_path
-    %li
-      %i.icon-caret-right
-    %li
-      =link_to @es.expense, @es.expense
 
-  %ul.breadcrumbs.r.span6
-    %a#expenses-help-link.dark(href='javascript:;')
-      %i.icon-question-sign
-      Help
-- exp_presenter = present @es.expense
-.row-fluid
-  .span6
-    %h1
-      %span.muted.n New Expense
-      %span.code(title='Código egreso: Egreso-Año-Número' data-toggle='tooltip')= @es.expense
-      %small.state(title='Status' data-toggle='tooltip')= exp_presenter.state_tag
-  .span6.r
-    = link_to icon_show_text, expense_path(@es.expense_id), class: 'btn'
+:ruby
+  @page_title = "Edit Purchase Order"
+  @crumbs = [
+    ['Back', purchase_order_path(@order.model_obj)] ]
 
-= render 'expenses/form', expense_service: @es
+
+= bootstrap_form_with model: @order, url:{action:"update", id:@order.model_obj}, layout: :horizontal do |f| 
+  = render 'form', f:f 
+

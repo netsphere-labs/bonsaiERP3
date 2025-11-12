@@ -1,8 +1,9 @@
-# encoding: utf-8
+
 # author: Boris Barroso
 # email: boriscyber@gmail.com
-class Link < ApplicationRecord
 
+
+class Link < ApplicationRecord
   self.table_name = "public.links"
 
   belongs_to :organisation, inverse_of: :links

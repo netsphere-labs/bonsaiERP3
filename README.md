@@ -40,10 +40,12 @@
    
  - Sales
    + ✅ Sales Order
+     - TODO: 分割納入 (分納) できるようにするには, delivery schedule table が必要.
    + Customer Return Request
    
  - Purchasing
    + ✅ Purchase Order
+     - TODO: 分割納入 (分納) できるようにするには, delivery schedule table が必要.
      - If there is an under-delivery, the system should be able to modify the order and close it, but the system has not been implemented.
    + Purchases in Transit: When an invoice is received *before* the goods have arrived, the invoice is posted in the *Purchases in Transit* account but has no assignment to a goods receipt at this point.
      - TODO: mockup of invoice.

@@ -1,7 +1,10 @@
+
 # author: Boris Barroso
 # email: boriscyber@gmail.com
+
 class ApplicationController < ActionController::Base
-  # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
+  # Only allow modern browsers supporting webp images, web push, badges, import
+  # maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
   layout lambda { |c|
@@ -20,6 +23,7 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery with: :exception
 
+  
   ########################################
   # Callbacks
 
@@ -53,15 +57,21 @@ class ApplicationController < ActionController::Base
     end
   end
 
+=begin
   # Add some helper methods to the controllers
   def help
     Helper.instance
   end
-
+=end
+  
   # @return [Organisation | nil] 組織
   def current_organisation
     # つど確認が必要
+if USE_SUBDOMAIN
     return Organisation.find_by(tenant: Apartment::Tenant.current)
+else
+    return Organisation.first
+end
   end
   helper_method :current_organisation
 
@@ -76,12 +86,6 @@ class ApplicationController < ActionController::Base
   end
   helper_method :user_with_role
 
-=begin
-  def tenant
-    @tenant ||= current_organisation.try(:tenant)
-  end
-  helper_method :tenant
-=end
   
   def path_sub(path, extras = {})
     if USE_SUBDOMAIN

@@ -34,7 +34,7 @@ class Movements::Form < BaseForm
            to: :model_obj
 
   # PO only
-  delegate :store_id, :delivery_loc, :incoterms, :delivery_date,
+  delegate :store_id, :delivery_loc, :incoterms, :delivery_date, :contact,
            to: :model_obj, allow_nil:true
 
   # Transfer Request Only

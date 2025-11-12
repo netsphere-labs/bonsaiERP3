@@ -10,7 +10,7 @@ class GoodsReceiptPosController < ApplicationController
 
   
   def index
-    @orders = PurchaseOrder.where(state: ['confirmed', 'partial'],
+    @orders = PurchaseOrder.where(state: ['confirmed', 'in_transit'],
                                  store_id: @store.id)
     # TODO: 品目元帳として表示すべき
     @invs = Inventory.where(operation: 'exp_in', store_id: @store.id)

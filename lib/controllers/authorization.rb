@@ -22,8 +22,12 @@ end
     end
 
     # テナントを確認
-    if !(org = Organisation.where(tenant:tenant).take) ||
-       !Link.where(organisation_id: org.id, user_id: current_user.id, active:true).take
+if USE_SUBDOMAIN
+    org = Organisation.where(tenant: tenant).take
+else
+    org = Organisation.first
+end
+    if !org || !Link.where(organisation_id: org.id, user_id: current_user.id, active:true).take
       render plain: "Forbidden to access the organisation.", status: 403
     end
   end

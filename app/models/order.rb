@@ -5,15 +5,13 @@
 class Order < BusinessRecord 
 
   # `delivered` = closed
-  # `partial`: PO = Partially Received, SO = Partially Fulfilled
-  # TODO: `partial` は, 納品スケジュール表が必要
+  # TODO: `partial`: PO = Partially Received, SO = Partially Fulfilled
+  #       `partial` は, 納品スケジュール表が必要
   #
-  # transfer: `partial` を "shipped" の意味で使う。社内なので、異なる数量を
-  #           出荷したり、本当に分割することはしない (MUST NOT)
-  STATES = %w(draft confirmed partial delivered void).freeze
+  # PO: `in_transit` は、未着品 (納品前の支払い) の意味で使う. 仕入れを計上する.
+  # PO: ● TODO: 未着品計上し、商品受領したときに差異があった場合どうするか?
+  STATES = %w(draft confirmed in_transit delivered void).freeze
 
-  # Callbacks
-  #before_update :check_items_balances
 
   ########################################
   # Relationships
@@ -180,11 +178,6 @@ private
     ['paid', 'confirmed'].include?(state_was) && is_nulled?
   end
 
-    # Do not allow items to be destroyed if the quantity != balance
-#    def check_items_balances
-#      details.select(&:marked_for_destruction?)
-#      .all?(&:valid_for_destruction?)
-#    end
 
    def valid_currency_change
      errors.add(:currency, I18n.t('errors.messages.movement.currency_change'))  if currency_changed? && ledgers.any?
