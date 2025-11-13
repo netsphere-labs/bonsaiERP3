@@ -1,6 +1,7 @@
-require 'spec_helper'
 
-describe Income do
+require 'rails_helper'
+
+RSpec.describe SalesOrder, type: :model do
   let(:organisation) { build :organisation, id: 1, currency: 'BOB' }
   let(:contact) { build :contact, id: 10 }
 

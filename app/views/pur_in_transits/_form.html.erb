@@ -1,0 +1,50 @@
+
+<% # @param @order PO
+   # @param @inv model object %>
+
+67-3-14 ...一部指定検査の結果の算出数量と前記 67―3―3 の(2)の規定による申告数量（以下この節において「申告数量」という。）との差が申告数量の 3％以内であるときは、その貨物の数量は申告数量により、...
+
+
+<%= bootstrap_form_with model: @inv, url: {action:"create"},
+                      layout: :horizontal do |f| %>
+  <%= error_messages_for 'inv' %>
+
+  <%= hidden_field_tag :po_id, @order.id %>
+
+<div class="row">
+  <label>Purchase Order:</label>
+  <h4><%= link_to @order.id, @order, target: '_blank' %></h4>
+</div>
+
+  <%= f.date_field :date, label: 'Delivery Date:' %>
+
+  <% # なぜかエラーになる. why? => must call `super()` in `initialize()` %>
+  <%= f.text_field :description, label: 'Description:' %>
+
+  <%= f.select :account_id,
+            options_from_collection_for_select(
+                    ContactAccount.joins(:account).where('contact_accounts.contact_id = ? AND accounts.currency = ?', @order.contact_id, @order.currency), 
+                    :account_id, :name, @inv.account_id),
+            required:false %>
+
+<div class="row text-bg-secondary">
+  <div class="col-3">Item</div>
+  <div class="col-1">Ordered Qty</div>
+  <div class="col-1"></div>   
+  <div class="col-1">Not yet received</div>
+  <div class="col-2">Unit Price</div>
+  <div class="col-2">Received Qty</div>
+  <div class="col-2">Amount Override</div>
+</div>
+
+<% lines = [@inv.details.length + 2, 6].max %>
+<% (0.. lines - 1).each do |idx|   %>
+<%   detail_obj = @inv.details[idx] || InventoryDetail.new %>
+
+  <%= render partial: "inventories/detail_edit_row",
+             locals: {lineno: idx + 1, detail_obj: detail_obj} %>
+<% end %>
+  
+  <%= f.submit 'Recoger mercadería', class: 'btn btn-primary' %>
+<% end %>
+

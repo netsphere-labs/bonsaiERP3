@@ -1,8 +1,7 @@
-# encoding: utf-8
-require 'spec_helper'
-#require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Organisation do
+require 'rails_helper'
+
+RSpec.describe Organisation, type: :model do
   before do
     UserSession.user = build :user, id: 1
   end

@@ -5,21 +5,22 @@
 # フォームオブジェクト for 倉庫からの出荷/納入
 class Incomes::InventoryOut < Inventories::Form
 
-  #validate :valid_quantities
-  #validate :valid_item_ids
-
-  #delegate :income_details, to: :income
-  #delegate :balance_inventory, :inventory_left, to: :income_calculations
-
-
+  # Called from `Inventories::Form#assign()`
+  #
   # @param detail_params  [Hash{lineno => Hash}] params
   #   {"1"=>{"item_id"=>"1", "quantity"=>"567"},
   #    "2"=>{"item_id"=>"1", "quantity"=>"0.0"},
-  def self.create_details_from_params detail_params, store_id
+  def self.create_details_from_params model_obj, detail_params, store_id
+    raise TypeError if !model_obj.is_a?(Inventory)
+
     ary = []
     detail_params.each do |_lineno, h|
       m = InventoryDetail.new h.permit(:item_id, :price, :quantity)
-      m.movement_type = 261  # Goods issue for an order. ここが異なるので別に定義
+      m.movement_type = case model_obj.operation
+                        when 'inc_out'; 261  # Goods issue for an order.
+                        else
+                          raise "internal error"
+                        end
       m.store_id = store_id
       (ary << m) if m.quantity != 0.0
     end

@@ -1,3 +1,7 @@
+
+# See active_support/rescuable
+
+
 module Controllers::RescueFrom
 
   def self.included(base)
@@ -8,17 +12,18 @@ module Controllers::RescueFrom
   end
 
 
-  private
+private
 
-    def render_record_not_found
-      render template: '/errors/record_not_found.html.haml', status: 404
-    end
+  def render_record_not_found
+    # development環境だと, ここに到達するが, レンダリング結果は捨てられる (debug screen)
+    render template: 'errors/record_not_found', status: 404
+  end
 
     def render_not_found
-      render template: '/errors/not_found.html.haml', status: 404
+      render template: 'errors/not_found', status: 404
     end
 
     def render_error
-      render template: '/errors/500.html.haml', status: 500
+      render template: 'errors/500', status: 500
     end
 end

@@ -21,16 +21,20 @@
 
 
 
-.row-fluid
-  %h4.ib.n
+%div.row
+  %div.col-2 Contact:
+  %div.col-6
     = link_to @order.contact, partner_path(@order.contact.id), title: 'Contacto', data: {toggle: 'tooltip'}
+  %div.col-2 To:
+  %div.col-2= @order.store.name
 
-  %h5.n.ib
-    %span.muted Fecha:
-    %i= @order.date
-    = render_if @order.delivery_date  do
-      = @order.delivery_date
-
+%div.row
+  %div.col-2 Order Date:
+  %div.col-2= @order.date
+  %div.col-2 Delivery Date:
+  %div.col-2= @order.ship_date
+  %div.col-2 Arrival Date:
+  %div.col-2= @order.delivery_date
 
 
 .row-fluid.expense

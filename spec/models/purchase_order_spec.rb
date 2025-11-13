@@ -1,6 +1,7 @@
-require 'spec_helper'
 
-describe Expense do
+require 'rails_helper'
+
+RSpec.describe PurchaseOrder, type: :model do
   let(:organisation) { build :organisation, id: 1 }
   let(:contact) { build :contact, id: 10 }
 

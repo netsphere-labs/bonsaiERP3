@@ -7,14 +7,16 @@ class Inventory < BusinessRecord
 
   #include ::Models::Updater
 
-  # exp_in 購買入庫
+  # exp_in  購買入庫
+  # pur_tran  purchase-in-transit
+  # pit_in  PIT -> IN
   # exp_out 仕入戻し
   # inc_out 販売出庫
   # inc_in  顧客返品
-  # in 転送入庫
-  # out 転送出庫
-  # trans  1-step transfer
-  OPERATIONS = %w(in out inc_in inc_out exp_in exp_out trans).freeze
+  # in      転送入庫
+  # out     転送出庫
+  # trans   1-step transfer
+  OPERATIONS = %w(in out inc_in inc_out exp_in exp_out trans pur_tran pit_in).freeze
 
   STATES = %w(draft confirmed void).freeze
   enum :state, STATES.map{|x| [x,x]}.to_h
@@ -51,9 +53,6 @@ class Inventory < BusinessRecord
   validates_inclusion_of :operation, in: OPERATIONS
   validates_lengths_from_database
 
-  # attribute
-  #serialize :error_messages, coder: JSON
-
   OPERATIONS.each do |_op|
     define_method :"is_#{_op}?" do
       _op === operation
@@ -77,6 +76,7 @@ class Inventory < BusinessRecord
     transaction.transaction_details
   end
 
+=begin
   def is_income?
     is_inc_in? || is_inc_out?
   end
@@ -84,7 +84,8 @@ class Inventory < BusinessRecord
   def is_expense?
     is_exp_in? || is_exp_out?
   end
-
+=end
+  
   def set_ref_number
     io = Inventory.select("id, ref_number").order("id DESC").limit(1).first
 
@@ -123,6 +124,51 @@ class Inventory < BusinessRecord
       #self.approver_id = user.id
       #self.approver_datetime = Time.zone.now
     end
+  end
+
+  
+  # journal entry
+  # 債権債務が絡む取引は、都度つど仕訳を作る
+  def gen_je_for_goods_received
+    amt = {}
+    @inv.details.each do |detail|
+      # 三分法でやってみる
+      amt[detail.item.accounting.purchase_ac_id] =
+                        (amt[detail.item.accounting.purchase_ac_id] || 0) +
+                        detail.price * detail.quantity  # ここは機能通貨
+    end
+
+    entry_no = rand(2_000_000_000)
+    # Dr.
+    sum_amt = 0
+    amt.each do |pur_ac_id, a|
+      # TODO: 金額は取引通貨でなければならない。が、機能通貨建てになっている
+      #       受入れのときに取引通貨と両方保存が必要
+          
+      r = AccountLedger.new date: @inv.date, entry_no: entry_no,
+                            operation: 'trans',
+                            account_id: pur_ac_id,  # Dr.
+                            amount: a,  
+                            currency: @inv.order.currency,
+                            description: "goods receipt po",
+                            creator_id: current_user.id,
+                            status: 'approved',
+                            inventory_id: @inv.id
+      r.save!
+      sum_amt += a
+    end
+
+    # Cr.
+    r = AccountLedger.new date: @inv.date, entry_no: entry_no,
+                            operation: 'trans',
+                            account_id: @inv.account_id,
+                            amount: -sum_amt,  # 取引通貨, 貸方マイナス
+                            currency: @inv.order.currency,
+                            description: "goods receipt po",
+                            creator_id: current_user.id,
+                            status: 'approved',
+                            inventory_id: @inv.id
+    r.save!
   end
 
   

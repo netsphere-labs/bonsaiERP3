@@ -1,3 +1,4 @@
+
 get '/download_pdf/:file/:name' => 'download#download_pdf', as: :download
 
 #resources :movement_details_history, only: [:show]
@@ -161,6 +162,13 @@ resources :purchase_orders do
 end
 
 resources :goods_return_requests do
+  member do
+    patch :confirm
+    patch :void
+  end
+end
+
+resources :pur_in_transits  do
   member do
     patch :confirm
     patch :void

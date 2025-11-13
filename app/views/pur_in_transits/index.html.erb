@@ -1,0 +1,44 @@
+
+<% @page_title = "Purchase In Transit" %>
+
+<ul>
+  <li>未生産の状態での支払いは, 前渡金 (前払金).
+  <li>引渡し地で「支配」が移転した以降で、しかし未受領は未着品 -- この画面で処理
+</ul>
+
+
+<h2>未受入の発注</h2>
+
+<table class="table">
+  <tr>
+    <th>PO# <th>発注日 <th>Delivery Date <th>Delivery Location
+    <th>Incoterms
+    <th>Arrival Date <th>Store/WHS <th>取引先
+  </tr>
+  <% @orders.each do |order| %>
+  <tr>
+    <td><%= order.id %>
+    <td><%= order.date %>
+    <td><%= order.ship_date %>
+    <td><%= order.delivery_loc %>
+    <td><%= order.incoterms %>
+    <td><%= order.delivery_date %>
+    <td><%= order.store.name %>
+    <td><%= order.contact.name %>
+    <td><%= link_to "あたらしい Purchase-in-Transit...", {action:"new", po_id: order.id} %>
+  <% end %>
+</table>
+
+
+<h2>Inventories</h2>
+
+<table class="table">
+  <% @invs.each do |inv| %>
+  <tr>
+    <td><%= inv.inspect %>
+      <%= link_to "Show", {controller:"pur_in_transits", action:"show", id:inv} %>
+  </tr>
+  <% end %>
+</table>
+
+

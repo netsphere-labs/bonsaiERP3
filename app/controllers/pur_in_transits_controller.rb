@@ -2,18 +2,18 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# 倉庫での購買入庫. PO は `PurchaseOrdersController`
-class GoodsReceiptPosController < ApplicationController
-  before_action :set_store
-
+# - 生産前の支払いは前渡金 (前払金).
+# - delivery location での受け渡し後は、支配が移転する
+# - 商品の受領前に支払う場合、未着品/買掛金を計上する (モノはまだ使用できない)
+# - 入庫時に, 未着品を取り消し, 商品に振り替える. この時点で available
+class PurInTransitsController < ApplicationController
   before_action :set_inv, only: %i[show edit update destroy confirm void]
 
   
   def index
-    @orders = PurchaseOrder.where(state: ['confirmed', 'in_transit'],
-                                 store_id: @store.id)
+    @orders = PurchaseOrder.where(state: ['confirmed'])
     # TODO: 品目元帳として表示すべき
-    @invs = Inventory.where(operation: 'exp_in', store_id: @store.id)
+    @invs = Inventory.where(operation: 'pur_tran')
                      .page(params[:page])
   end
 
@@ -25,7 +25,7 @@ class GoodsReceiptPosController < ApplicationController
     
     # form object 
     @inv = Expenses::InventoryIn.new(
-      Inventory.new store_id: @store.id, order: @order,
+      Inventory.new order: @order,
                     date: Date.today,
                     description: "Recoger mercadería egreso PO##{@order.id}"
     )
@@ -39,16 +39,11 @@ class GoodsReceiptPosController < ApplicationController
     @order = PurchaseOrder.find params[:po_id]
     # wrap
     @inv = Expenses::InventoryIn.new(
-                Inventory.new store_id: @store.id, order: @order,
+                Inventory.new order: @order, store_id: @order.store_id,
                               creator_id: current_user.id,
-                              operation: (case @order.state
-                                          when 'confirmed'; 'exp_in'
-                                          when 'in_transit'; 'pit_in'
-                                          else
-                                            raise "internal error"
-                                          end),
+                              operation: 'pur_tran',
                               state: 'draft' )
-    @inv.assign inventory_params, params.require(:detail), @store.id
+    @inv.assign inventory_params, params.require(:detail), @order.store_id
 
     begin
       ActiveRecord::Base.transaction do
@@ -78,7 +73,7 @@ class GoodsReceiptPosController < ApplicationController
         @inv.confirm! current_user
         @inv.save!
 
-        # データの安定のために, confirm 時に `order.balance` を減らす
+=begin  not reduce
         @inv.details.each do |inv_detail|
           m = MovementDetail.where(order_id: @inv.order_id,
                                    item_id: inv_detail.item_id).take ||
@@ -88,12 +83,11 @@ class GoodsReceiptPosController < ApplicationController
           m.balance -= inv_detail.quantity  # not amount
           m.save!
         end
-        @inv.order.state = 'delivered' # closed
+=end
+        @inv.order.state = 'in_transit'
         @inv.order.save!
-      
-        if @inv.operation == 'exp_in'
-          @inv.gen_je_for_goods_received()
-        end
+
+        @inv.gen_je_for_goods_received()
       end # transaction
     rescue ActiveRecord::RecordInvalid => e
       raise e.inspect
@@ -136,12 +130,8 @@ class GoodsReceiptPosController < ApplicationController
   
 private
 
-  def set_store
-    @store = Store.find params[:store_id]
-  end
-
   def set_inv
-    @inv = Inventory.where(operation: 'exp_in', id: params[:id]).take
+    @inv = Inventory.where(operation: 'pur_tran', id: params[:id]).take
     raise ActiveRecord::RecordNotFound if !@inv
   end
 

@@ -1,10 +1,11 @@
-# encoding: utf-8
+
 # author: Boris Barroso
 # email: boriscyber@gmail.com
-#require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
-require 'spec_helper'
 
-describe Item do
+# ApplicationRecord を継承しているようなもの -> `rails_helper.rb`も読み込む
+require 'rails_helper'
+
+RSpec.describe Item, type: :model do
   it { should belong_to(:unit) }
   it { should have_many(:stocks) }
   it { should have_many(:income_details) }

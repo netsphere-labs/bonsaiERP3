@@ -1,6 +1,7 @@
-require 'spec_helper'
 
-describe Link do
+require 'rails_helper'
+
+RSpec.describe Link, type: :model do
   it { should belong_to(:organisation) }
   it { should belong_to(:user) }
   it { should validate_presence_of(:role) }

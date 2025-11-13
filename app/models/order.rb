@@ -38,6 +38,8 @@ class Order < BusinessRecord
   validate  :valid_currency_change, on: :update
   validate  :greater_or_equal_due_date
 
+  validates_inclusion_of :state, in: STATES
+  
   ########################################
   # Delegations
   delegate :name, :percentage, :percentage_dec, to: :tax, prefix: true, allow_nil: true
@@ -109,7 +111,7 @@ class Order < BusinessRecord
     end
   end
 
-  
+=begin "partial" not supported  
   # PO: 購買入庫から呼び出される
   def update_state!
     qty_received = 0
@@ -127,6 +129,7 @@ class Order < BusinessRecord
     
     save!
   end
+=end
 
   
   def null!

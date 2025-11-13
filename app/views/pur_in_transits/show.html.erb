@@ -1,0 +1,43 @@
+
+<% @page_title = "Purchase In Transit ##{@inv.id}" %>
+<% @crumbs = [
+     ["Purchase In Transit", {action:"index"}] ] %>
+
+<% content_for :links do %>
+  <div class="btn-group" role="group">
+<% if policy(@inv).update? %>
+  <%= link_to 'Edit...', {action:"edit", id:@inv} %>
+<% end %>
+<% if policy(@inv).confirm? %>
+  <%= button_to 'Confirm', {action:"confirm", id:@inv} %>
+<% end %>
+  </div>
+<% end %>
+
+<em style="color:red">● TODO:</em>
+<ul>
+  <li>受領登録のときの price は外貨建てだが, <code>InventoryDetail</code> クラスは機能通貨建て。ここで換算が必要
+</ul>
+
+<table>
+  <tr><th>Account: <td><%= @inv.account.name %>
+  <tr><th>State: <td><%= @inv.state %>
+</table>
+
+
+  
+<table class="table">
+  <tr>
+    <th>Item
+    <th>Price (機能通貨)
+    <th>Qty
+    <th>Amount
+      
+  <% @inv.details.each do |detail| %>
+  <tr>
+    <td><%= detail.item.name %>
+    <td><%= detail.price %>
+    <td><%= detail.quantity %>
+    <td><%= detail.price * detail.quantity %>
+  <% end %>
+</table>

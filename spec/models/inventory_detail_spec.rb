@@ -1,6 +1,7 @@
-require 'spec_helper'
 
-describe InventoryDetail do
+require 'rails_helper'
+
+RSpec.describe InventoryDetail, type: :model do
   it { should belong_to(:inventory) }
   it { should belong_to(:item) }
 

@@ -75,14 +75,16 @@ end
   end
   helper_method :current_organisation
 
-  
+=begin
   def current_link
     @link ||= current_user.links.org_links(current_organisation.id).first!
   end
   helper_method :current_link
-
+=end
+  
   def user_with_role
-    @user_with_role ||= UserWithRole.new(current_user, current_organisation)
+    @user_with_role ||= Link.where(organisation_id: current_organisation.id,
+                                   user_id: current_user.id).take
   end
   helper_method :user_with_role
 

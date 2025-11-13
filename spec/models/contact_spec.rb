@@ -1,9 +1,10 @@
-# encoding: utf-8
+
 # author: Boris Barroso
 # email: boriscyber@gmail.com
-require 'spec_helper'
 
-describe Contact do
+require 'rails_helper'
+
+RSpec.describe Contact, type: :model do
   let(:valid_attributes) do
     {
       matchcode: 'Boris Barroso',  first_name: 'Boris', last_name: "Barroso",

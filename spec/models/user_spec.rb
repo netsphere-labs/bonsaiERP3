@@ -1,6 +1,7 @@
-require 'spec_helper'
 
-describe User do
+require 'rails_helper'
+
+RSpec.describe User, type: :model do
 
   it { should have_many(:links).dependent(:destroy) }
   it { should have_many(:active_links).dependent(:destroy) }

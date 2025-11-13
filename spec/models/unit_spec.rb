@@ -1,7 +1,7 @@
-#require 'spec_helper'
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Unit do
+require 'rails_helper'
+
+RSpec.describe Unit, type: :model do
 
   let(:params) {
     {:name => "kilogram", :symbol => "kg", :integer => false}

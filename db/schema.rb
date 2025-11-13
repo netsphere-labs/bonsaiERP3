@@ -205,7 +205,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_26_084238) do
     t.integer "inventory_id", null: false
     t.integer "movement_type", limit: 2, null: false
     t.integer "item_id", null: false
-    t.decimal "price", precision: 14, scale: 2, default: "0.0", null: false, comment: "機能通貨建ての単価"
+    t.decimal "price", precision: 14, scale: 4, default: "0.0", null: false, comment: "機能通貨建ての単価"
     t.integer "store_id", null: false
     t.decimal "quantity", precision: 14, scale: 2, default: "0.0", null: false
     t.datetime "created_at", precision: nil, null: false

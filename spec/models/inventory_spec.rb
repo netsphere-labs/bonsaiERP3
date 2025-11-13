@@ -1,7 +1,7 @@
-# encoding: utf-8
-require 'spec_helper'
 
-describe Inventory do
+require 'rails_helper'
+
+RSpec.describe Inventory, type: :model do
   it { should belong_to(:updater).class_name('User') }
   it { should belong_to(:store) }
   it { should belong_to(:store_to).class_name("Store") }

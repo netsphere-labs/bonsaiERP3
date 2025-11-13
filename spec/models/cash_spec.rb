@@ -1,6 +1,7 @@
-require 'spec_helper'
 
-describe Cash do
+require 'rails_helper'
+
+RSpec.describe Cash, type: :model do
   let(:valid_attributes) do
     { currency: 'BOB', name: 'Caja 1', amount: 1000.0, address: 'First way', phone: '777-12345', email: 'my@mail.com' }
   end

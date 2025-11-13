@@ -45,8 +45,10 @@ class Inventories::Form < BaseForm
   end
 
   def assign model_params, detail_params, store_id
+    raise TypeError if !store_id
+    
     model_obj.assign_attributes model_params
-    @details = self.class.create_details_from_params(detail_params, store_id)
+    @details = self.class.create_details_from_params(model_obj, detail_params, store_id)
   end
 
 

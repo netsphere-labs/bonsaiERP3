@@ -1,7 +1,9 @@
-# encoding: utf-8
-require 'spec_helper'
 
-describe Account do
+
+# ApplicationRecord を継承しているようなもの -> `rails_helper.rb`も読み込む
+require 'rails_helper'
+
+RSpec.describe Account, type: :model do
 
   it { should belong_to(:updater).class_name('User').optional }
   #
