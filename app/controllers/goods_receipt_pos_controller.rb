@@ -6,14 +6,14 @@
 class GoodsReceiptPosController < ApplicationController
   before_action :set_store
 
-  before_action :set_inv, only: %i[show edit update destroy confirm void]
+  before_action :set_invt, only: %i[show edit update destroy confirm void]
 
   
   def index
     @orders = PurchaseOrder.where(state: ['confirmed', 'in_transit'],
                                  store_id: @store.id)
     # TODO: 品目元帳として表示すべき
-    @invs = Inventory.where(operation: 'exp_in', store_id: @store.id)
+    @invts = Inventory.where(operation: 'exp_in', store_id: @store.id)
                      .page(params[:page])
   end
 
@@ -24,12 +24,12 @@ class GoodsReceiptPosController < ApplicationController
     @order = PurchaseOrder.find params[:po_id]
     
     # form object 
-    @inv = Expenses::InventoryIn.new(
+    @invt = Expenses::InventoryIn.new(
       Inventory.new store_id: @store.id, order: @order,
                     date: Date.today,
                     description: "Recoger mercadería egreso PO##{@order.id}"
     )
-    @inv.build_details_from_order
+    @invt.build_details_from_order
   end
 
   
@@ -38,7 +38,7 @@ class GoodsReceiptPosController < ApplicationController
   def create
     @order = PurchaseOrder.find params[:po_id]
     # wrap
-    @inv = Expenses::InventoryIn.new(
+    @invt = Expenses::InventoryIn.new(
                 Inventory.new store_id: @store.id, order: @order,
                               creator_id: current_user.id,
                               operation: (case @order.state
@@ -48,19 +48,19 @@ class GoodsReceiptPosController < ApplicationController
                                             raise "internal error"
                                           end),
                               state: 'draft' )
-    @inv.assign inventory_params, params.require(:detail), @store.id
+    @invt.assign inventory_params, params.require(:detail), @store.id
 
     begin
       ActiveRecord::Base.transaction do
         # atomic save in form object
-        @inv.save!
+        @invt.save!
       end
     rescue ActiveRecord::RecordInvalid => e
       render :new, status: :unprocessable_entity
       return
     end
       
-    redirect_to({action:"show", id: @inv.model_obj},
+    redirect_to({action:"show", id: @invt.model_obj},
                 notice: 'Se realizó el ingreso de inventario.')
   end
 
@@ -71,28 +71,28 @@ class GoodsReceiptPosController < ApplicationController
 
   # POST
   def confirm
-    authorize @inv
+    authorize @invt
 
     begin
       ActiveRecord::Base.transaction do
-        @inv.confirm! current_user
-        @inv.save!
+        @invt.confirm! current_user
+        @invt.save!
 
         # データの安定のために, confirm 時に `order.balance` を減らす
-        @inv.details.each do |inv_detail|
-          m = MovementDetail.where(order_id: @inv.order_id,
+        @invt.details.each do |inv_detail|
+          m = MovementDetail.where(order_id: @invt.order_id,
                                    item_id: inv_detail.item_id).take ||
-              MovementDetail.new(order_id: @inv.order_id,
+              MovementDetail.new(order_id: @invt.order_id,
                                  item_id: inv_detail.item_id,
                                  price: inv_detail.price) # new price
           m.balance -= inv_detail.quantity  # not amount
           m.save!
         end
-        @inv.order.state = 'delivered' # closed
-        @inv.order.save!
+        @invt.order.state = 'delivered' # closed
+        @invt.order.save!
       
-        if @inv.operation == 'exp_in'
-          @inv.gen_je_for_goods_received()
+        if @invt.operation == 'exp_in'
+          @invt.gen_je_for_goods_received()
         end
       end # transaction
     rescue ActiveRecord::RecordInvalid => e
@@ -100,35 +100,35 @@ class GoodsReceiptPosController < ApplicationController
       return
     end
       
-    redirect_to({action:"show", id: @inv})
+    redirect_to({action:"show", id: @invt})
   end
 
   
   def edit
     # wrap
-    @inv = Expenses::InventoryIn.new(@inv)
+    @invt = Expenses::InventoryIn.new(@invt)
   end
 
   
   def update
     # wrap
-    @inv = Expenses::InventoryIn.new(@inv)
-    @inv.assign inventory_params, params.require(:detail)
+    @invt = Expenses::InventoryIn.new(@invt)
+    @invt.assign inventory_params, params.require(:detail)
     
     # TODO: impl.
   end
 
   def destroy
-    authorize @inv
+    authorize @invt
     
-    @inv.destroy!
+    @invt.destroy!
     # TODO: impl.
   end
 
   
   # POST
   def void
-    authorize @inv
+    authorize @invt
 
     # TODO: impl.
   end
@@ -140,9 +140,9 @@ private
     @store = Store.find params[:store_id]
   end
 
-  def set_inv
-    @inv = Inventory.where(operation: 'exp_in', id: params[:id]).take
-    raise ActiveRecord::RecordNotFound if !@inv
+  def set_invt
+    @invt = Inventory.where(operation: 'exp_in', id: params[:id]).take
+    raise ActiveRecord::RecordNotFound if !@invt
   end
 
   

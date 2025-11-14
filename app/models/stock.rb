@@ -3,15 +3,22 @@
 # email: boriscyber@gmail.com
 
 # on-hand stock: total number of items in a warehouse. inventory physically available
-# available stock: on-hand stock minus any quantities reserved for open transaction, such as sales orders, stock transfer etc.
+# available stock: on-hand stock minus any quantities reserved for open
+#                  transaction, such as sales orders, stock transfer etc.
 class Stock < ApplicationRecord
   belongs_to :store
   belongs_to :item
-  #belongs_to :user
 
+  INVT_TYPES = {
+    1 => "Unrestricted-Use Stock",                 # from 101
+    #3 => "Returns",    販売の在庫引当や、仕入戻しは、在庫の状態ではない
+    5 => "Stock in transfer (store to store)",     # transfer from 303, out 305
+    10 => "Valuated Goods Receipt Blocked Stock",  # from 107, out 109
+    "
   #validations
-  validates_presence_of :store, :store_id, :item, :item_id
-  validates_numericality_of :minimum, greater_than_or_equal_to: 0, allow_nil:  true
+
+  validates_presence_of :date
+  validates_numericality_of :minimum, greater_than_or_equal_to: 0 #, allow_nil:  true
 
   # Scopes
   scope :active, -> { where(active: true) }

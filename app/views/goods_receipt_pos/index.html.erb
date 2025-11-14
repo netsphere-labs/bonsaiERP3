@@ -27,10 +27,10 @@
 <h2>Inventories</h2>
 
 <table class="table">
-  <% @invs.each do |inv| %>
+  <% @invts.each do |invt| %>
   <tr>
-    <td><%= inv.inspect %>
-      <%= link_to "Show", {controller:"goods_receipt_pos", action:"show", id:inv} %>
+    <td><%= invt.inspect %>
+      <%= link_to "Show", {controller:"goods_receipt_pos", action:"show", id:invt} %>
   </tr>
   <% end %>
 </table>
