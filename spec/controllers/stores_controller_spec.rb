@@ -1,6 +1,7 @@
-require 'spec_helper'
 
-describe StoresController do
+require 'rails_helper'
+
+RSpec.describe StoresController do
   describe "DELETE" do
     before(:each) do
       controller.stubs(:check_authorization! => true)

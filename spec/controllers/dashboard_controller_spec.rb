@@ -1,6 +1,7 @@
-require 'spec_helper'
 
-describe DashboardController do
+require 'rails_helper'
+
+RSpec.describe DashboardController do
   #before(:each) do
   #  stub_auth
   #end

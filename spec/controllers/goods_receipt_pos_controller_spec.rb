@@ -1,6 +1,7 @@
-require 'spec_helper'
 
-describe ExpensesInventoryInsController do
+require 'rails_helper'
+
+RSpec.describe GoodsReceiptPosController do
   before(:each) do
     stub_auth
   end

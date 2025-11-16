@@ -51,12 +51,25 @@ development:
   # Defaults to warning.
   #min_messages: notice
 
+# `test` データベースに接続できない場合, `bundle exec rspec` 実行時に
+# `FrozenError` が発生する。
+#   Failure/Error: require_relative '../config/environment'
+#   FrozenError:
+#     can't modify frozen Array: 略
+#   ./vendor/bundle/ruby/3.3.0/gems/railties-8.0.4/lib/rails/engine.rb:579:in `unshift'
+#
+# エラーメッセージと原因がまったく異なり、混乱する
+
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *default
   database: bonsai_erp_test
+  username: <<database user name>>
+  password: <<database user password>>
+  host: localhost
+  port: 5432
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is

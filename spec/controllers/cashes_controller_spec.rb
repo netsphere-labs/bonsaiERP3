@@ -1,6 +1,7 @@
-require 'spec_helper'
 
-describe CashesController do
+require 'rails_helper'
+
+RSpec.describe CashesController do
   before(:each) do
     stub_auth
     # Mock template rendering to avoid template errors

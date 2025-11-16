@@ -26,7 +26,8 @@ class Inventory < BusinessRecord
 
   # transfer-out の場合
   belongs_to :store_to, class_name: "Store", optional:true
-
+  validates_presence_of :store_to_id, if: -> r {r.operation == 'out'}
+    
   # 購買入庫、販売出庫の場合
   belongs_to :order, optional: true
   
@@ -36,7 +37,6 @@ class Inventory < BusinessRecord
   belongs_to :account, optional:true
   
   belongs_to :project, optional: true
-  #has_one    :transference, :class_name => 'InventoryOperation', :foreign_key => "transference_id"
 
   has_many :details, class_name: "InventoryDetail", dependent: :destroy
   #accepts_nested_attributes_for :inventory_details, allow_destroy: true,
@@ -59,13 +59,6 @@ class Inventory < BusinessRecord
     end
   end
 
-  #with_options :if => :transout? do |inv|
-    #inv.validates_presence_of :store_to
-  #end
-
-  def is_transference?
-    %w(transin transout).include?(operation)
-  end
 
   def to_s
     ref_number
@@ -76,15 +69,6 @@ class Inventory < BusinessRecord
     transaction.transaction_details
   end
 
-=begin
-  def is_income?
-    is_inc_in? || is_inc_out?
-  end
-
-  def is_expense?
-    is_exp_in? || is_exp_out?
-  end
-=end
   
   def set_ref_number
     io = Inventory.select("id, ref_number").order("id DESC").limit(1).first

@@ -357,21 +357,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_26_084238) do
   end
 
   create_table "stocks", force: :cascade do |t|
-    t.integer "store_id"
-    t.integer "item_id"
-    t.decimal "unitary_cost", precision: 14, scale: 2, default: "0.0"
-    t.decimal "quantity", precision: 14, scale: 2, default: "0.0"
-    t.decimal "minimum", precision: 14, scale: 2, default: "0.0"
-    t.integer "user_id"
+    t.date "date", null: false
+    t.integer "store_id", null: false
+    t.integer "item_id", null: false
+    t.integer "invt_type", limit: 2, null: false
+    t.decimal "unitary_cost", precision: 14, scale: 2, default: "0.0", null: false
+    t.decimal "quantity", precision: 14, scale: 2, default: "0.0", null: false
+    t.decimal "minimum", precision: 14, scale: 2, default: "0.0", null: false, comment: "安全在庫の履歴"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.boolean "active", default: true
-    t.index ["active"], name: "index_stocks_on_active"
     t.index ["item_id"], name: "index_stocks_on_item_id"
-    t.index ["minimum"], name: "index_stocks_on_minimum"
-    t.index ["quantity"], name: "index_stocks_on_quantity"
     t.index ["store_id"], name: "index_stocks_on_store_id"
-    t.index ["user_id"], name: "index_stocks_on_user_id"
   end
 
   create_table "stores", id: :serial, force: :cascade do |t|
@@ -477,4 +473,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_26_084238) do
   add_foreign_key "orders", "items", column: "prod_item_id"
   add_foreign_key "orders", "stores"
   add_foreign_key "orders", "stores", column: "trans_to_id"
+  add_foreign_key "stocks", "items"
+  add_foreign_key "stocks", "stores"
 end

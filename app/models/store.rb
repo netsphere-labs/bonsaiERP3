@@ -7,7 +7,7 @@ class Store < ApplicationRecord
 
   before_destroy :check_store_for_delete
 
-  has_many :stocks, -> { where(active: true) }, autosave: true
+  #has_many :stocks, -> { where(active: true) }, autosave: true
   has_many :inventories
 
   validates_presence_of :name

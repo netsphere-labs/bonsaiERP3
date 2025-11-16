@@ -1,6 +1,7 @@
-require 'spec_helper'
 
-describe IncomesController do
+require 'rails_helper'
+
+RSpec.describe SalesOrdersController do
   before do
     stub_auth
     controller.stub(currency: 'BOB')

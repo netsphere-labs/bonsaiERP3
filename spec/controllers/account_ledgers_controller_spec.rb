@@ -1,6 +1,7 @@
-require 'spec_helper'
 
-describe AccountLedgersController do
+require 'rails_helper'
+
+RSpec.describe AccountLedgersController do
   let(:user) { build :user, id: 10}
 
   before(:each) do

@@ -8,7 +8,7 @@ class CreateStocks < ActiveRecord::Migration[5.2]
         t.references :store, type: :integer, null:false, foreign_key:true
         t.references :item, type: :integer, null:false, foreign_key:true
         
-        t.string  :state, :limit => 20
+        t.column :invt_type, "SMALLINT NOT NULL"
         
         t.decimal :unitary_cost, :precision => 14, :scale => 2, null:false, default: 0.0
 
@@ -22,12 +22,6 @@ class CreateStocks < ActiveRecord::Migration[5.2]
         t.timestamps
       end
 
-      #add_index :stocks, :store_id
-      #add_index :stocks, :item_id
-      add_index :stocks, :state
-      #add_index :stocks, :minimum
-      #add_index :stocks, :quantity
-      #add_index :stocks, :user_id
     end
   end
 end

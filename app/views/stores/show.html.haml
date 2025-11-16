@@ -61,13 +61,3 @@
 
 
 
-:javascript
-  $(function() {
-    activeTab();
-
-    $('#operations-tab .pagination a').each(function() {
-      $a = $(this);
-      $a.attr('href', $a.attr('href') + '#operations-tab');
-    });
-
-  })

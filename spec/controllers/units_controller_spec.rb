@@ -1,6 +1,7 @@
-require 'spec_helper'
 
-describe UnitsController do
+require 'rails_helper'
+
+RSpec.describe UnitsController do
 
   def mock_unit(stubs={})
     @mock_unit ||= mock_model(Unit, stubs).as_null_object

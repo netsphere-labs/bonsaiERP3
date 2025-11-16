@@ -1,6 +1,7 @@
-require 'spec_helper'
 
-describe ContactsController do
+require 'rails_helper'
+
+RSpec.describe ContactAccountsController do
   before(:each) do
     stub_auth
   end

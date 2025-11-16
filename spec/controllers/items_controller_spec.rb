@@ -1,6 +1,7 @@
-require 'spec_helper'
 
-describe ItemsController do
+require 'rails_helper'
+
+RSpec.describe ItemsController do
   let(:user) { build :user, id: 10}
 
   before(:each) do

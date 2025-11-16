@@ -2,7 +2,8 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# on-hand stock: total number of items in a warehouse. inventory physically available
+# on-hand stock: total number of items in a warehouse. inventory physically
+#                available
 # available stock: on-hand stock minus any quantities reserved for open
 #                  transaction, such as sales orders, stock transfer etc.
 class Stock < ApplicationRecord
@@ -14,14 +15,19 @@ class Stock < ApplicationRecord
     #3 => "Returns",    販売の在庫引当や、仕入戻しは、在庫の状態ではない
     5 => "Stock in transfer (store to store)",     # transfer from 303, out 305
     10 => "Valuated Goods Receipt Blocked Stock",  # from 107, out 109
-    "
+  }
+  
   #validations
 
   validates_presence_of :date
+
+  validates_presence_of :invt_type
+  validates_inclusion_of :invt_type, in: INVT_TYPES.keys
+  
   validates_numericality_of :minimum, greater_than_or_equal_to: 0 #, allow_nil:  true
 
   # Scopes
-  scope :active, -> { where(active: true) }
+
   scope :store_house, -> (store_id) { where(store_id: store_id) }
   scope :mins, -> { where("stocks.quantity < stocks.minimum") }
   scope :item_like, -> (s) { active.joins(:item).where("items.name ILIKE :s OR items.code ILIKE :s", s: "%#{s}%") }
