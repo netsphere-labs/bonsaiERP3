@@ -6,11 +6,11 @@
 class AccountLedgersController < ApplicationController
   include Controllers::Print
 
-  before_action :set_je, only: [:show, :update, :destroy, :conciliate, :null]
+  before_action :set_je, only: [:update, :destroy, :conciliate, :null]
 
   
   # GET /account_ledger
-  def index
+  def show
     if params[:account_ledgers_query].blank?
       @search = AccountLedgers::Query.new
       @ledgers = AccountLedger #.all
@@ -25,7 +25,8 @@ class AccountLedgersController < ApplicationController
                        .order(:date, :entry_no, :id).page(params[:page])
   end
 
-  
+
+=begin
   # GET /account_ledgers/:id
   def show
     #@ledgers = AccountLedger.find(params[:id])
@@ -36,6 +37,7 @@ class AccountLedgersController < ApplicationController
       #format.pdf { print_pdf 'show.print', "recibo-#{@ledger}"  unless params[:debug] }
     end
   end
+=end
 
   
   # PATCH /account_ledgers/:id

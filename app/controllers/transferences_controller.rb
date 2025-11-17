@@ -4,8 +4,9 @@
 
 # 振替伝票, 会計仕訳  -- Comprobantes de transferencia, asientos contables
 class TransferencesController < ApplicationController
-  before_action :find_account
+  before_action :set_journal_entry, only: %i[show edit update destroy]
 
+  
   # GET /transferences?account_id
   def new
     @transference = Transference.new(account_id: params[:account_id], date: Time.zone.now.to_date)
@@ -21,10 +22,25 @@ class TransferencesController < ApplicationController
     end
   end
 
-  private
 
-    def find_account
-      @account = Accounts::Query.new.money.where(id: params[:account_id]).first
+  def show
+  end
+  
+  def edit
+  end
+
+  def update
+  end
+
+  def destroy
+  end
+
+  
+private
+
+  def set_journal_entry
+    # form object
+    @journal_entry = Transference.new AccountLedger.where(entry_id: params[:entry_id])
 
       unless @account
         redirect_back(fallback_location: root_path, alert: 'Debe seleccionar una cuenta activa')

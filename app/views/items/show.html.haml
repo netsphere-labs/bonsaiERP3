@@ -61,11 +61,3 @@
       = render partial: 'histories/history', collection: @item.histories
 
 
-
-.page-header
-  %h3.n Inventario
-- @item.stocks.includes(:store).each do |st|
-  .moneybox.fl
-    %label= st.store
-    %h4.n= st.quantity
-

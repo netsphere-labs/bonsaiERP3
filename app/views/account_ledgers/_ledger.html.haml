@@ -2,7 +2,7 @@
 %li.row-fluid.account_ledger(id='#{ledger.id}')
   .span5
     %h4.ib
-      = link_to ledger, ledger, class: 'code', title: 'Código'
+      = link_to ledger, {controller:'transferences', action:"show", entry_no: ledger.entry_no}, class: 'code', title: 'Código'
     %strong= ledger.operation
 
     = ledger.status
@@ -18,11 +18,6 @@
     = ledger.nuller
     .clearfix
 
-    .inline-cont
-      = link_to icon('icon-pencil', 'Editar referencia'), account_ledger_path(ledger.id), class: 'dark inline-edit',
-        data: { type: 'textarea', name: 'reference', notify: '.top-left' }
-      %i.icon-file.muted(data-toggle='tooltip' title="referencia")
-      %span.inline-data= nl2br ledger.reference
   .span2.r
     = ntc ledger.amount
     = currency_label ledger.currency

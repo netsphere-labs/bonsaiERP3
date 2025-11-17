@@ -92,7 +92,7 @@ class GoodsReceiptPosController < ApplicationController
         @invt.order.save!
       
         if @invt.operation == 'exp_in'
-          @invt.gen_je_for_goods_received()
+          @invt.gen_je_for_goods_received(current_user)
         end
       end # transaction
     rescue ActiveRecord::RecordInvalid => e

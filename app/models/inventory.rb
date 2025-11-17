@@ -113,9 +113,9 @@ class Inventory < BusinessRecord
   
   # journal entry
   # 債権債務が絡む取引は、都度つど仕訳を作る
-  def gen_je_for_goods_received
+  def gen_je_for_goods_received user
     amt = {}
-    @inv.details.each do |detail|
+    self.details.each do |detail|
       # 三分法でやってみる
       amt[detail.item.accounting.purchase_ac_id] =
                         (amt[detail.item.accounting.purchase_ac_id] || 0) +
@@ -129,29 +129,29 @@ class Inventory < BusinessRecord
       # TODO: 金額は取引通貨でなければならない。が、機能通貨建てになっている
       #       受入れのときに取引通貨と両方保存が必要
           
-      r = AccountLedger.new date: @inv.date, entry_no: entry_no,
+      r = AccountLedger.new date: self.date, entry_no: entry_no,
                             operation: 'trans',
                             account_id: pur_ac_id,  # Dr.
                             amount: a,  
-                            currency: @inv.order.currency,
+                            currency: self.order.currency,
                             description: "goods receipt po",
-                            creator_id: current_user.id,
+                            creator_id: user.id,
                             status: 'approved',
-                            inventory_id: @inv.id
+                            inventory_id: self.id
       r.save!
       sum_amt += a
     end
 
     # Cr.
-    r = AccountLedger.new date: @inv.date, entry_no: entry_no,
+    r = AccountLedger.new date: self.date, entry_no: entry_no,
                             operation: 'trans',
-                            account_id: @inv.account_id,
+                            account_id: self.account_id,
                             amount: -sum_amt,  # 取引通貨, 貸方マイナス
-                            currency: @inv.order.currency,
+                            currency: self.order.currency,
                             description: "goods receipt po",
-                            creator_id: current_user.id,
+                            creator_id: user.id,
                             status: 'approved',
-                            inventory_id: @inv.id
+                            inventory_id: self.id
     r.save!
   end
 

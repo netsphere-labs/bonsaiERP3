@@ -62,14 +62,14 @@ end
 resources :staff_accounts
 
 # G/L
-resources :account_ledgers, only: [:index, :show, :update] do
+resource :account_ledgers, only: [:show, :update] do
   post :transference, on: :collection
   patch :conciliate, on: :member
   patch :null, on: :member
 end
 
 # 振替伝票, 会計仕訳
-resources :transferences #, only: [:new, :create]
+resources :transferences, param: :entry_no  #, only: [:new, :create]
 
 resources :item_accountings
 
