@@ -41,7 +41,6 @@ class Inventory < BusinessRecord
   has_many :details, class_name: "InventoryDetail", dependent: :destroy
   #accepts_nested_attributes_for :inventory_details, allow_destroy: true,
   #                              reject_if: lambda {|attrs| attrs[:quantity].blank? || attrs[:quantity].to_d <= 0 }
-  #alias :details :inventory_details
 
   # Validations
   validates_presence_of :date
