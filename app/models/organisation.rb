@@ -12,9 +12,9 @@ class Organisation < ApplicationRecord
   HEADER_CSS = %w(bonsai-header red-header blue-header white-header violet-header orange-header dark-header)
 
   ########################################
-  def settings
-    self[:settings] ? JSON.parse(self[:settings]) : {}
-  end
+  #def settings
+  #  self[:settings] ? JSON.parse(self[:settings]) : {}
+  #end
 
   # PostgreSQL スキーマ分離
   # `Organisation` が保存された後に実行

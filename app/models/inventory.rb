@@ -24,13 +24,15 @@ class Inventory < BusinessRecord
   # 親
   belongs_to :store
 
-  # transfer-out の場合
-  belongs_to :store_to, class_name: "Store", optional:true
-  validates_presence_of :store_to_id, if: -> r {r.operation == 'out'}
+  # transfer-out の場合   => Use `TransferRequest#trans_to`
+  #belongs_to :store_to, class_name: "Store", optional:true
+  #validates_presence_of :store_to_id, if: -> r {r.operation == 'out'}
     
   # 購買入庫、販売出庫の場合
   belongs_to :order, optional: true
-  
+  validates_presence_of :order_id,
+        if: -> r {%w[exp_in pur_tran pit_in inc_out out in].include? r.operation}
+
   belongs_to :creator, class_name: "User"
   
   # scrap の場合 expense / PO partner

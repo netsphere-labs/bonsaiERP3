@@ -18,11 +18,12 @@ class CreateOrganisations < ActiveRecord::Migration[5.2]
         t.date    :due_date
 
         # JSON
-        t.text    :preferences
-
+        #t.text    :preferences
+        t.date :last_stock_fixed_date
+        
         # `time_zone_select()` で設定できる。
-        # が, ユーザに属するのでは?
-        t.string  :time_zone, limit: 100
+        # が, store に属するのでは?
+        t.string  :time_zone, limit: 100, null:false
 
         t.string :tenant, limit: 50, null:false, index:{unique:true}
         t.column :currency, "CHAR(3) NOT NULL"
