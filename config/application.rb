@@ -42,3 +42,9 @@ module BonsaiErp
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end
+
+# timestamp with time zoneを新しいタイムスタンプのデフォルトデータ型として設定
+# See https://railsguides.jp/active_record_postgresql.html
+ActiveSupport.on_load(:active_record_postgresqladapter) do
+  self.datetime_type = :timestamptz
+end

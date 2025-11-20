@@ -42,7 +42,8 @@ if USE_SUBDOMAIN
   validate :valid_tenant_not_in_list
 end
 
-  validate :valid_header_css
+  before_validation :valid_header_css
+
   validates_email_format_of :email, if: -> { email.present? }, message: I18n.t('errors.messages.email')
 
   with_options if: :persisted? do |val|
@@ -112,7 +113,7 @@ end
   end
 
   def header_css
-    settings['header_css'] || 'bonsai-header'
+    (settings && settings['header_css']) || 'bonsai-header'
   end
 
   # Especial method that deletes the schema, users and all related stuff
@@ -162,8 +163,10 @@ end
       @currency_klass ||= Currency.find(currency)
     end
 
-    # Sets or checks that the header_css is valid
-    def valid_header_css
-      self.header_css = 'bonsai-header'  unless HEADER_CSS.include?(header_css)
-    end
+  # Sets or checks that the header_css is valid
+  # for `before_validation()`  
+  def valid_header_css
+    self.settings = {} if !settings
+    self.settings['header_css'] = 'bonsai-header'  if !HEADER_CSS.include?(header_css)
+  end
 end

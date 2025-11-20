@@ -22,8 +22,9 @@ def make_org_and_admin_user()
   org = Organisation.new(
     name: org_name,
     inventory_active: true,
-    country_code: 'US',
-    currency: 'USD',
+    country_code: 'JP',
+    time_zone: TZInfo::Timezone.get('Asia/Tokyo').name,
+    currency: 'JPY',
     email: 'info@kintsugi.design'
   )
 if USE_SUBDOMAIN

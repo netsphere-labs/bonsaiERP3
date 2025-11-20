@@ -7,6 +7,10 @@ class ApplicationController < ActionController::Base
   # maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
+  # リクエストの前後でタイムゾーンを設定・リセットする
+  # See https://engineerjutsu.com/rails-os-db-timezones/
+  around_action :switch_timezone
+  
   layout lambda { |c|
     case
     when (c.request.xhr? or params[:xhr]) then false
@@ -104,7 +108,21 @@ private
   # Sorcery: 未ログインの状態で要ログインのページにアクセスした時に呼び出される
   def not_authenticated
     flash[:alert] = "ログインしてください。"
-    redirect_to new_user_session_url(subdomain:"app"), allow_other_host:true 
+if USE_SUBDOMAIN
+    redirect_to new_user_session_url(subdomain:"app"), allow_other_host:true
+else
+    redirect_to new_user_session_url()
+end
+  end
+
+  
+  # for `around_action()`
+  # ログインユーザのタイムゾーン設定があればそれを使用し、なければデフォルト (UTC) にする
+  def switch_timezone(&block)
+    # before_action で Time.zone= を使うと、リクエスト処理中にエラーが発生した
+    # 場合などに設定が元に戻らない可能性がある
+    timezone = current_organisation &.time_zone || 'UTC'
+    Time.use_zone(timezone, &block)
   end
 
   
