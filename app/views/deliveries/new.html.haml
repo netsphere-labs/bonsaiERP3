@@ -1,18 +1,8 @@
 
-- @page_title = "New Delivery"
+:ruby
+  @page_title = "New Delivery"
+  @crumbs = [
+    ["Back", {action:"index"}] ]
 
-- content_for :links do
-  %ul.breadcrumbs.span6
-    %li
-      =link_to @inv.store, @inv.store
-    %li
-      %i.icon-caret-right
-    %li
-      商品の配達
-
-.row-fluid
-  .span12
-    %h4.text-success
-      商品の配達エントリー
 
 = render 'form'

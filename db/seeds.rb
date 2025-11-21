@@ -25,6 +25,7 @@ def make_org_and_admin_user()
     country_code: 'JP',
     time_zone: TZInfo::Timezone.get('Asia/Tokyo').name,
     currency: 'JPY',
+    stock_fixed_date: Date.today - 2,
     email: 'info@kintsugi.design'
   )
 if USE_SUBDOMAIN

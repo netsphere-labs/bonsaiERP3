@@ -19,7 +19,7 @@ class CreateOrganisations < ActiveRecord::Migration[5.2]
 
         # JSON
         #t.text    :preferences
-        t.date :last_stock_fixed_date
+        t.date :stock_fixed_date, null:false
         
         # `time_zone_select()` で設定できる。
         # が, store に属するのでは?

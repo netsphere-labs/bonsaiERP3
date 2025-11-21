@@ -341,7 +341,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_26_084238) do
     t.string "email"
     t.string "website"
     t.date "due_date"
-    t.date "last_stock_fixed_date"
+    t.date "stock_fixed_date", null: false
     t.string "time_zone", limit: 100, null: false
     t.string "tenant", limit: 50, null: false
     t.string "currency", limit: 3, null: false
@@ -365,6 +365,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_26_084238) do
     t.decimal "minimum", precision: 14, scale: 2, default: "0.0", null: false, comment: "安全在庫の履歴"
     t.timestamp "created_at", null: false
     t.timestamp "updated_at", null: false
+    t.index ["date", "store_id", "item_id", "invt_type"], name: "index_stocks_on_date_and_store_id_and_item_id_and_invt_type", unique: true
     t.index ["item_id"], name: "index_stocks_on_item_id"
     t.index ["store_id"], name: "index_stocks_on_store_id"
   end

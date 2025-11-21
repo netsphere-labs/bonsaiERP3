@@ -33,8 +33,12 @@ class Stock < ApplicationRecord
   scope :item_like, -> (s) { active.joins(:item).where("items.name ILIKE :s OR items.code ILIKE :s", s: "%#{s}%") }
   scope :available_items, -> (store_id, s) { item_like(s).where("store_id=? AND quantity > 0", store_id) }
 
-  delegate :name, :price, :code, :to_s, :type, :unit_symbol, to: :item, prefix: true
+  #delegate :name, :price, :code, :to_s, :type, :unit_symbol, to: :item, prefix: true
 
+  
+  #######################################################################
+  # Class Methods
+  
   # Sets the minimun for an Stock
   def self.new_minimum(item_id, store_id)
     Stock.find_by(item_id: item_id, store_id: store_id)
@@ -44,6 +48,32 @@ class Stock < ApplicationRecord
     Stock.select("COUNT(item_id) AS items_count, store_id").where("quantity <= minimum").group(:store_id).count
   end
 
+  
+  # 昨日まで残高があり、今日レコードがないのはまずい。
+  #   -> Create an opening balance every day
+  # The caller must initiate a transaction
+  def self.change org, from, store_id, stock_type, detail_ary, weight
+    raise TypeError if !from.is_a?(Date)
+    raise ArgumentError if org.stock_fixed_date + 1 < from
+    
+    (from..(org.stock_fixed_date + 1)).each do |date|
+      stock = Stock.where(date: date, item_id: detail_ary.map {|x| x.item_id}, 
+                          store_id: store_id, invt_type: stock_type)
+                   .to_h {|r| [r.item_id, r]}
+      detail_ary.each do |det|
+        stock[det.item_id] ||= Stock.new(date: date, item_id: det.item_id,
+                                         store_id: store_id, invt_type: stock_type,
+                                         quantity: 0)
+        stock[det.item_id].quantity += det.quantity * weight
+        stock[det.item_id].save!
+      end
+    end
+  end
+
+  
+  #######################################################################
+  # Instance Methods
+  
   # Creates a new instance with an item
   def save_minimum(min)
     min = min.is_a?(Numeric) ? min.to_d : min.to_s.to_d

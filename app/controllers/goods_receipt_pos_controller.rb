@@ -26,7 +26,7 @@ class GoodsReceiptPosController < ApplicationController
     # form object 
     @invt = Expenses::InventoryIn.new(
       Inventory.new store_id: @store.id, order: @order,
-                    date: Date.today,
+                    date: Time.zone.today,
                     description: "Recoger mercadería egreso PO##{@order.id}"
     )
     @invt.build_details_from_order
@@ -75,7 +75,7 @@ class GoodsReceiptPosController < ApplicationController
 
     begin
       ActiveRecord::Base.transaction do
-        @invt.confirm! current_user
+        @invt.confirm! current_user, current_organisation
         @invt.save!
 
         # データの安定のために, confirm 時に `order.balance` を減らす
@@ -96,7 +96,7 @@ class GoodsReceiptPosController < ApplicationController
         end
       end # transaction
     rescue ActiveRecord::RecordInvalid => e
-      raise e.inspect
+      raise e.inspect    # DEBUG
       return
     end
       

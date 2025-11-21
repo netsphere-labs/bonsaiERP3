@@ -1,6 +1,9 @@
 
-= bootstrap_form_with model: @inv, url: {action:"create"}, layout: :horizontal do |f|
-  = error_messages_for 'inv'
+-# @param @order the sales order
+-# @param @invt model object 
+
+= bootstrap_form_with model: @invt, url: {action:"create"}, layout: :horizontal do |f|
+  = error_messages_for 'invt'
 
   = hidden_field_tag :order_id, @order.id
 
@@ -15,20 +18,20 @@
   = f.text_field :description, label: 'Description:'
 
   = f.select :account_id,
-            options_from_collection_for_select(ContactAccount.where(contact_id: @order.contact_id), :account_id, :name, @inv.account_id),
+            options_from_collection_for_select(ContactAccount.joins(:account).where('contact_accounts.contact_id = ? AND accounts.currency = ?', @order.contact_id, @order.currency), :account_id, :name, @invt.account_id),
             required:false 
 
   %div.row.text-bg-secondary
     %div.col-3 Item
+    %div.col-2 Ordered Qty
+    %div.col-1 Not yet delivered
     %div.col-2 Unit Price
-    %div.col-2 Undelivered qty
     %div.col-2 数量
-    %div.col-3
-      Cantidad a<br />recoger
+    %div.col-2 Amount override
 
-  - lines = [@inv.details.length + 2, 6].max 
+  - lines = [@invt.details.length + 2, 6].max 
   - (0.. lines - 1).each do |idx|  
-    - detail_obj = @inv.details[idx] || InventoryDetail.new 
+    - detail_obj = @invt.details[idx] || InventoryDetail.new 
 
     = render partial: "inventories/detail_edit_row",
              locals: {lineno: idx + 1, detail_obj: detail_obj} 

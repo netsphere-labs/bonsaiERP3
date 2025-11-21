@@ -81,6 +81,7 @@ class Inventory < BusinessRecord
     end
   end
 
+=begin
   def movement
     case
     when(is_inc_in? || is_inc_out?)
@@ -89,7 +90,9 @@ class Inventory < BusinessRecord
       expense
     end
   end
+=end
 
+=begin   pur_tran は in なのか?  blocked にするのは outなのか? など、単純ではない
   def is_in?
     %w(in inc_in exp_in).include? operation
   end
@@ -97,23 +100,26 @@ class Inventory < BusinessRecord
   def is_out?
     %w(out inc_out exp_out).include? operation
   end
-
+=end
 
   # `save()` must be done by caller.
-  def confirm! user
+  def confirm! user, org
     raise TypeError if !user.is_a?(User)
+    raise TypeError if !org.is_a?(Organisation)
     
     if draft?
       self.state = 'confirmed'
       # TODO: add fields.
       #self.approver_id = user.id
       #self.approver_datetime = Time.zone.now
+      update_stock(org)
     end
   end
 
-  
+
   # journal entry
   # 債権債務が絡む取引は、都度つど仕訳を作る
+  # The caller must initiate a transaction
   def gen_je_for_goods_received user
     amt = {}
     self.details.each do |detail|
@@ -129,7 +135,6 @@ class Inventory < BusinessRecord
     amt.each do |pur_ac_id, a|
       # TODO: 金額は取引通貨でなければならない。が、機能通貨建てになっている
       #       受入れのときに取引通貨と両方保存が必要
-          
       r = AccountLedger.new date: self.date, entry_no: entry_no,
                             operation: 'trans',
                             account_id: pur_ac_id,  # Dr.
@@ -157,7 +162,97 @@ class Inventory < BusinessRecord
   end
 
   
+  # journal entry
+  # 債権債務が絡む取引は、都度つど仕訳を作る
+  # The caller must initiate a transaction
+  def gen_je_for_delivery user
+    raise TypeError if !user.is_a?(User)
+    
+    amt = {}
+    self.details.each do |detail|
+      amt[detail.item.accounting.revenue_ac_id] =
+                        (amt[detail.item.accounting.revenue_ac_id] || 0) +
+                        detail.price * detail.quantity
+    end
+
+    entry_no = rand(2_000_000_000)
+    # Cr.
+    sum_amt = 0
+    amt.each do |rev_ac_id, a|
+      # TODO: 金額は取引通貨でなければならない。が、機能通貨建てになっている
+      #       受入れのときに取引通貨と両方保存が必要
+      r = AccountLedger.new date: self.date, entry_no: entry_no,
+                            operation: 'trans',
+                            account_id: rev_ac_id,  # Cr.
+                            amount: -a,  # 取引通貨, 貸方マイナス
+                            currency: self.order.currency,
+                            description: "delivery",
+                            creator_id: user.id,
+                            status: 'approved',
+                            inventory_id: self.id
+      r.save!
+      sum_amt += a
+    end
+
+    # Dr.
+    r = AccountLedger.new date: self.date, entry_no: entry_no,
+                            operation: 'trans',
+                            account_id: self.account_id,
+                            amount: sum_amt,  # 取引通貨
+                            currency: self.order.currency,
+                            description: "delivery",
+                            creator_id: user.id,
+                            status: 'approved',
+                            inventory_id: self.id
+    r.save!
+  end
+
+  
 private
+
+  # Update the inventory quantity directly. If the voucher is for before today,
+  # it will be accumulated.
+  # only for detail items
+  def update_stock org
+    case operation
+    when 'exp_in'  # 購買入庫
+      Stock.change org, date, store_id, 1, details, +1
+
+    when 'pur_tran' # purchase-in-transit
+      Stock.change org, date, store_id, 10, details, +1
+          
+    when 'pit_in' # PIT -> IN
+      # There may be a change in quantity. Call the original `inventory` and
+      # subtract it.
+      orig = Inventory.eager_load(:details)
+                      .where(order_id: order_id, operation:'pur_tran').take
+      Stock.change org, date, orig.store_id, 10, orig.details, -1
+      Stock.change org, date, store_id, 1, details, +1
+          
+    when 'exp_out' # 仕入戻し
+      Stock.change org, date, store_id, 1, details, -1
+
+    when 'inc_out'  # 販売出庫 w/ order
+      Stock.change org, date, store_id, 1, details, -1
+
+    when 'inc_in'   # 顧客返品
+      Stock.change org, date, store_id, 1, details, +1
+
+    when 'out'     # 転送出庫
+      Stock.change org, date, store_id, 1, details, -1
+      Stock.change org, date, order.trans_to_id, 5, details, +1
+          
+    when 'in'      # 転送入庫
+      Stock.change org, date, order.store_id, 5, details, -1
+      Stock.change org, date, store_id, 1, details, +1
+          
+    when 'trans'   # 1-step transfer
+      raise "not implemented"
+    else
+      raise "internal error"
+    end
+  end
+
 
     def get_ref_io(io)
       _, y, _ = io.ref_number.split('-')
@@ -172,6 +267,7 @@ private
       @year ||= Time.zone.now.year.to_s[2..4]
     end
 
+=begin
     def op_ref_type
       case
       when is_in?    then "I"
@@ -179,4 +275,6 @@ private
       when is_trans? then "T"
       end
     end
-end
+=end
+    
+end # of class Inventory

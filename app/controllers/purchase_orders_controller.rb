@@ -8,7 +8,7 @@ class PurchaseOrdersController < ApplicationController
   include Controllers::TagSearch
 
   before_action :set_order,
-                only: %i[show edit update destroy confirm void inventory force_close]
+                only: %i[show edit update destroy confirm void inventory ]
 
   # GET /expenses
   def index
@@ -137,12 +137,13 @@ class PurchaseOrdersController < ApplicationController
                 notice: "PO was successfully destroyed.", status: :see_other 
   end
 
-
+=begin   分納を (まだ) サポートしていないため、強制 close は不要
   # POST
   def force_close
     raise "TODO: impl"
   end
-  
+=end  
+
   
 private
 

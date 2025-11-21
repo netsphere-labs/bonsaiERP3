@@ -119,7 +119,7 @@ end
   # for `around_action()`
   # ログインユーザのタイムゾーン設定があればそれを使用し、なければデフォルト (UTC) にする
   def switch_timezone(&block)
-    # before_action で Time.zone= を使うと、リクエスト処理中にエラーが発生した
+    # `before_action` で `Time.zone=` を使うと、リクエスト処理中にエラーが発生した
     # 場合などに設定が元に戻らない可能性がある
     timezone = current_organisation &.time_zone || 'UTC'
     Time.use_zone(timezone, &block)

@@ -6,14 +6,14 @@
 class DeliveriesController < ApplicationController
   before_action :set_store
   
-  before_action :set_inv,
+  before_action :set_invt,
                 only: %i[show edit update destroy confirm void]
 
   
   def index
-    @orders = SalesOrder.confirmed.where(store_id: @store.id)
+    @orders = SalesOrder.where(state: ['confirmed'], store_id: @store.id)
     # TODO: 品目元帳として表示すべき
-    @invs = Inventory.where(operation: 'inc_out', store_id: @store.id)
+    @invts = Inventory.where(operation: 'inc_out', store_id: @store.id)
                      .page(params[:page])
   end
 
@@ -24,12 +24,12 @@ class DeliveriesController < ApplicationController
     @order = SalesOrder.find params[:order_id]
 
     # form object
-    @inv = Incomes::InventoryOut.new(
+    @invt = Incomes::InventoryOut.new(
       Inventory.new store_id: @store.id, order: @order,
-                    date: Date.today,
+                    date: Time.zone.today,
                     description: "Entregar mercadería ingreso SO##{@order.id}"
     )
-    @inv.build_details_from_order
+    @invt.build_details_from_order
   end
 
   
@@ -38,40 +38,24 @@ class DeliveriesController < ApplicationController
   def create
     @order = SalesOrder.find params[:order_id]
     # wrap
-    @inv = Incomes::InventoryOut.new(
+    @invt = Incomes::InventoryOut.new(
                 Inventory.new store_id: @store.id, order: @order,
                               creator_id: current_user.id,
                               operation: 'inc_out',
                               state: 'draft' )
-    @inv.assign inventory_params, params.require(:detail), @store.id
+    @invt.assign inventory_params, params.require(:detail), @store.id
 
     begin
       ActiveRecord::Base.transaction do
         # atomic save in form object
-        @inv.save!
-
-        # TODO:
-        # To prevent double submissions, the balances is subtracted even in
-        # draft state. It also needs to update them when updating. This is not
-        # efficient.
-        
-        # subtract from the order balance.
-        @inv.model_obj.details.each do |inv_detail|
-          m = MovementDetail.where(order_id: @inv.model_obj.order_id,
-                                   item_id: inv_detail.item_id).take ||
-              MovementDetail.new(order_id: @inv.model_obj.order_id,
-                                 item_id: inv_detail.item_id,
-                                 price: inv_detail.price) # new price
-          m.balance -= inv_detail.quantity
-          m.save!
-        end
+        @invt.save!
       end # transaction
     rescue ActiveRecord::RecordInvalid => e
       render :new, status: :unprocessable_entity
       return
     end
       
-    redirect_to({action:"show", id: @inv.model_obj},
+    redirect_to({action:"show", id: @invt.model_obj},
                 notice: 'Se realizó la entrega de inventario.')
   end
 
@@ -91,62 +75,44 @@ class DeliveriesController < ApplicationController
 
   # POST
   def confirm
-    authorize @inv
-
-    # journal entry
-    # TODO: 1件ごとに作っていては件数がバカにならない. 集約して, 夜間バッチに
-    #       するか?
-    amt = {}
-    @inv.details.each do |detail|
-      amt[detail.item.accounting.revenue_ac_id] =
-                        (amt[detail.item.accounting.revenue_ac_id] || 0) +
-                        detail.price * detail.quantity
-    end
+    authorize @invt
 
     begin
       ActiveRecord::Base.transaction do
-        @inv.confirm! current_user
-        @inv.save!
+        @invt.confirm! current_user, current_organisation
+        @invt.save!
 
-        # Cr.
-        sum_amt = 0
-        amt.each do |rev_ac_id, a|
-          r = AccountLedger.new date: @inv.date,
-                            operation: 'trans',
-                            account_id: rev_ac_id,  # Cr.
-                            amount: -a,  # 取引通貨, 貸方マイナス
-                            currency: @inv.order.currency,
-                            description: "delivery",
-                            creator_id: current_user.id,
-                            status: 'approved',
-                            inventory_id: @inv.id
-          r.save!
-          sum_amt += a
+        # データの安定のために, confirm 時に `order.balance` を減らす
+        # TODO:
+        #   To prevent double submissions, the balances is subtracted even in
+        #   draft state. It also needs to update them when the voucher is updated.
+        
+        @invt.details.each do |inv_detail|
+          m = MovementDetail.where(order_id: @invt.order_id,
+                                   item_id: inv_detail.item_id).take ||
+              MovementDetail.new(order_id: @invt.order_id,
+                                 item_id: inv_detail.item_id,
+                                 price: inv_detail.price) # new price
+          m.balance -= inv_detail.quantity  # not amount
+          m.save!
         end
-        # Dr.
-        r = AccountLedger.new date: @inv.date,
-                            operation: 'trans',
-                            account_id: @inv.account_id,
-                            amount: sum_amt,  # 取引通貨
-                            currency: @inv.order.currency,
-                            description: "delivery",
-                            creator_id: current_user.id,
-                            status: 'approved',
-                            inventory_id: @inv.id
-        r.save!
+        @invt.order.state = 'delivered' # closed
+        @invt.order.save!
+
+        @invt.gen_je_for_delivery(current_user)
       end # transaction
     rescue ActiveRecord::RecordInvalid => e
       raise e.inspect
       return
     end
       
-    redirect_to({action:"show", id: @inv})
+    redirect_to({action:"show", id: @invt})
   end
 
 
   # POST
   def void
-    authorize @inv
+    authorize @invt
 
     # TODO: impl.
   end
@@ -158,9 +124,9 @@ private
     @store = Store.find params[:store_id]
   end
 
-  def set_inv
-    @inv = Inventory.where(operation: 'inc_out', id: params[:id]).take
-    raise ActiveRecord::RecordNotFound if !@inv
+  def set_invt
+    @invt = Inventory.where(operation: 'inc_out', id: params[:id]).take
+    raise ActiveRecord::RecordNotFound if !@invt
   end
 
 

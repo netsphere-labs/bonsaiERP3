@@ -21,7 +21,8 @@ class CreateStocks < ActiveRecord::Migration[5.2]
 
         t.timestamps
       end
-
+      add_index :stocks, [:date, :store_id, :item_id, :invt_type], unique:true
+      
     end
   end
 end
