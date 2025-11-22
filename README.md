@@ -1,8 +1,7 @@
 
 # *bonsaiERP 3*, renovation
 
-[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/hhorikawa/bonsaiERP/blob/main/MIT-LICENSE.md)
-
+Forked from <a href="https://github.com/Kintsugi-Design/bonsaiERP/">Kintsugi-Design/bonsaiERP</a> and <a href="https://github.com/bonsaiERP/bonsaiERP/">bonsaiERP/bonsaiERP</a>
 
 <i>bonsaiERP 3</i> is a simple ERP multitenant system written with [Ruby on Rails](https://rubyonrails.org/) and includes the following functions:
 
