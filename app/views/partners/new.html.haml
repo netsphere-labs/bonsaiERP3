@@ -1,9 +1,9 @@
 
-- @page_title = "New Business Partner"
+:ruby 
+  @page_title = "New Business Partner"
+  @crumbs = [
+    ["Back", partners_path] ]
 
-- content_for :links do
-  %ul.breadcrumbs.span6
-    %li #{link_to "Business Partners", partners_path}
 
 = bootstrap_form_with model: @partner, url:{action:"create"},
                       layout: :horizontal do |f|

@@ -79,8 +79,8 @@ class DeliveriesController < ApplicationController
 
     begin
       ActiveRecord::Base.transaction do
-        @invt.confirm! current_user, current_organisation
-        @invt.save!
+        # 内部で save! される
+        @invt.confirm! current_user #, current_organisation
 
         # データの安定のために, confirm 時に `order.balance` を減らす
         # TODO:

@@ -49,25 +49,48 @@ class Stock < ApplicationRecord
   end
 
   
-  # 昨日まで残高があり、今日レコードがないのはまずい。
-  #   -> Create an opening balance every day
+  # 24 時間営業の場合、夜間バッチで残高繰越はできない。昨日まで残高があり、今日
+  # のレコードがないときの考慮が必要。
+  # このメソッド内で確実に伸ばす
+  #
   # The caller must initiate a transaction
-  def self.change org, from, store_id, stock_type, detail_ary, weight
-    raise TypeError if !from.is_a?(Date)
-    raise ArgumentError if org.stock_fixed_date + 1 < from
+  def self.change apply_date, store_id, stock_type, detail_ary, weight
+    raise TypeError if !apply_date.is_a?(Date)
+
+    item_ary = detail_ary.map {|x| x.item_id}
     
-    (from..(org.stock_fixed_date + 1)).each do |date|
-      stock = Stock.where(date: date, item_id: detail_ary.map {|x| x.item_id}, 
-                          store_id: store_id, invt_type: stock_type)
+    # まず apply_date 当日を更新する.
+    # 過去データの更新の場合, apply_date の翌日以降のデータが存在する。順次伸ば
+    # す.
+    # nil との max はエラーになる
+    max_date = Stock.where(store_id: store_id, invt_type: stock_type,
+                           item_id: item_ary)
+                    .order('date DESC').limit(1).take &.date
+    max_date = max_date ? [max_date, apply_date].max : apply_date
+
+    (apply_date ..max_date).each do |date|
+      stock = Stock.where(date: date, store_id: store_id, invt_type: stock_type,
+                          item_id: item_ary)
                    .to_h {|r| [r.item_id, r]}
       detail_ary.each do |det|
-        stock[det.item_id] ||= Stock.new(date: date, item_id: det.item_id,
-                                         store_id: store_id, invt_type: stock_type,
-                                         quantity: 0)
+        # ナルの場合, 直近の日付の残高を引き継ぐ
+        stock[det.item_id] ||=
+            Stock.new(date: date, store_id: store_id, invt_type: stock_type,
+                      item_id: det.item_id,
+                      quantity: Stock.get_balance(date - 1, store_id, stock_type,
+                                              det.item_id) )
         stock[det.item_id].quantity += det.quantity * weight
         stock[det.item_id].save!
       end
     end
+  end
+
+
+  def self.get_balance(date, store_id, stock_type, item_id)
+    r = Stock.where('date <= ? AND store_id = ? AND invt_type = ? AND item_id = ?',
+                    date, store_id, stock_type, item_id)
+             .order('date DESC').limit(1).take
+    return !r ? 0 : r.quantity
   end
 
   

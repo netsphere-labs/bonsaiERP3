@@ -82,8 +82,8 @@ sudo apt-get install imagemagick
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/hhorikawa/bonsaiERP.git
-cd bonsaiERP
+git clone https://github.com/netsphere-labs/bonsaiERP3.git
+cd bonsaiERP3
 ```
 
 ### 2. Install dependencies
@@ -139,6 +139,7 @@ By `postgres` user,
 
 ```shell
 $ createdb --owner rails --encoding UTF-8 bonsai_erp_development
+$ createdb --owner rails --encoding UTF-8 bonsai_erp_test
 ```
 
 If you use tenants, set `USE_SUBDOMAIN = true` in `config/initializers/constants.rb`
@@ -171,13 +172,13 @@ rails assets:precompile
 On another terminal,
 
 ```shell
-$ `redis-server`
+$ redis-server
 ```
 
 And run!
 
 ```shell
-$ `foreman start -f Procfile.dev`
+$ foreman start -f Procfile.dev
 ```
 
 

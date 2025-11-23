@@ -102,17 +102,19 @@ class Inventory < BusinessRecord
   end
 =end
 
-  # `save()` must be done by caller.
-  def confirm! user, org
+
+  # The caller must initiate a transaction
+  def confirm! user
     raise TypeError if !user.is_a?(User)
-    raise TypeError if !org.is_a?(Organisation)
+    #raise TypeError if !org.is_a?(Organisation)
     
     if draft?
       self.state = 'confirmed'
       # TODO: add fields.
       #self.approver_id = user.id
       #self.approver_datetime = Time.zone.now
-      update_stock(org)
+      update_stock()   # このなかで save!() が走る.
+      save!()         
     end
   end
 
@@ -213,38 +215,38 @@ private
   # Update the inventory quantity directly. If the voucher is for before today,
   # it will be accumulated.
   # only for detail items
-  def update_stock org
+  def update_stock() 
     case operation
     when 'exp_in'  # 購買入庫
-      Stock.change org, date, store_id, 1, details, +1
+      Stock.change date, store_id, 1, details, +1
 
     when 'pur_tran' # purchase-in-transit
-      Stock.change org, date, store_id, 10, details, +1
+      Stock.change date, store_id, 10, details, +1
           
     when 'pit_in' # PIT -> IN
       # There may be a change in quantity. Call the original `inventory` and
       # subtract it.
       orig = Inventory.eager_load(:details)
                       .where(order_id: order_id, operation:'pur_tran').take
-      Stock.change org, date, orig.store_id, 10, orig.details, -1
-      Stock.change org, date, store_id, 1, details, +1
+      Stock.change date, orig.store_id, 10, orig.details, -1
+      Stock.change date, store_id, 1, details, +1
           
     when 'exp_out' # 仕入戻し
-      Stock.change org, date, store_id, 1, details, -1
+      Stock.change date, store_id, 1, details, -1
 
     when 'inc_out'  # 販売出庫 w/ order
-      Stock.change org, date, store_id, 1, details, -1
+      Stock.change date, store_id, 1, details, -1
 
     when 'inc_in'   # 顧客返品
-      Stock.change org, date, store_id, 1, details, +1
+      Stock.change date, store_id, 1, details, +1
 
     when 'out'     # 転送出庫
-      Stock.change org, date, store_id, 1, details, -1
-      Stock.change org, date, order.trans_to_id, 5, details, +1
+      Stock.change date, store_id, 1, details, -1
+      Stock.change date, order.trans_to_id, 5, details, +1
           
     when 'in'      # 転送入庫
-      Stock.change org, date, order.store_id, 5, details, -1
-      Stock.change org, date, store_id, 1, details, +1
+      Stock.change date, order.store_id, 5, details, -1
+      Stock.change date, store_id, 1, details, +1
           
     when 'trans'   # 1-step transfer
       raise "not implemented"

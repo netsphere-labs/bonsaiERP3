@@ -69,14 +69,31 @@ class GoodsReceiptPosController < ApplicationController
   end
 
 
+  def edit
+    @order = @invt.order
+    # wrap
+    @invt = Expenses::InventoryIn.new(@invt)
+  end
+
+  
+  def update
+    @order = @invt.order
+    # wrap
+    @invt = Expenses::InventoryIn.new(@invt)
+    @invt.assign inventory_params, params.require(:detail)
+    
+    # TODO: impl.
+  end
+
+
   # POST
   def confirm
     authorize @invt
 
     begin
       ActiveRecord::Base.transaction do
-        @invt.confirm! current_user, current_organisation
-        @invt.save!
+        # 内部で save!() される
+        @invt.confirm! current_user #, current_organisation
 
         # データの安定のために, confirm 時に `order.balance` を減らす
         @invt.details.each do |inv_detail|
@@ -104,20 +121,6 @@ class GoodsReceiptPosController < ApplicationController
   end
 
   
-  def edit
-    # wrap
-    @invt = Expenses::InventoryIn.new(@invt)
-  end
-
-  
-  def update
-    # wrap
-    @invt = Expenses::InventoryIn.new(@invt)
-    @invt.assign inventory_params, params.require(:detail)
-    
-    # TODO: impl.
-  end
-
   def destroy
     authorize @invt
     
