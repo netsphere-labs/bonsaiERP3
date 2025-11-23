@@ -159,14 +159,6 @@ file.
 ```
 
 
-
-### 6. Precompile assets (for production)
-```bash
-rails assets:precompile
-```
-
-
-
 ### 7. Start the development server
 
 On another terminal,
@@ -248,21 +240,9 @@ RAILS_ENV=production rails db:setup
 RAILS_ENV=production rails bonsai:create_data
 ```
 
-## Upgrading to Rails 8.0 (Future)
+### 6. Precompile assets (for production)
+```bash
+rails assets:precompile
+```
 
-When upgrading to Rails 8.0, the following additional requirements will be needed:
 
-1. Ruby 3.3.0 or higher
-2. Node.js 16.0 or higher
-3. Propshaft for asset pipeline (replacing Sprockets)
-4. Tailwind CSS for styling
-5. PostgreSQL 16.0 or higher (recommended)
-
-The upgrade process will involve:
-1. Updating Ruby version
-2. Updating Rails version incrementally (6.0 → 6.1 → 7.0 → 7.1 → 8.0)
-3. Replacing Sprockets with Propshaft
-4. Migrating from existing CSS to Tailwind CSS
-5. Converting CoffeeScript to modern JavaScript
-
-See the TODO.md file for a detailed upgrade plan.
