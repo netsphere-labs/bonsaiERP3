@@ -9,7 +9,7 @@ source "https://rubygems.org"
 ruby '>= 3.3.2'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 8.0.1"
+gem "rails", "~> 8.1.1"
 
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 # "propshaft" 単体ではトランスパイルを行わない。TypeScript, Sass を使う場合は,
