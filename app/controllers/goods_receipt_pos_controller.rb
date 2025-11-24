@@ -13,7 +13,7 @@ class GoodsReceiptPosController < ApplicationController
     @orders = PurchaseOrder.where(state: ['confirmed', 'in_transit'],
                                  store_id: @store.id)
     # TODO: 品目元帳として表示すべき
-    @invts = Inventory.where(operation: 'exp_in', store_id: @store.id)
+    @invts = Inventory.where(operation: ['exp_in', 'pit_in'], store_id: @store.id)
                      .page(params[:page])
   end
 
@@ -123,9 +123,13 @@ class GoodsReceiptPosController < ApplicationController
   
   def destroy
     authorize @invt
-    
-    @invt.destroy!
-    # TODO: impl.
+
+    ActiveRecord::Base.transaction do
+      InventoryDetail.where(inventory_id: @invt.id).delete_all
+      @invt.destroy!
+    end
+
+    redirect_to({action:"index"})
   end
 
   
@@ -144,7 +148,7 @@ private
   end
 
   def set_invt
-    @invt = Inventory.where(operation: 'exp_in', id: params[:id]).take
+    @invt = Inventory.where(operation: ['exp_in', 'pit_in'], id: params[:id]).take
     raise ActiveRecord::RecordNotFound if !@invt
   end
 

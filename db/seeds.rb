@@ -78,15 +78,107 @@ end
 end
 
 
-if Organisation.count == 0
-  make_org_and_admin_user()
-else
-  # ここで drop table する
-  print "Apartment::Tenant.current = ", Apartment::Tenant.current, "\n"
-  if Apartment::Tenant.current != "public"
+def make_test_data user
+  raise TypeError if !user.is_a?(User)
+  
+  ActiveRecord::Base.transaction do
+    # BP - contact account
+    bp1 = Contact.create! matchcode: "tanaka", name:"田中商事", active:true,
+                          client:true
+    bp1_a = ContactAccount.create! contact: bp1,
+                account: Account.new(name: "口座JPY", currency:"JPY",
+                                     active:true, description:"",
+                                     subtype: "APAR",
+                                     creator: user)
+
+    bp2 = Contact.create! matchcode: "sato", name:"佐藤商店", active:true,
+                          supplier:true
+    bp2_a = ContactAccount.create! contact: bp2,
+                account: Account.new(name: "振込先JPY", currency:"JPY",
+                                     active:true, description:"",
+                                     subtype:"APAR",
+                                     creator:user),
+                bank_name: "三菱銀行, ふが支店",
+                account_no: "1234567",
+                account_name: "サトウショウテン"
+
+    uom = Unit.create! name: "Each", symbol:"EA"
+    
+    store1 = Store.create! name: "店その1", address:"千葉県のどこか", active: true, description: ""
+    store2 = Store.create! name: "店その2", address:"福岡県のどこか", active: true, description: ""
+
+    our_bank1 = Cash.create!(
+                    account: Account.new(name:"自社口座1", currency:"JPY",
+                                         active:true, description:"",
+                                         subtype:"CASH",
+                                         creator:user),
+                    bank_name:"住友銀行, ほげ支店",
+                    account_no:"456789",
+                    account_name:"ジシャコウザ" )
+
+    ac1 = Account.create! name: "棚卸資産:商品", description:"", subtype:"INV",
+                          active:true,
+                          creator:user
+    ac2 = Account.create! name: "売上:商品売上", description:"", subtype:"REV",
+                          active:true,
+                          creator:user
+    ac3 = Account.create! name: "変動費:商品仕入", description:"", subtype:"VC",
+                          active:true,
+                          creator:user
+    ac4 = Account.create! name: "変動費:期末商品棚卸高", description:"",
+                          subtype:"VC", active:true,
+                          creator:user
+
+    ia = ItemAccounting.create! name: "商品の会計",
+                                item_type: "HAWA",
+                                stock_ac: ac1,
+                                revenue_ac: ac2,
+                                purchase_ac: ac3,
+                                ending_inv_ac: ac4
+
+    item1 = Item.create! name:"商品その1",
+                         code: "X1",
+                         description:"",
+                         unit:uom,
+                         buy_price:"123.45",
+                         price:"456.78",
+                         for_sale:true,
+                         accounting:ia,
+                         active:true,
+                         creator:user
+    item2 = Item.create! name:"商品その2",
+                         code: "Y2",
+                         description:"",
+                         unit:uom,
+                         buy_price:"1234",
+                         price:"3456",
+                         for_sale:true,
+                         accounting:ia,
+                         active:true,
+                         creator:user
+  end
+end
+
+
+if USE_SUBDOMAIN
+  # 2回回ってくる
+  if Organisation.count == 0
+    make_org_and_admin_user()
+  else
+    print "Apartment::Tenant.current = ", Apartment::Tenant.current, "\n"
+    raise "internal error" if Apartment::Tenant.current == "public"
+    
+    #org = Organisation.find_by_tenant(Apartment::Tenant.current)
+    user = User.first
+    make_test_data(user)
+
+    # ここで drop table する
     ActiveRecord::Base.connection.execute("DROP TABLE links")
     ActiveRecord::Base.connection.execute("DROP TABLE organisations")
     ActiveRecord::Base.connection.execute("DROP TABLE users")
   end
-end
+else
+  make_org_and_admin_user()
+  make_test_data(User.first)
+end # USE_SUBDOMAIN
 

@@ -33,6 +33,8 @@ class Item < ApplicationRecord
   has_many   :expense_details
   has_many   :inventory_details
 
+  belongs_to :creator,  class_name: 'User'
+  
   # Attachments
   with_options class_name: 'Attachment', as: :attachable do |attach|
     attach.has_one  :image, -> { where(image: true).order('attachments.position') }

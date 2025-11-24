@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# 取引先. 法人も個人も
+# Business Partner. 法人も個人も
 class Contact < ApplicationRecord
 
   include Models::Tag

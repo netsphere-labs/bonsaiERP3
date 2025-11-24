@@ -407,8 +407,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_26_084238) do
   end
 
   create_table "units", id: :serial, force: :cascade do |t|
-    t.string "name", limit: 100
-    t.string "symbol", limit: 20
+    t.string "name", limit: 100, null: false
+    t.string "symbol", limit: 20, null: false
     t.boolean "integer", default: false
     t.boolean "visible", default: true
     t.timestamp "created_at", null: false

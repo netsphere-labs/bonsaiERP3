@@ -11,7 +11,7 @@
   <%= link_to 'Edit...', {action:"edit", id:@invt} %>
 <% end %>
 <% if policy(@invt).destroy? %>
-  <%= button_to 'Destroy', @invt, method: :delete, class: 'btn btn-danger',
+  <%= button_to 'Destroy', {action:"destroy", id:@invt.id}, method: :delete, class: 'btn btn-danger',
                 data:{turbo_confirm: 'Sure?'}  %>
 <% end %>
 <% if policy(@invt).confirm? %>

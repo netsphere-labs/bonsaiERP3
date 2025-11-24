@@ -1,15 +1,15 @@
 
-<% @page_title = "Purchase In Transit ##{@inv.id}" %>
+<% @page_title = "Purchase In Transit ##{@invt.id}" %>
 <% @crumbs = [
      ["Purchase In Transit", {action:"index"}] ] %>
 
 <% content_for :links do %>
   <div class="btn-group" role="group">
-<% if policy(@inv).update? %>
-  <%= link_to 'Edit...', {action:"edit", id:@inv} %>
+<% if policy(@invt).update? %>
+  <%= link_to 'Edit...', {action:"edit", id:@invt} %>
 <% end %>
-<% if policy(@inv).confirm? %>
-  <%= button_to 'Confirm', {action:"confirm", id:@inv} %>
+<% if policy(@invt).confirm? %>
+  <%= button_to 'Confirm', {action:"confirm", id:@invt} %>
 <% end %>
   </div>
 <% end %>
@@ -20,8 +20,8 @@
 </ul>
 
 <table>
-  <tr><th>Account: <td><%= @inv.account.name %>
-  <tr><th>State: <td><%= @inv.state %>
+  <tr><th>Account: <td><%= @invt.account.name %>
+  <tr><th>State: <td><%= @invt.state %>
 </table>
 
 
@@ -33,7 +33,7 @@
     <th>Qty
     <th>Amount
       
-  <% @inv.details.each do |detail| %>
+  <% @invt.details.each do |detail| %>
   <tr>
     <td><%= detail.item.name %>
     <td><%= detail.price %>

@@ -50,7 +50,8 @@
       = link_to "Transfer in 1-step w/o order", {controller:"inventory_transferences", action:"index", store_id:@store.id}
 
     %li
-      = "●●未着品の入庫"
+      <s>"●●未着品の入庫"</s>
+      これは Goods Receipt PO に含む OK
     %li= "●●Inventory Count &amp; Adjustment"
     %li= link_to "入出庫伝票", inventories_path 
     %li= "/stocks/    Stock"

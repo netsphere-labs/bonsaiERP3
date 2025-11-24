@@ -55,11 +55,20 @@
 
 = render "orders/items"
 
+%h2 Purchase In Transit
+
+%em{style:"color:red"} TODO:
+%ul
+  %li リンクがおかしい
+
+- Inventory.where(operation:'pur_tran', order: @order).each do |invt|
+  = render 'inventories/movement', inventory: invt
+
 
 %h2 Goods Receipt PO
 
-- @order.inventories.each do |inv|
-  = render 'inventories/movement', inventory: inv
+- Inventory.where(operation:['pit_in', 'exp_in'], order:@order).each do |invt|
+  = render 'inventories/movement', inventory: invt
 
 
 

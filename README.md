@@ -21,8 +21,8 @@ Forked from <a href="https://github.com/Kintsugi-Design/bonsaiERP/">Kintsugi-Des
      - 取引先口座 OK
      - <s>TODO: edit.</s> fixed.
      - <s>TODO: When a user create a business partner, the system must create the first account at the same time. `:new` screen.</s> fixed.
-   + ✅ Product/Item Master
    + ✅ Units of Measure
+   + ✅ Product/Item Master
    + ✅ Store/Warehouse
 
  - Finance
@@ -33,9 +33,9 @@ Forked from <a href="https://github.com/Kintsugi-Design/bonsaiERP/">Kintsugi-Des
    + Tax
    + ✅ Chart of Accounts
    + ✅ Item Accounting Rule. 品目クラスに勘定科目を紐付ける.
-   + Tags   --- どんな機能性だろう?
-   + ✅ General Ledger  総勘定元帳
    + ❌ Journal Entry  仕訳
+   + ✅ General Ledger  総勘定元帳
+   + Tags   --- どんな機能性だろう?
    
  - Sales
    + ✅ Sales Order
@@ -46,8 +46,8 @@ Forked from <a href="https://github.com/Kintsugi-Design/bonsaiERP/">Kintsugi-Des
    + ✅ Purchase Order
      - TODO: 分割納入 (分納) できるようにするには, delivery schedule table が必要.
      - If there is an under-delivery, the system should be able to modify the order and close it, but the system has not been implemented.
-   + Purchases in Transit: When an invoice is received *before* the goods have arrived, the invoice is posted in the *Purchases in Transit* account but has no assignment to a goods receipt at this point.
-     - TODO: mockup of invoice.
+   + ✅ Purchases in Transit: When an invoice is received *before* the goods have arrived, the invoice is posted in the *Purchases in Transit* account but has no assignment to a goods receipt at this point.
+     - <s>TODO: mockup of invoice.</s> 
    + Goods Return Request
 
  - Inventory
@@ -58,7 +58,7 @@ Forked from <a href="https://github.com/Kintsugi-Design/bonsaiERP/">Kintsugi-Des
    + ✅ Goods Receipt PO
      - <s>TODO: PO balance 減算</s> fixed.
      - <s>TODO: 仕訳の生成. </s> fixed.
-     - 数量が異なる場合の考慮.
+     - <s>数量が異なる場合の考慮.</s> fixed.
    + Goods Return 仕入戻し
    + Delivery  出荷/納入
    + Transfer Stock in 2-steps - Out

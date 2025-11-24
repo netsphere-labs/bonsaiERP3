@@ -170,7 +170,7 @@ end
 
 resources :pur_in_transits  do
   member do
-    patch :confirm
+    post :confirm
     patch :void
   end
 end
