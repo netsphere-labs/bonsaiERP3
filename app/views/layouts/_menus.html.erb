@@ -92,7 +92,8 @@
           <ul class="dropdown-menu">
 	    <li><a class="dropdown-item" href="/transfer_requests/">Invt. Transfer Requests</a>
 	    <li><a class="dropdown-item" href="/inventory_counts/">Inventory Count</a>
-	    <li><%= link_to "入出庫伝票", inventories_path, class: "dropdown-item" %>
+            <li><%= link_to "入出庫伝票", inventories_path, class: "dropdown-item" %>
+            <li><%= link_to "Material Ledger", material_ledger_path, class: "dropdown-item" %>
 	      
 	    <li><hr class="dropdown-divider"></li>
 <% Store.all.each do |store| %>            

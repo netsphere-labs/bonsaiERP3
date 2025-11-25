@@ -53,7 +53,7 @@ end
 ######################################################################
 # Reports
 
-# controller_name = `reports_controller`
+# 単数形. controller_name = `reports_controller`
 # `#show` はリポートを一覧表示する
 resource :reports do
   collection do
@@ -61,7 +61,7 @@ resource :reports do
   end
 end
 
-# controller_name = `inventory_reports_controller`
+# 単数形. controller_name = `inventory_reports_controller`
 resource :inventory_report do
 end
 
@@ -77,14 +77,14 @@ end
 # ●●削除してよいか?
 resources :staff_accounts
 
-# G/L
+# G/L. 単数形リソース
 resource :account_ledgers, only: [:show, :update] do
   post :transference, on: :collection
   patch :conciliate, on: :member
   patch :null, on: :member
 end
 
-# 振替伝票, 会計仕訳
+# 振替伝票, 会計仕訳. こちらは複数形
 resources :transferences, param: :entry_no  #, only: [:new, :create]
 
 resources :item_accountings
@@ -221,13 +221,17 @@ end
 
 
 # "inventory count" or "physical inventory"
+# TODO: 結果を記録するレコードが必要.
 resources :inventory_counts
 
-# 入出庫伝票
+# 入出庫伝票. モデルを持つため, 単に :id でよい
 resources :inventories, only: [:index, :show] do
   get :show_movement, on: :member
   get :show_trans, on: :member
 end
+
+# 品目元帳 material ledger. 単数形
+resource :material_ledger, controller:"material_ledger"
 
 
 ######################################################################
