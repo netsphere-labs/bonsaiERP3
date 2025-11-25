@@ -1,6 +1,8 @@
-# encoding: utf-8
+
 # author: Boris Barroso
 # email: boriscyber@gmail.com
+
+# 入出庫伝票
 class InventoriesController < ApplicationController
   include Controllers::Print
 

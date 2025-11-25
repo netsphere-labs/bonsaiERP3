@@ -3,7 +3,7 @@
 # email: boriscyber@gmail.com
 
 # singular resource
-class ReportsController < ApplicationController
+class InventoryReportsController < ApplicationController
   before_action :set_date_range, only: [:show]
 
 
@@ -11,17 +11,12 @@ class ReportsController < ApplicationController
   def show
   end
   
-  # Profit and Loss (P/L)
-  def profit_and_loss
-    @report = Report.new(@date_range)  #, tag_ids: @tag_ids)
-  end
-
-=begin
+  # 
   def inventory
     @report = InventoryReportService.new(inventory_params)
     @tag_group = TagGroup.api
   end
-=end
+
 
   # GET
   # demand and supply schedule

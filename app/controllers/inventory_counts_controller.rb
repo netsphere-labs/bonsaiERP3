@@ -1,7 +1,13 @@
-# encoding: utf-8
+
 # author: Boris Barroso
 # email: boriscyber@gmail.com
-class StocksController < ApplicationController
+
+# Reconcile discrepancies --
+# If there are any discrepancies between the physical inventory count and the inventory records,
+# investigate and resolve them.
+# See https://katanamrp.com/blog/inventory-count/
+
+class InventoryCountsController < ApplicationController
   # PUT, PATCH /stocks/:id
   def update
     @stock = Stock.find(params[:id])

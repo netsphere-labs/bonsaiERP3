@@ -51,6 +51,22 @@ end
 
 
 ######################################################################
+# Reports
+
+# controller_name = `reports_controller`
+# `#show` はリポートを一覧表示する
+resource :reports do
+  collection do
+    get :schedule
+  end
+end
+
+# controller_name = `inventory_reports_controller`
+resource :inventory_report do
+end
+
+
+######################################################################
 # Finance
 
 # 自社の銀行口座・現金マスタ
@@ -83,17 +99,6 @@ resources :payments  do
 end
 
 resources :taxes
-
-# controller_name = `reports_controller`
-# `#index` はリポートを一覧表示する
-resources :reports do
-  collection do
-    get :schedule
-  end
-end
-
-
-get 'inventory_report' => 'reports#inventory', as: :inventory_report
 
 # Loans. 借入れごとに勘定科目を作る.
 resources :loans, only: [:index, :show, :update] do
@@ -215,8 +220,8 @@ resources :stores do
 end
 
 
-# 在庫
-resources :stocks
+# "inventory count" or "physical inventory"
+resources :inventory_counts
 
 # 入出庫伝票
 resources :inventories, only: [:index, :show] do
