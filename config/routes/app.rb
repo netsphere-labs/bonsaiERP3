@@ -1,4 +1,7 @@
 
+# `draw` 内で実行時分岐は書けない.
+root to: "home#index"
+
 get '/download_pdf/:file/:name' => 'download#download_pdf', as: :download
 
 #resources :movement_details_history, only: [:show]
@@ -55,10 +58,8 @@ end
 
 # 単数形. controller_name = `reports_controller`
 # `#show` はリポートを一覧表示する
-resource :reports do
-  collection do
-    get :schedule
-  end
+resource :report do
+  get :schedule
 end
 
 # 単数形. controller_name = `inventory_reports_controller`
@@ -69,6 +70,9 @@ end
 ######################################################################
 # Finance
 
+# Chart of accounts
+resources :accounts
+
 # 自社の銀行口座・現金マスタ
 resources :cashes do
   get :money, on: :collection
@@ -78,7 +82,7 @@ end
 resources :staff_accounts
 
 # G/L. 単数形リソース
-resource :account_ledgers, only: [:show, :update] do
+resource :account_ledger, only: [:show, :update] do
   post :transference, on: :collection
   patch :conciliate, on: :member
   patch :null, on: :member

@@ -45,14 +45,14 @@
             <li><%= link_to "Item Accounting Rule", item_accountings_path,
                             class:"dropdown-item" %>
 	    <li><a class="dropdown-item" href="/transferences/">Journal Entry</a>
-            <li><%= link_to "General Ledger", account_ledgers_path,
+            <li><%= link_to "General Ledger", account_ledger_path,
                             class:"dropdown-item" %>
               <!--
             <li><a class="dropdown-item" href="/staff_accounts/">Staff Accounts</a> -->
             <li><%= link_to t('views.menu.etiquetas'), tag_groups_path,
                             class:"dropdown-item" %>
 
-            <li><%= link_to t("views.menu.reports"), reports_path,
+            <li><%= link_to t("views.menu.reports"), report_path,
                     class:"dropdown-item" %></li>
             <li>
               <%= link_to t("views.menu.inventory"), inventory_report_path,

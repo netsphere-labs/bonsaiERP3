@@ -5,7 +5,7 @@
 ## System Requirements
 
  - Ruby 3.3.x (for Rails 8.0 upgrade)
- - Rails 8.0.x 
+ - Rails 8.1.x 
  - PostgreSQL 14.0 or higher
  - PostgreSQL development headers (`libpq-dev`), `postgresql-contrib` to enable **hstore**
  - Node.js v18.19 or higher

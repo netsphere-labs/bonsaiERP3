@@ -111,7 +111,7 @@ Rails 8時代のフロントエンド
    + <a href="https://techracho.bpsinc.jp/hachi8833/2025_10_20/153731">Rails: Inertia.jsでRailsのJavaScript開発にシンプルさを取り戻そう（翻訳)</a>
    + <a href="https://kinsta.com/jp/blog/inertia-js/">Inertia.jsの基本的な特徴や仕組み（徹底解説)</a> <blockquote><code>Link</code> がクリックされると、Inertiaがクリックイベントに介入し、XHRリクエストをサーバーに送信。サーバーはこれがInertiaのリクエストであることを認識して、JSONのレスポンスを返します。このレスポンスにはJavaScriptのコンポーネント名とデータが含まれており、その後、Inertiaは不要なコンポーネントを削除し、新しいページの訪問（表示）に必要なコンポーネントに置き換え、履歴の状態を更新</blockquote>
 
- - "react_on_rails" gem ("react-rails" の後継). コンポーネント単位で表示
+ - "react_on_rails" gem ("react-rails" の後継). "turbo-mount" gem も同様。コンポーネント単位で表示
 
 
 TODO: Install a UI library.

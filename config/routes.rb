@@ -1,17 +1,10 @@
-class ActionDispatch::Routing::Mapper
-  def draw(routes_name)
-    instance_eval(File.read(Rails.root.join("config/routes/#{routes_name}.rb")))
-  end
-end
+
+# Rails 6.1 brings back the feature that allows loading external route files from the router.
 
 BonsaiErp::Application.routes.draw do
+  # namespace :api
   draw :api
+  
   draw :app
-
-  # `draw` 内で実行時分岐は書けない.
-  root to: "home#index"
-
-  # Chart of accounts
-  resources :accounts
 
 end
