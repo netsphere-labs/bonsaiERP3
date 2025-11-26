@@ -3,57 +3,21 @@
 # email: boriscyber@gmail.com
 
 # singular resource
+# financial reports
 class ReportsController < ApplicationController
+  # form object @date_range
+  include HaveDateRange
   before_action :set_date_range, only: [:show]
 
 
-  # リポートを一覧表示
+  # Profit and Loss (P/L) の表。横軸に月、縦に利益サマリ
+  # -> これをグラフ化するのが dashboard#show
   def show
-  end
-  
-  # Profit and Loss (P/L)
-  def profit_and_loss
     @report = Report.new(@date_range)  #, tag_ids: @tag_ids)
   end
 
-=begin
-  def inventory
-    @report = InventoryReportService.new(inventory_params)
-    @tag_group = TagGroup.api
-  end
-=end
-
-  # GET
-  # demand and supply schedule
-  def schedule
-    @date = Date.today - 1
-    
-    # only committed demand
-    @demand_skd = MovementDetail.joins(:order)
-                    .where('orders.type = ? AND ship_date > ? AND state = ?', 'SalesOrder', @date, 'confirmed')
-                    .group('ship_date, item_id').select('SUM(quantity) AS quantity')
-                    .order('ship_date')
-    @supply_skd = MovementDetail.joins(:order)
-                    .where('orders.type = ? AND delivery_date > ? AND state = ?', 'PurchaseOrder', @date, 'confirmed')
-                    .group('delivery_date, item_id').select('SUM(quantity) AS quantity')
-                    .order('delivery_date')
-  end
-  
   
 private
-
-  # for `before_action`
-  def set_date_range
-    if params[:date_range].blank? || !params[:reset].blank?
-      today = Date.today
-      # `DateRange` is a form object.
-      @date_range = DateRange.new date_start: today - 366, date_end: today,
-                                  time_strata: 'month'
-    else
-      @date_range = DateRange.new params.require(:date_range)
-                                        .permit(*DateRange.attribute_names)
-    end
-  end
 
     def set_tag_ids
       @tag_ids = Tag.select("id").where(id: params[:tags]).pluck(:id).uniq

@@ -55,14 +55,12 @@ end
 
 # 単数形. controller_name = `reports_controller`
 # `#show` はリポートを一覧表示する
-resource :reports do
-  collection do
-    get :schedule
-  end
+resource :report do
 end
 
 # 単数形. controller_name = `inventory_reports_controller`
 resource :inventory_report do
+  get :schedule
 end
 
 
@@ -78,7 +76,7 @@ end
 resources :staff_accounts
 
 # G/L. 単数形リソース
-resource :account_ledgers, only: [:show, :update] do
+resource :account_ledger, only: [:show, :update] do
   post :transference, on: :collection
   patch :conciliate, on: :member
   patch :null, on: :member

@@ -1,5 +1,6 @@
 
-<% @page_title = "P/L: #{@date_range.date_start}..#{@date_range.date_end}" %>
+<% # reports#show: 各月の P/L (表)
+   @page_title = "P/L: #{@date_range.date_start}..#{@date_range.date_end}" %>
 
 = form_with model: @date_range, url: reports_path, method: 'get' do |f|
   = render 'layouts/date_range', form:f

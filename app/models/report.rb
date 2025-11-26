@@ -2,10 +2,10 @@
 # 収支リポートのモデル
 class Report
   # form object
-  attr_reader :search
+  #attr_reader :search
 
   # additional params
-  attr_reader :attrs
+  #attr_reader :attrs
 
   
   def initialize(search, attrs = {})
