@@ -4,24 +4,22 @@
 
 # singular resource
 class InventoryReportsController < ApplicationController
-  before_action :set_date_range, only: [:show]
+  # form object @date_range
+  include HaveDateRange
+  before_action :set_date_range, only: [:show, :schedule]
 
-
-  # リポートを一覧表示
+  
+  # 数量ベースの表
   def show
+    @report = InventoryReportService.new(inventory_params)
   end
   
-  # 
-  def inventory
-    @report = InventoryReportService.new(inventory_params)
-    @tag_group = TagGroup.api
-  end
-
 
   # GET
   # demand and supply schedule
+  # 特定の品目なら数量でいいけど, 会社全体のときは??
   def schedule
-    @date = Date.today - 1
+    @date = Time.zone.today - 1
     
     # only committed demand
     @demand_skd = MovementDetail.joins(:order)
@@ -36,19 +34,6 @@ class InventoryReportsController < ApplicationController
   
   
 private
-
-  # for `before_action`
-  def set_date_range
-    if params[:date_range].blank? || !params[:reset].blank?
-      today = Date.today
-      # `DateRange` is a form object.
-      @date_range = DateRange.new date_start: today - 366, date_end: today,
-                                  time_strata: 'month'
-    else
-      @date_range = DateRange.new params.require(:date_range)
-                                        .permit(*DateRange.attribute_names)
-    end
-  end
 
     def set_tag_ids
       @tag_ids = Tag.select("id").where(id: params[:tags]).pluck(:id).uniq

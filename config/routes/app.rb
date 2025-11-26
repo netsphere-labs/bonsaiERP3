@@ -59,11 +59,11 @@ end
 # 単数形. controller_name = `reports_controller`
 # `#show` はリポートを一覧表示する
 resource :report do
-  get :schedule
 end
 
 # 単数形. controller_name = `inventory_reports_controller`
 resource :inventory_report do
+  get :schedule
 end
 
 
