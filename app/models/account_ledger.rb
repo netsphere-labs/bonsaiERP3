@@ -48,8 +48,6 @@ class AccountLedger < ApplicationRecord
   # 勘定科目
   belongs_to :account
   
-  #belongs_to :account_to, class_name: 'Account'
-
   # 人名勘定で行くので, 逆に contact はなし.
   #belongs_to :contact, optional: true
   
@@ -63,7 +61,8 @@ class AccountLedger < ApplicationRecord
   ########################################
   # Validations
   
-  validates_presence_of :amount, :currency, :date
+  validates_presence_of :amount, :currency
+  validates_presence_of :date
   #validate :different_accounts
 
   validates_inclusion_of :operation, in: OPERATIONS

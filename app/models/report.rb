@@ -1,5 +1,5 @@
 
-# 収支リポートのモデル
+# 収支リポートのモデル, using AccountLedger
 class Report
   # form object
   #attr_reader :search
@@ -13,6 +13,22 @@ class Report
     
     @search = search
     @attrs = attrs
+  end
+
+
+private
+
+  # @return [Array of {week_start_day:, amount:}]
+  def sum_by_subtype_and_week subtype
+    raise ArgumentError if !Account::SUBTYPES.keys.include?(subtype)
+    
+    # `date_trunc()` => Monday
+    ary = AccountLedger.join(:account)
+        .where('accounts.subtype = ? AND account_ledgers.date BETWEEN ? AND ?',
+               subtype, @search.from, @search.to)
+        .group('week_start_day')
+        .select("date_trunc('week', account_ledgers.date) AS week_start_day, SUM(amount)")
+        .order('week_start_day')
   end
 
   
