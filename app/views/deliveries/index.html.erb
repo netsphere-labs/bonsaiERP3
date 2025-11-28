@@ -27,6 +27,6 @@
 
 <% @invts.each do |invt| %>
 <div class="row">
-  <%= invt.inspect %>
+  <%= invt.inspect %> <%= link_to "Show", {action:"show", id:invt} %>
 </div>
 <% end %>

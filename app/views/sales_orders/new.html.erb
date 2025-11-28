@@ -1,26 +1,8 @@
 
 <% @page_title = "New Sales Order" %>
-   
-<% content_for :links do %>
-  <ul class="breadcrumbs span6">
-    <li>
-      <%= link_to "Sales Orders", sales_orders_path %>
-    </li>
-    <li>
-      <i class="icon-caret-right"></i>
-    </li>
-    <li>
-      <span><%= t('views.incomes.new.title') %></span>
-    </li>
-  </ul>
+<% @crumbs = [
+   ["Back", sales_orders_path] ] %>
 
-  <ul class="breadcrumbs r span6">
-    <a id="incomes-help-link" class="dark" href="javascript:;">
-      <i class="icon-question-sign"></i>
-      <%= t('general.help') %>
-    </a>
-  </ul>
-<% end %>
 
 
 <%= @order.errors.inspect %>

@@ -13,6 +13,7 @@ class InventoriesController < ApplicationController
     @inventories = get_inventories
   end
 
+  
   # GET /inventories/1
   def show
     @inventory = present Inventory.includes(inventory_details: :item).find(params[:id])
@@ -20,7 +21,7 @@ class InventoriesController < ApplicationController
     respond_to do |format|
       format.html
       format.print
-      format.pdf { print_pdf 'show.print', "Inv-#{@inventory}" }
+      #format.pdf { print_pdf 'show.print', "Inv-#{@inventory}" }
     end
   end
 

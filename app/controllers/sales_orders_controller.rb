@@ -40,7 +40,7 @@ class SalesOrdersController < ApplicationController
   # GET /incomes/new
   def new
     # Use form object.
-    @order = Movements::Form.new(SalesOrder.new date: Time.now, state: 'draft')
+    @order = Movements::Form.new(SalesOrder.new date: Time.zone.today, state: 'draft')
     #@order_details = []
   end
 

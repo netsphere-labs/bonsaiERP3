@@ -1,9 +1,8 @@
 
-- @page_title = "General Ledger"
+<% @page_title = "Material Ledger" %>
 
 
-.input-append.search
-  = form_with model: @search, url: '/account_ledger', method: 'get', class: 'form-inline' do |f|
+<%= form_with model: @search, url: '/account_ledger', method: 'get', class: 'form-inline' do |f|
     = f.text_field 'text', placeholder: 'Buscar por cuenta, contacto o referencia', autocomplete: 'off'
     %label
       From
@@ -14,15 +13,8 @@
     = f.select(:account_id, options_from_collection_for_select(Account.all, :id, :name, @search.account_id), include_blank:false)
     = f.submit 'Show', class: 'btn btn-primary'
 
-- if @ledgers
-  %h2
-    = Account.find(@search.account_id).name
 
-  - html = paginate @ledgers
-  = html
 
-  %ul.unstyled.listing
-    - @ledgers.each do |ledger| 
-      = render partial: 'ledger', locals:{ledger:ledger}
-
-  = html
+<% @ledgers.each do |ledger| %>
+  <%= ledger.inspect %>
+<% end %>

@@ -1,12 +1,9 @@
 
 :ruby
-  @page_title = "購買入庫の編集"
+  @page_title = "Edit Delivery"
   @crumbs = [
-    ["Back", {action:"show", id:@invt.model_obj}] ]
+    ["Back", {action:"show", id: @invt.model_obj}] ]
 
-
-
-= @invt.errors.inspect
 
 = bootstrap_form_with model: @invt, url: {action:"update", id:@invt.model_obj}, method: :patch, layout: :horizontal do |f|
   = render 'form', f:f

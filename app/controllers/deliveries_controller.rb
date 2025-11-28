@@ -64,12 +64,42 @@ class DeliveriesController < ApplicationController
   end
 
   def edit
+    @order = @invt.order
+    # warp
+    @invt = Incomes::InventoryOut.new(@invt)
   end
 
+  
   def update
+    @order = @invt.order
+    # warp
+    @invt = Incomes::InventoryOut.new(@invt)
+    @invt.assign inventory_params, params.require(:detail), @store.id
+    
+    begin
+      ActiveRecord::Base.transaction do
+        # atomic save in form object
+        @invt.save!
+      end # transaction
+    rescue ActiveRecord::RecordInvalid => e
+      render :edit, status: :unprocessable_entity
+      return
+    end
+      
+    redirect_to({action:"show", id: @invt.model_obj},
+                notice: 'Se realizó la entrega de inventario.')
   end
 
+  
   def destroy
+    authorize @invt
+    
+    ActiveRecord::Base.transaction do
+      InventoryDetail.where(inventory_id: @invt.id).delete_all
+      @invt.destroy!
+    end
+
+    redirect_to({action:"index"})
   end
 
 

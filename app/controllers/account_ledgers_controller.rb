@@ -11,18 +11,17 @@ class AccountLedgersController < ApplicationController
   
   # GET /account_ledger
   def show
-    if params[:account_ledgers_query].blank?
+    if params[:account_ledgers_query].blank? #|| !params[:reset].blank?
       @search = AccountLedgers::Query.new
-      @ledgers = AccountLedger #.all
+      #@ledgers = AccountLedger    nothing
     else
       @search = AccountLedgers::Query.new(
                         params.require(:account_ledgers_query)
                               .permit(*AccountLedgers::Query.attribute_names) )
       @ledgers = @search.search()
+                   .eager_load(:creator, :updater, :approver, :nuller)
+                   .order(:date, :entry_no, :id).page(params[:page])
     end
-
-    @ledgers = @ledgers.eager_load(:creator, :updater, :approver, :nuller)
-                       .order(:date, :entry_no, :id).page(params[:page])
   end
 
 

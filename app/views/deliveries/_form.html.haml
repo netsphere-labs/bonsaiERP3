@@ -2,40 +2,39 @@
 -# @param @order the sales order
 -# @param @invt model object 
 
-= bootstrap_form_with model: @invt, url: {action:"create"}, layout: :horizontal do |f|
-  = error_messages_for 'invt'
+= error_messages_for 'invt'
 
-  = hidden_field_tag :order_id, @order.id
+= hidden_field_tag :order_id, @order.id
 
-  .row-fluid
-    .span6
-      %label Sales Order:
-      %h4.n= link_to @order.id, @order, target: '_blank'
+.row-fluid
+  .span6
+    %label Sales Order:
+    %h4.n= link_to @order.id, @order, target: '_blank'
 
-  = f.date_field :date, label: '出荷日:' 
+= f.date_field :date, label: '出荷日:' 
 
-  -# なぜかエラーになる. why? => must call `super()` in `initialize()` 
-  = f.text_field :description, label: 'Description:'
+-# なぜかエラーになる. why? => must call `super()` in `initialize()` 
+= f.text_field :description, label: 'Description:'
 
-  = f.select :account_id,
+= f.select :account_id,
             options_from_collection_for_select(ContactAccount.joins(:account).where('contact_accounts.contact_id = ? AND accounts.currency = ?', @order.contact_id, @order.currency), :account_id, :name, @invt.account_id),
             required:false 
 
-  %div.row.text-bg-secondary
-    %div.col-3 Item
-    %div.col-2 Ordered Qty
-    %div.col-1 Not yet delivered
-    %div.col-2 Unit Price
-    %div.col-2 数量
-    %div.col-2 Amount override
+%div.row.text-bg-secondary
+  %div.col-3 Item
+  %div.col-2 Ordered Qty
+  %div.col-1 Not yet delivered
+  %div.col-2 Unit Price
+  %div.col-2 数量
+  %div.col-2 Amount override
 
-  - lines = [@invt.details.length + 2, 6].max 
-  - (0.. lines - 1).each do |idx|  
-    - detail_obj = @invt.details[idx] || InventoryDetail.new 
+- lines = [@invt.details.length + 2, 6].max 
+- (0.. lines - 1).each do |idx|  
+  - detail_obj = @invt.details[idx] || InventoryDetail.new 
 
-    = render partial: "inventories/detail_edit_row",
+  = render partial: "inventories/detail_edit_row",
              locals: {lineno: idx + 1, detail_obj: detail_obj} 
 
 
-  .form-actions
-    = f.submit '商品を配送する', class: 'btn btn-primary'
+.form-actions
+  = f.submit '商品を配送する', class: 'btn btn-primary'

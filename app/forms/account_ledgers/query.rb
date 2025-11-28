@@ -13,9 +13,18 @@ class AccountLedgers::Query < BaseForm
 
   attribute :state, array: true, default: ['approved']
   
-  #def initialize(rel = AccountLedger)
-  #  @rel = rel
-  #end
+  
+  def search()
+    ret = AccountLedger.eager_load(:account)
+    ret = ret.where("reference ILIKE :s OR description ILIKE :s ", s: text) if !text.blank?
+    ret = ret.where("date >= ?", from) if !from.blank?
+    ret = ret.where("date <= ?", to) if !to.blank?
+    ret = ret.where("account_id = ?", account_id) if !account_id.blank?
+    return ret
+  end
+
+  
+private
 
   def money(id)
     @rel.where(t[:account_id].eq(id).or(t[:account_to_id].eq(id)))
@@ -37,15 +46,7 @@ class AccountLedgers::Query < BaseForm
     payments(account_id).order('date desc, id desc')
   end
 
-  
-  def search()
-    # TODO: date なども調べる
-    AccountLedger.eager_load(:account)
-            .where("reference ILIKE :s OR description ILIKE :s ", s: text)
-  end
-
-  
-private
+ 
 
     def payment_columns(account_id)
       AccountLedger.column_names + ["account_id=#{account_id} AS is_account"]

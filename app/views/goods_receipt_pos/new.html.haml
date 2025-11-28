@@ -7,4 +7,6 @@
 
 
 = @invt.errors.inspect  
-= render 'form'
+
+= bootstrap_form_with model: @invt, url: {action:"create"}, layout: :horizontal do |f|
+  = render 'form', f:f

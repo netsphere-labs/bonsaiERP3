@@ -80,9 +80,20 @@ class GoodsReceiptPosController < ApplicationController
     @order = @invt.order
     # wrap
     @invt = Expenses::InventoryIn.new(@invt)
-    @invt.assign inventory_params, params.require(:detail)
+    @invt.assign inventory_params, params.require(:detail), @store.id
     
-    # TODO: impl.
+    begin
+      ActiveRecord::Base.transaction do
+        # atomic save in form object
+        @invt.save!
+      end
+    rescue ActiveRecord::RecordInvalid => e
+      render :edit, status: :unprocessable_entity
+      return
+    end
+      
+    redirect_to({action:"show", id: @invt.model_obj},
+                notice: 'Se realizó el ingreso de inventario.')
   end
 
 

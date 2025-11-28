@@ -67,7 +67,10 @@ class Inventories::Form < BaseForm
     if !self.valid?   # フォームオブジェクトの validation. details 存在する
       raise ActiveRecord::RecordInvalid.new(self)
     end
-    
+
+    if model_obj.id
+      InventoryDetail.where(inventory_id: model_obj.id).delete_all
+    end
     details.each do |detail| detail.save! end
   end
 

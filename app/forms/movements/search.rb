@@ -5,7 +5,7 @@ class Movements::Search < BaseForm
   attribute :date_start, :date
   attribute :date_end, :date
 
-  attribute :state, array: true, default: ['draft', 'confirmed', 'delivered']
+  attribute :state, array: true, default: ['draft', 'confirmed', 'in_transit', 'delivered']
   attribute :overdue, :date
 
   

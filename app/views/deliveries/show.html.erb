@@ -1,25 +1,27 @@
 
-<% @page_title = "Goods Receipt PO ##{@invt.id}" %>
+<% @page_title = "Delivery ##{@invt.id}" %>
 <% @crumbs = [
      ["Store/Warehouse", stores_path],
      [@store.name, @store],
-     ["Goods Receipt PO", {action:"index"}] ] %>
+     ["Delivery", {action:"index"}] ] %>
 
 <% content_for :links do %>
   <div class="btn-group" role="group">
 <% if policy(@invt).update? %>
   <%= link_to 'Edit...', {action:"edit", id:@invt} %>
 <% end %>
+<% if policy(@invt).destroy? %>
+  <%= button_to 'Destroy', {action:"destroy", id:@invt.id}, method: :delete, class: 'btn btn-danger',
+                data:{turbo_confirm: 'Sure?'}  %>
+<% end %>
+  
 <% if policy(@invt).confirm? %>
   <%= button_to 'Confirm', {action:"confirm", id:@invt} %>
 <% end %>
   </div>
 <% end %>
 
-<em style="color:red">● TODO:</em>
-<ul>
-  <li>受領登録のときの price は外貨建てだが, <code>InventoryDetail</code> クラスは機能通貨建て。ここで換算が必要
-</ul>
+
 
 <table>
   <tr><th>Account: <td><%= @invt.account.name %>

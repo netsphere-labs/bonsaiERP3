@@ -35,7 +35,7 @@ class PurchaseOrdersController < ApplicationController
   def new
     # Use the form object.
     # TODO: default currency = partner's one.
-    @order = Movements::Form.new(PurchaseOrder.new date: Date.today,
+    @order = Movements::Form.new(PurchaseOrder.new date: Time.zone.today,
                                                    state: 'draft')
     #@order_details = []
   end

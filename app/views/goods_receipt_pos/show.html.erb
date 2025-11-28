@@ -14,6 +14,7 @@
   <%= button_to 'Destroy', {action:"destroy", id:@invt.id}, method: :delete, class: 'btn btn-danger',
                 data:{turbo_confirm: 'Sure?'}  %>
 <% end %>
+  
 <% if policy(@invt).confirm? %>
   <%= button_to 'Confirm', {action:"confirm", id:@invt} %>
 <% end %>
