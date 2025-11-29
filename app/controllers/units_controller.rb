@@ -1,6 +1,8 @@
-# encoding: utf-8
+
 # author: Boris Barroso
 # email: boriscyber@gmail.com
+
+# UoM
 class UnitsController < ApplicationController
   before_action :set_unit, only: [:edit, :update, :destroy]
   
@@ -10,13 +12,6 @@ class UnitsController < ApplicationController
     @units = Unit.all
   end
 
-=begin  一覧画面のみ
-  # GET /units/1
-  def show
-    @unit = Unit.find(params[:id])
-    #respond_with @unit
-  end
-=end
   
   # GET /units/new
   def new
@@ -24,9 +19,6 @@ class UnitsController < ApplicationController
     #respond_with @unit
   end
 
-  # GET /units/1/edit
-  def edit
-  end
 
   # POST /units
   def create
@@ -39,6 +31,11 @@ class UnitsController < ApplicationController
     end
   end
 
+  
+  # GET /units/1/edit
+  def edit
+  end
+  
   # PUT /units/1
   def update
     begin

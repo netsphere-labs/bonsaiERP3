@@ -2,19 +2,62 @@
 <% @page_title = "Material Ledger" %>
 
 
-<%= form_with model: @search, url: '/account_ledger', method: 'get', class: 'form-inline' do |f|
-    = f.text_field 'text', placeholder: 'Buscar por cuenta, contacto o referencia', autocomplete: 'off'
-    %label
-      From
-      = f.date_field 'from'
-    %label
-      To
-      = f.date_field 'to'
-    = f.select(:account_id, options_from_collection_for_select(Account.all, :id, :name, @search.account_id), include_blank:false)
-    = f.submit 'Show', class: 'btn btn-primary'
+<%= form_with model: @search, url: '/material_ledger', method: 'get', class: 'form-inline' do |f| %>
+  <%= f.text_field 'text' %>
+  <label>From: <%= f.date_field 'from' %></label>
+  <label>To: <%= f.date_field 'to' %></label>
+  
+  <%= f.select(:item_id,
+            options_from_collection_for_select(Item.all, :id, :name, @search.item_id),
+            include_blank:false) %>
+  <%= f.select(:store_id,
+            options_from_collection_for_select(Store.all, :id, :name, @search.store_id),
+            include_blank:"(All)") %>
 
+  <%= f.submit 'Show', class: 'btn btn-primary' %>
+<% end %>
+  
 
+<% if @ledgers %>
+<h2><%= Item.find(@search.item_id).name %></h2>
+  
+  <%= paginate @ledgers %>
 
-<% @ledgers.each do |ledger| %>
-  <%= ledger.inspect %>
+<table class="table">
+  <tr>
+    <th rowspan="2">日付
+    <th rowspan="2">摘要
+    <th colspan="3">受入
+    <th colspan="3">払出
+    <th colspan="3">残高
+  <tr>
+    <th>数量
+    <th>単価
+    <th>金額
+    <th>数量
+    <th>単価
+    <th>金額
+    <th>数量
+    <th>単価
+    <th>金額
+  <% @ledgers.each do |ledger| %>
+  <tr>
+    <td><%= ledger.inventory.date %>
+    <td><%= ledger.inventory.description %>
+<% # 受入れ %>
+    <td>
+    <td>
+    <td>
+<% # 払出し %>
+    <td>
+    <td>
+    <td>
+<% # 残高 %>
+    <td>
+    <td>
+    <td>
+  <% end %>
+</table>
+
+  <%= paginate @ledgers %>
 <% end %>

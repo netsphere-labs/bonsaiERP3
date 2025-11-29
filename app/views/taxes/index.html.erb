@@ -1,0 +1,13 @@
+
+<% @page_title = "Tax" %>
+
+<% content_for :links do %>
+  <div class="btn-group" role="group">
+    <%= link_to 'New Tax...', new_tax_path, :class => 'new' %>
+  </div>
+<% end %>
+
+
+<% @taxes.each do |tax| %>
+  <%= tax.inspect %>
+<% end %>

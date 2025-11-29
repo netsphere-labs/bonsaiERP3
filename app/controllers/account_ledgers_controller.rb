@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# general ledger
+# general ledger 総勘定元帳
 class AccountLedgersController < ApplicationController
   include Controllers::Print
 
@@ -11,6 +11,7 @@ class AccountLedgersController < ApplicationController
   
   # GET /account_ledger
   def show
+    # 勘定科目が必須
     if params[:account_ledgers_query].blank? #|| !params[:reset].blank?
       @search = AccountLedgers::Query.new
       #@ledgers = AccountLedger    nothing
@@ -23,20 +24,6 @@ class AccountLedgersController < ApplicationController
                    .order(:date, :entry_no, :id).page(params[:page])
     end
   end
-
-
-=begin
-  # GET /account_ledgers/:id
-  def show
-    #@ledgers = AccountLedger.find(params[:id])
-
-    respond_to do |format|
-      format.html
-      format.print
-      #format.pdf { print_pdf 'show.print', "recibo-#{@ledger}"  unless params[:debug] }
-    end
-  end
-=end
 
   
   # PATCH /account_ledgers/:id

@@ -91,15 +91,5 @@ class BaseForm
     end
   end
 =end
-
-=begin
-  # @param value [nil | Date | String] 日付値
-  def date_from_str value
-    return nil if !value
-    return nil if value.is_a?(String) && value.blank?
-    
-    return (value.is_a?(Date) ? value : Date.parse(value))
-  end
-=end
   
 end

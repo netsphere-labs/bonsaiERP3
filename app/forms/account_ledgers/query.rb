@@ -14,12 +14,16 @@ class AccountLedgers::Query < BaseForm
   attribute :state, array: true, default: ['approved']
   
   
+  # 勘定科目は必須
   def search()
+    raise ArgumentError if account_id.blank?
+
     ret = AccountLedger.eager_load(:account)
+                       .where(account_id: account_id) 
     ret = ret.where("reference ILIKE :s OR description ILIKE :s ", s: text) if !text.blank?
     ret = ret.where("date >= ?", from) if !from.blank?
     ret = ret.where("date <= ?", to) if !to.blank?
-    ret = ret.where("account_id = ?", account_id) if !account_id.blank?
+    
     return ret
   end
 

@@ -1,0 +1,28 @@
+
+<% @page_title = "仕訳帳 (Journal)" %>
+
+<%= form_with model: @search, url:"/transferences/", method: :get do |f| %>
+  <label>From <%= f.date_field :from %></label>
+  <label>To <%= f.date_field :to %></label>
+  <%= f.submit 'Show', class: 'btn btn-primary' %>
+<% end %>
+
+
+<table class="table">
+  <tr>
+    <th>日付
+    <th>勘定科目
+    <th>借方
+    <th>貸方
+<% @journal_entries.each do |account_ledger| %>
+  <tr>
+    <td><%= account_ledger.date %>        
+    <td><%= account_ledger.account.name %>
+<% if account_ledger.amount >= 0 %>
+    <td><%= account_ledger.amount %>  <td>
+<% else %>      
+    <td> <td><%= -account_ledger.amount %>
+<% end %>
+    <td><%= link_to "Show", {action:"show", entry_no: account_ledger.entry_no} %>
+<% end %>
+</table>

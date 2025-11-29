@@ -12,9 +12,9 @@ Forked from <a href="https://github.com/Kintsugi-Design/bonsaiERP/">Kintsugi-Des
 
 ## 機能
 
- - Dashboard
+ - Reports
    + Profit report
-   + Inventory report
+   + Inventory report  -- 手元在庫, ATP
    
  - Master Data
    + ✅ Business Partners
@@ -30,10 +30,10 @@ Forked from <a href="https://github.com/Kintsugi-Design/bonsaiERP/">Kintsugi-Des
    + Loan
    + Payment
    + Currency
-   + Tax
+   + Tax  -- 消費税/VAT
    + ✅ Chart of Accounts
    + ✅ Item Accounting Rule. 品目クラスに勘定科目を紐付ける.
-   + ❌ Journal Entry  仕訳
+   + ❌ Journal 仕訳帳
    + ✅ General Ledger  総勘定元帳
    + Tags   --- どんな機能性だろう?
    
@@ -45,28 +45,28 @@ Forked from <a href="https://github.com/Kintsugi-Design/bonsaiERP/">Kintsugi-Des
  - Purchasing
    + ✅ Purchase Order
      - TODO: 分割納入 (分納) できるようにするには, delivery schedule table が必要.
-     - If there is an under-delivery, the system should be able to modify the order and close it, but the system has not been implemented.
    + ✅ Purchases in Transit: When an invoice is received *before* the goods have arrived, the invoice is posted in the *Purchases in Transit* account but has no assignment to a goods receipt at this point.
      - <s>TODO: mockup of invoice.</s> 
    + Goods Return Request
 
  - Inventory
    + Inventory Transfer Request
+   + Inventory Count and Adjustment  -- TODO: 実施記録のモデルデータが必要.
+   + Material Documents 入出庫伝票
+   + Material Ledger 品目元帳 (有高帳)
    
  - In-Store/Warehouse Operations
    + In-Store Sales w/o order
-   + ✅ Goods Receipt PO
+   + ✅ Goods Receipt PO  -- 未着品からの入庫は、ここに含む
      - <s>TODO: PO balance 減算</s> fixed.
      - <s>TODO: 仕訳の生成. </s> fixed.
      - <s>数量が異なる場合の考慮.</s> fixed.
    + Goods Return 仕入戻し
-   + Delivery  出荷/納入
+   + ✅ Delivery  出荷/納入
+   + Customer Return
    + Transfer Stock in 2-steps - Out
    + Transfer Stock in 2-steps - In
    + Transfer in 1-step w/o order
-   + Inventory Count and Adjustment
-   + Material Documents 入出庫伝票
-   + Stock
  
  - Project
    + Production Order
@@ -74,6 +74,11 @@ Forked from <a href="https://github.com/Kintsugi-Design/bonsaiERP/">Kintsugi-Des
  - Configuration
    + Organisation     TODO: Have a functional currency
    + User Profile   
+
+ - Jobs
+   + 月次総平均法
+   + ころがし計算 (固定費調整)
+
 
 
 ## Overall

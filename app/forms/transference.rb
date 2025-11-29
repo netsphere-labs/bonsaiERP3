@@ -4,25 +4,25 @@
 
 # form object for 振替伝票, 会計仕訳
 class Transference < BaseForm
+  # Array of AccountLedger
   attribute :lines, array: true
 
   # Attributes
-  #attribute :account_id, Integer
-  #attribute :account_to_id, Integer
+
   attribute :date, :date
   attribute :entry_no, :integer
   
-  attribute :amount, :decimal, default: 0
+  #attribute :amount, :decimal, default: 0
   attribute :exchange_rate, :decimal, default: 1
   attribute :reference, :string
   #attribute :verification, Boolean, default: false
 
   # Validations
-  #validates_presence_of :account_id, :account_to, :account_to_id, :account_to,
+
   validates_presence_of :date
   validates_presence_of :entry_no
   
-  validates_numericality_of :amount, greater_than: 0
+  #validates_numericality_of :amount, greater_than: 0
   validates_numericality_of :exchange_rate, greater_than: 0
   validate :valid_date
   validate :valid_accounts_currency
@@ -34,7 +34,7 @@ class Transference < BaseForm
   
   # Initializes and sets verification to false if it's not set correctly
   def initialize ledgers
-    raise TypeError if !ledgers
+    raise TypeError if !ledgers 
     super()
 
     #self.verification = false unless [true, false].include?(verification)
@@ -45,16 +45,6 @@ class Transference < BaseForm
     end
   end
 
-  
-=begin
-  def account
-    @account ||= Account.active.find_by(id: account_id)
-  end
-
-  def account_to
-    @account_to ||= Accounts::Query.new.money.find_by(id: account_to_id)
-  end
-=end
   
   def transfer
     self.exchange_rate = 1  if account_currency == account_to_currency

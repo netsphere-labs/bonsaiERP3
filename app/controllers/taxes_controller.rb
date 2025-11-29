@@ -1,8 +1,14 @@
-class TaxesController < ApplicationController
-  def index
 
+# 消費税 / VAT
+class TaxesController < ApplicationController
+  before_action :set_tax, only: %i[edit update destroy]
+
+  
+  def index
+    @taxes = Tax.all
   end
 
+  
   # GET /taxes/new
   def new
     @tax = Tax.new
@@ -13,17 +19,30 @@ class TaxesController < ApplicationController
     @tax = Tax.new tax_params
 
     if @tax.save
-      if request.xhr?
-        render json: { id: @tax.id, to_s: @tax.to_s, percentage: @tax.percentage, name: @tax.name }
-      end
+      redirect_to taxes_path
     else
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
-  private
+  def edit
+  end
 
-    def tax_params
-      params.require(:tax).permit(:name, :percentage)
-    end
+  def update
+  end
+
+  def destroy
+  end
+
+  
+private
+
+  def set_tax
+    # params.expect(): rails8 で導入. permit(), require() を置き換える
+    @tax = Tax.find params.expect(:id)
+  end
+  
+  def tax_params
+    params.require(:tax).permit(:name, :abbreviation, :percentage)
+  end
 end

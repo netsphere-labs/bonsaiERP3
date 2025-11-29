@@ -1,10 +1,12 @@
+
+# 消費税 / VAT
 class CreateTaxes < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       create_table :taxes do |t|
-        t.string :name, limit: 100
-        t.string :abreviation, limit: 20
-        t.decimal :percentage, precision: 5, scale: 2, default: 0.0
+        t.string :name, limit: 100, null:false
+        t.string :abbreviation, limit: 20, null:false
+        t.decimal :percentage, precision: 5, scale: 2, null:false, default: 0.0
 
         t.timestamps
       end

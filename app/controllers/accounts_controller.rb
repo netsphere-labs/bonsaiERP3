@@ -62,6 +62,7 @@ private
 
   # Use callbacks to share common setup or constraints between actions.
   def set_account
+    # params.expect(): rails8 で導入. permit(), require() を置き換える
     @account = Account.find(params.expect(:id))
   end
 
