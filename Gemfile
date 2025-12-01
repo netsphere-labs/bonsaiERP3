@@ -103,10 +103,8 @@ gem 'bootstrap_form', '~> 5.4'
 # Template engines
 gem 'haml' 
 
-#gem 'erubis', '~> 2.7.0'
-# gem 'erb', '~> 2.2.0'
-
-gem 'kaminari', '~> 1.2' # Pagination
+# Pagination
+gem 'kaminari', '~> 1.2' 
 
 # ActiveRecord Classes to encode in JSON
 # v0.10.15  2024 Dec
@@ -139,12 +137,6 @@ gem 'validates_lengths_from_database'
 gem 'dragonfly', '~> 1.4'
 
 #gem "responders", "~> 3.0.0"  # Compatible with Rails 6.0
-
-group :production do
-  #gem 'newrelic_rpm', '~> 6.15.0'  # Compatible with Rails 6.0
-  #gem 'bugsnag', '~> 6.24.0' # Report of errors
-  #gem 'rack-cache', '~> 1.13.0', require: 'rack/cache'
-end
 
 
 group :development, :test do
@@ -231,6 +223,11 @@ end
 # Background processing
 gem "sidekiq"
 
+# Enables to set jobs to be run in specified time.
+# Docker では cron が使いにくい。sidekiq が cron 相当を担う
+# cron を使う場合は whenever gem が使える.
+gem "sidekiq-cron"
+
 # Protect the API routes via CORS
 # サブドメインで使うとき, CORS 設定が必要。See config/initializers/cors.rb
 gem "rack-cors"
@@ -247,8 +244,20 @@ gem "rack-cors"
 #   ros-apartment 3.2  rails >=6.1.0, < 8.1
 gem "ros-apartment", "~> 3.2", require: 'apartment'
 
+# country_select -> countries 通貨を有効にするときは "money" gem が必要
+# 換算は `Money::Bank::VariableExchange` クラスか
+#       API は https://www.xe.com/xecurrencydata/
+gem "money", ">= 6.0"
+
+# A library for converting various objects into `Money` objects.
+#   Monetize.parse("£100") 
+#   Monetize.parse_collection("€80/$100") 
+gem "monetize"
+
 # 依存: "countries" gem
 # `Money::Currency` と組み合わせる.
+#    contains info: ISO3166-1 (countries), ISO3166-2 (states/subdivisions),
+#                   ISO4217 (currency) and E.164 (phone numbers)
 gem "country_select"
 
 # authentication
