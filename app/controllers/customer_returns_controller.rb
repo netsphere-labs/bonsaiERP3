@@ -10,12 +10,13 @@ class CustomerReturnsController < ApplicationController
   before_action :set_inv,
                 only: %i[show edit update destroy confirm void]
 
-
+=begin
   def index
     @orders = CustomerReturnRequest.where(store_id: @store.id)
     @invs = Inventory.where(operation:'inc_in').page(params[:page])
   end
-
+=end
+  
   def show
   end
 

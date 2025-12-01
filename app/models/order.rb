@@ -9,7 +9,8 @@ class Order < BusinessRecord
   #       `partial` は, 納品スケジュール表が必要
   #
   # PO: `in_transit` は、未着品 (納品前の支払い) の意味で使う. 仕入れを計上する.
-  # PO: ● TODO: 未着品計上し、商品受領したときに差異があった場合どうするか?
+  # PO:
+  #   ●TODO: 未着品計上し、商品受領したときに差異があった場合どうするか?
   STATES = %w(draft confirmed in_transit delivered void).freeze
 
 
@@ -19,9 +20,6 @@ class Order < BusinessRecord
   has_many :details, -> {order('id ASC')},
            class_name: "MovementDetail", dependent: :destroy
 
-  #accepts_nested_attributes_for :income_details, allow_destroy: true,
-  #reject_if: proc { |det| det.fetch(:item_id).blank? }
-  
   #belongs_to :project, optional: true
   
   has_many :ledgers, foreign_key: :account_id, class_name: 'AccountLedger'
@@ -70,23 +68,13 @@ class Order < BusinessRecord
     case state
       when 'draft';     "badge text-bg-warning" 
       when 'confirmed'; "badge text-bg-success"
-      when 'partial';   "badge text-bg-info"
+      #when 'partial';   "badge text-bg-info"
+      when 'in_transit'; "badge text-bg-info"
       when 'delivered'; "badge text-bg-primary"   # closed
       when 'void';      "badge text-bg-dark"  
     end
   end
   
-=begin
-  def set_state_by_balance!
-    if balance <= 0
-      self.state = 'paid'
-    elsif balance != total
-      self.state = 'approved'
-    elsif state.blank?
-      self.state = 'draft'
-    end
-  end
-=end
   
   def total_discount
     gross_total - total

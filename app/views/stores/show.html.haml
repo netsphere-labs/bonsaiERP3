@@ -14,14 +14,20 @@
 
 
 
-.row-fluid
-  .span6
-    .clear-both
-    .row-fluid
-      .span4
-        = @store.phone
-      .span8
-        = nl2br @store.address
+%table.table
+  %tr
+    %th Name
+    %td= @store.name
+  %tr
+    %th Active
+    %td= @store.active
+  %tr
+    %th Address
+    %td= @store.address
+  %tr
+    %th Phone
+    %td= @store.phone
+
 
 %em{style:"color:red"}TODO:
 %ul
@@ -33,29 +39,24 @@
   %ul
     %li In-Store Sales w/o order  ● TODO: impl.
 
+
   %h2 Warehouse Operations
 
+  %p
+    = link_to "Inbound Delivery", {action:"inbound_orders"} 
+  %p
+    = link_to "Outbound Delivery", {action:"outbound_orders"}
+
   %ul
-    %li= link_to "Goods Receipt PO", {controller:"goods_receipt_pos", action:"index", store_id: @store.id} 
-    %li= link_to "仕入戻し", {controller:"goods_returns", action:"index", store_id:@store.id} 
-
-    %li= link_to "出荷/納入", {controller:"deliveries", action:"index", store_id: @store.id}
-    %li= link_to "Customer Return", {controller:"customer_returns", action:"index", store_id:@store.id}
-
-    %li
-      = link_to "Transfer Stock in 2-steps - In...", {controller:"inventory_ins", action:"index", store_id:@store.id}
-    %li
-      = link_to "Transfer Stock in 2-steps - Out...", {controller:"inventory_outs", action:"index", store_id:@store.id}
     %li
       = link_to "Transfer in 1-step w/o order", {controller:"inventory_transferences", action:"index", store_id:@store.id}
+
+    %li TODO: production - out
 
     %li
       <s>"●●未着品の入庫"</s>
       これは Goods Receipt PO に含む OK
 
-  %h3 Orders for Outbound Delivery
-
-  = render 'orders_for_outbound'
 
 
 

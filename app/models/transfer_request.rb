@@ -6,7 +6,6 @@ class TransferRequest < Order
 
   # to, required
   belongs_to :trans_to, class_name: "Store"
-  #validates_presence_of :trans_to_id
 
   validate :check
 

@@ -9,7 +9,7 @@ class InventoryInsController < ApplicationController
   
   before_action :set_inv, only: %i[show edit update destroy confirm void]
 
-
+=begin
   def index
     # `partial` を "shipped" の意味で使う
     @orders = TransferRequest.where(state:['partial'], trans_to_id: @store.id)
@@ -17,7 +17,7 @@ class InventoryInsController < ApplicationController
     @invs = Inventory.where(operation: 'in', store_id: @store.id)
                      .page(params[:page])
   end
-
+=end
 
   def new
     @order = TransferRequest.find params[:order_id]

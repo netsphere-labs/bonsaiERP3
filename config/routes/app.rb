@@ -197,6 +197,11 @@ end
 
 # In-Store Operations
 resources :stores do
+  member do
+    get :inbound_orders
+    get :outbound_orders
+  end
+  
   resources :goods_receipt_pos do
     member do
       post :confirm

@@ -9,13 +9,14 @@ class DeliveriesController < ApplicationController
   before_action :set_invt,
                 only: %i[show edit update destroy confirm void]
 
-  
+=begin  
   def index
     @orders = SalesOrder.where(state: ['confirmed'], store_id: @store.id)
     # TODO: 品目元帳として表示すべき
     @invts = Inventory.where(operation: 'inc_out', store_id: @store.id)
                      .page(params[:page])
   end
+=end
 
   
   # GET

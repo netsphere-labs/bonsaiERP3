@@ -33,7 +33,7 @@ Forked from <a href="https://github.com/Kintsugi-Design/bonsaiERP/">Kintsugi-Des
    + Tax  -- 消費税/VAT
    + ✅ Chart of Accounts
    + ✅ Item Accounting Rule. 品目クラスに勘定科目を紐付ける.
-   + ❌ Journal 仕訳帳
+   + ❌ Journal 仕訳帳  -- ● TODO: 振替伝票の表示
    + ✅ General Ledger  総勘定元帳
    + Tags   --- どんな機能性だろう?
    
@@ -50,7 +50,7 @@ Forked from <a href="https://github.com/Kintsugi-Design/bonsaiERP/">Kintsugi-Des
    + Goods Return Request
 
  - Inventory
-   + Inventory Transfer Request
+   + ✅ Inventory Transfer Request
    + Inventory Count and Adjustment  -- TODO: 実施記録のモデルデータが必要.
    + Material Documents 入出庫伝票
    + Material Ledger 品目元帳 (有高帳)
@@ -64,7 +64,7 @@ Forked from <a href="https://github.com/Kintsugi-Design/bonsaiERP/">Kintsugi-Des
    + Goods Return 仕入戻し
    + ✅ Delivery  出荷/納入
    + Customer Return
-   + Transfer Stock in 2-steps - Out
+   + ❌ Transfer Stock in 2-steps - Out
    + Transfer Stock in 2-steps - In
    + Transfer in 1-step w/o order
  
@@ -72,7 +72,7 @@ Forked from <a href="https://github.com/Kintsugi-Design/bonsaiERP/">Kintsugi-Des
    + Production Order
 
  - Configuration
-   + Organisation     TODO: Have a functional currency
+   + Organisation     TODO: <s>Have a functional currency</s> fixed.
    + User Profile   
 
  - Jobs

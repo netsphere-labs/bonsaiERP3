@@ -1,0 +1,64 @@
+
+<% @page_title = "Outbound Delivery" %>
+<% @crumbs = [
+     ["Store/Warehouse", stores_path],
+     [@store.name, @store] ] %>
+
+
+
+<h2>Pendents</h2>
+
+<table class="table">
+  <tr>
+    <th>Date
+    <th>Op.
+    <th>Order
+    <th>Description
+    <th>
+<% @pendents.each do |invt| %>
+  <tr>
+    <td><%= invt.date %>
+    <td><%= invt.operation %>
+    <td><%= link_to "Order ##{invt.order.id}", invt.order %>
+    <td><%= invt.description %>
+    <td>
+      <%= link_to "Show", 
+                {controller: (case invt.operation
+                        when 'inc_out'; :deliveries
+                        when 'out'; :inventory_outs
+                        when 'exp_out'; :goods_returns
+                        else
+                          raise "internal error"
+                        end),
+                 action:"show", store_id: @store.id, id: invt} %>
+<% end %>
+</table>
+
+
+
+
+<h2>未出荷のリクエスト</h2>
+
+<table class="table">
+  <tr>
+    <th>Order# <th>作成日 <th>出荷日 <th>取引先
+  </tr>
+<% @outbound_orders.each do |order| %>
+  <tr>
+    <td><%= link_to "Order ##{order.id}", order %>
+    <td><%= order.date %>
+    <td><%= order.ship_date %>
+    <td><%= order.contact_id ? order.contact.name : '' %>
+    <td><%= link_to "あたらしい出荷登録...",
+                {controller: (case order.type
+                        when 'SalesOrder'; :deliveries
+                        when 'TransferRequest'; :inventory_outs
+                        when 'GoodsReturnRequest'; :goods_returns
+                        else
+                          raise "internal error"
+                        end),
+                 action:"new", store_id: @store.id, order_id: order.id} %>
+  <% end %>
+</table>
+
+

@@ -9,6 +9,7 @@ class GoodsReceiptPosController < ApplicationController
   before_action :set_invt, only: %i[show edit update destroy confirm void]
 
   
+=begin
   def index
     @orders = PurchaseOrder.where(state: ['confirmed', 'in_transit'],
                                  store_id: @store.id)
@@ -16,12 +17,13 @@ class GoodsReceiptPosController < ApplicationController
     @invts = Inventory.where(operation: ['exp_in', 'pit_in'], store_id: @store.id)
                      .page(params[:page])
   end
-
+=end
+  
   
   # GET
   # /expenses_inventory_ins/new?store_id=:store_id&expense_id=:expense_id
   def new
-    @order = PurchaseOrder.find params[:po_id]
+    @order = PurchaseOrder.find params[:order_id]
     
     # form object 
     @invt = Expenses::InventoryIn.new(
@@ -36,7 +38,7 @@ class GoodsReceiptPosController < ApplicationController
   # POST /expenses_inventory_ins
   # store_id&expense_id=:expense_id
   def create
-    @order = PurchaseOrder.find params[:po_id]
+    @order = PurchaseOrder.find params[:order_id]
     # wrap
     @invt = Expenses::InventoryIn.new(
                 Inventory.new store_id: @store.id, order: @order,

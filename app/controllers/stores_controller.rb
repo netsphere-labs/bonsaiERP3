@@ -4,27 +4,62 @@
 
 # in-store/warehouse operations
 class StoresController < ApplicationController
-  before_action :set_store, only: [:show, :edit, :update, :destroy]
+  before_action :set_store,
+            only: %i[inbound_orders outbound_orders show edit update destroy]
   
   # GET /stores
   def index
     @stores = Store.all
   end
 
-  
-  # GET /stores/1
-  def show
-    # 各レコードは, `TransferRequest` などの concrete class になってくれる
-    @outbound_orders = Order.where(<<EOS, @store.id)
-type IN ('SalesOrder', 'TransferRequest', 'GoodsReturnRequest') AND
-store_id = ? AND
-(CASE WHEN type = 'SalesOrder' OR type = 'GoodsReturnRequest'
-           THEN state IN ('confirmed', 'partial')
-      WHEN type = 'TransferRequest' THEN state IN ('confirmed')
+
+  # GET
+  def inbound_orders
+    @pendents = Inventory.where(state: 'draft', store_id: @store.id,
+                                operation: %i[exp_in pit_in inc_in in])
+                         .order(:date, :id)
+    
+    # 戻り値の各レコードは, `TransferRequest` などの concrete class になってく
+    # れる
+    #   TODO: `ProdOrder` はどうする?
+    #   TODO: `partial` 対応
+    @inbound_orders = Order.where(<<EOS, s: @store.id)
+(CASE
+   WHEN type = 'PurchaseOrder'
+     THEN store_id = :s AND state in ('confirmed', 'in_transit')
+   WHEN type = 'TransferRequest'
+     THEN trans_to_id = :s AND state IN ('in_transit')
+   WHEN type = 'CustomerReturnRequest'
+     THEN store_id = :s AND state IN ('confirmed')
+   ELSE false
  END)
 EOS
   end
 
+  
+  # GET
+  def outbound_orders
+    @pendents = Inventory.where(state: 'draft', store_id: @store.id,
+                                operation: %i[inc_out exp_out out])
+    
+    @outbound_orders = Order.where(<<EOS, @store.id)
+store_id = ? AND
+(CASE
+   WHEN type = 'SalesOrder' OR type = 'GoodsReturnRequest'
+     THEN state IN ('confirmed')
+   WHEN type = 'TransferRequest'
+     THEN state IN ('confirmed')
+   ELSE false
+ END)
+EOS
+  end
+
+    
+  # GET /stores/1
+  def show
+  end
+
+  
   # GET /stores/new
   def new
     @store = Store.new(active: true)

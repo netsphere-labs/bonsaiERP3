@@ -7,13 +7,12 @@
 class GoodsReturnsController < ApplicationController
   before_action :set_store
   
-  #before_action :set_store_and_expense
-
+=begin
   def index
     @orders = GoodsReturnRequest.where(state:['confirmed', 'partial'],
                                        store_id: @store.id)
   end
-
+=end
   
   # GET
   # /expenses_inventory_ins/new?store_id=:store_id&expense_id=:expense_id

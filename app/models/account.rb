@@ -29,11 +29,15 @@ class Account < ApplicationRecord
   
   has_many :account_ledgers, -> { order('date desc, id desc') }
   
-  #belongs_to :approver, class_name: 'User', optional: true
   belongs_to :nuller,   class_name: 'User', optional: true
   belongs_to :creator,  class_name: 'User'
   belongs_to :updater,  class_name: 'User', optional: true
+
+  # 不課税は nil
   belongs_to :tax, optional: true
+
+  before_save :update_name
+
   
   ########################################
   # Validations
@@ -77,7 +81,7 @@ class Account < ApplicationRecord
   scope :in, -> { where(type: %w(Income Loans::Give)) }
   scope :out, -> { where(type: %w(Expense Loans::Receive)) }
 
-  delegate :name, :code, :symbol, to: :curr, prefix: true
+  #delegate :name, :code, :symbol, to: :curr, prefix: true
 
   ########################################
   # Methods
@@ -88,4 +92,18 @@ class Account < ApplicationRecord
   def curr
     @curr ||= Currency.find(currency)
   end
+
+  
+private
+  
+  # for `before_save()`
+  # `Account` の側が参照するので, こちらに仕込む
+  def update_name
+    if subtype == "APAR"
+      ac_name = name.split('/', 2)
+      self.name = contact_account.contact.name + '/' +
+                                        ac_name[ac_name[1].blank? ? 0 : 1]
+    end
+  end
+  
 end

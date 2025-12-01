@@ -1,0 +1,63 @@
+
+<% @page_title = "Inbound Delivery" %>
+<% @crumbs = [
+     ["Store/Warehouse", stores_path],
+     [@store.name, @store] ] %>
+
+   
+<h2>Pendents</h2>
+
+<table class="table">
+  <tr>
+    <th>Date
+    <th>Op.
+    <th>Order
+    <th>Description
+    <th>
+  <% @pendents.each do |invt| %>
+  <tr>
+    <td><%= invt.date %>
+    <td><%= invt.operation %>
+    <td><%= link_to "Order ##{invt.order.id}", invt.order %>
+    <td><%= invt.description %>
+    <td>
+      <%= link_to "Show", 
+                {controller: (case invt.operation
+                        when 'exp_in', 'pit_in'; :goods_receipt_pos
+                        when 'in'; :inventory_ins
+                        when 'inc_in'; :customer_returns
+                        else
+                          raise "internal error"
+                        end),
+                 action:"show", store_id: @store.id, id: invt} %>
+  <% end %>
+</table>
+
+
+
+<h2>未受入のリクエスト</h2>
+
+<table class="table">
+  <tr>
+    <th>Order# <th>作成日 <th>Arrival Date <th>取引先
+  </tr>
+  <% @inbound_orders.each do |order| %>
+  <tr>
+    <td><%= link_to "Order ##{order.id}", order %>
+    <td><%= order.date %>
+    <td><%= order.delivery_date %>
+    <td><%= order.contact &.name %>
+    <td>
+      <%= link_to "あたらしい入庫登録...",
+                {controller: (case order.type
+                        when 'PurchaseOrder'; :goods_receipt_pos
+                        when 'TransferRequest'; :inventory_ins
+                        when 'CustomerReturnRequest'; :customer_returns
+                        else
+                          raise "internal error"
+                        end), 
+                 action:"new", store_id: @store.id, order_id: order.id} %>
+  <% end %>
+</table>
+
+

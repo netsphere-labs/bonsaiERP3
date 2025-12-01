@@ -3,7 +3,8 @@
 <% @crumbs = [
      ["Store/Warehouse", stores_path],
      [@store.name, @store],
-     ["Delivery", {action:"index"}] ] %>
+     ["Outbound Delivery", {controller:"stores", id: @store, action:"outbound_orders"}] ] %>
+
 
 <% content_for :links do %>
   <div class="btn-group" role="group">

@@ -9,18 +9,9 @@ class PurchaseOrder < Order
   #include Models::History
   #has_history_details Movements::History, :expense_details
 
-  #self.code_name = 'E'
-  
   ########################################
   # Relationships
   
-  #has_many :expense_details, -> { order('id asc') },
-  #         foreign_key: :account_id, dependent: :destroy
-  #alias_method :details, :expense_details
-
-  #accepts_nested_attributes_for :expense_details, allow_destroy: true,
-  #                              reject_if: proc { |det| det.fetch(:item_id).blank? }
-
   # 親
   belongs_to :contact
 
@@ -42,9 +33,9 @@ class PurchaseOrder < Order
   
   ########################################
   # Scopes
+  
   #scope :approved, -> { where(state: 'approved') }
   scope :active,   -> { where(state: %w(approved paid)) }
-  #scope :paid, -> { where(state: 'paid') }
 
   # vendor
   scope :contact, -> (cid) { where(contact_id: cid) }
