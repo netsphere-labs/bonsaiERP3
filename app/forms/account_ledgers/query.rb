@@ -2,27 +2,37 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
+# 検索は, 1 取引年月日, 2 取引金額, 3 取引先名
+
 # form object (search)
+# 仕訳の検索は JeSearch
 class AccountLedgers::Query < BaseForm
   attribute :text, :string
 
+  # 取引年月日
   attribute :from, :date
   attribute :to, :date
 
+  # 勘定科目は必須. 人名勘定なので, 取引先を兼ねる
   attribute :account_id, :integer
 
+  attribute :amt_from, :bigint
+  attribute :amt_to, :bigint
+  
   attribute :state, array: true, default: ['approved']
   
   
-  # 勘定科目は必須
   def search()
-    raise ArgumentError if account_id.blank?
+    raise ArgumentError, "勘定科目は必須" if account_id.blank?
 
     ret = AccountLedger.eager_load(:account)
                        .where(account_id: account_id) 
     ret = ret.where("reference ILIKE :s OR description ILIKE :s ", s: text) if !text.blank?
     ret = ret.where("date >= ?", from) if !from.blank?
     ret = ret.where("date <= ?", to) if !to.blank?
+    # 金額
+    ret = ret.where("amount >= ?", amt_from) if !amt_from.blank?
+    ret = ret.where("amount <= ?", amt_to) if !amt_to.blank?
     
     return ret
   end

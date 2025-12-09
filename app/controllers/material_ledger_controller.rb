@@ -10,7 +10,8 @@ class MaterialLedgerController < ApplicationController
                                       .permit(*MatLedgerSearch.attribute_names))
       # Array of InventoryDetail
       @ledgers = @search.search()
-                   .order(:date, :id).page(params[:page])
+            .order('inventories.date, inventories.id, inventory_details.id')
+            .page(params[:page])
     end
   end
 end

@@ -6,18 +6,29 @@
 class InventoriesController < ApplicationController
   include Controllers::Print
 
-  before_action :set_date_range, only: [:index]
+  before_action :set_invt, only: %i[show]
+  #before_action :set_date_range, only: [:index]
 
+  
   # GET /inventories
   def index
-    @inventories = get_inventories
+    if params[:date_range].blank? || !params[:reset].blank?
+      @search = DateRange.new
+      # ここは伝票単位ではなく, 明細単位
+      @invts = InventoryDetail.joins(:inventory)
+    else
+      @search = DateRange.new( params.require(:date_range)
+                                     .permit(*DateRange.attribute_names) )
+      @invts = get_invt_details()
+    end
+
+    @invts = @invts.order('inventories.date, inventories.id, inventory_details.id')
+                   .page(params[:page])
   end
 
   
   # GET /inventories/1
   def show
-    @inventory = present Inventory.includes(inventory_details: :item).find(params[:id])
-
     respond_to do |format|
       format.html
       format.print
@@ -25,6 +36,7 @@ class InventoriesController < ApplicationController
     end
   end
 
+  
   # GET /inventories/1/show_movement
   def show_movement
     @inventory = present Inventory.includes(inventory_details: :item).find(params[:id])
@@ -36,6 +48,7 @@ class InventoriesController < ApplicationController
     end
   end
 
+  
   # GET /inventories/1/show_trans
   def show_trans
     @inventory = present Inventory.includes(inventory_details: :item).find(params[:id])
@@ -47,20 +60,27 @@ class InventoriesController < ApplicationController
     end
   end
 
-  private
-    def get_inventories
-      inv = Inventory.order("inventories.date desc, inventories.id desc")
-      .includes(:store, :store_to, :income, :expense, :creator)
-      if params[:search].present?
-        s = params[:search]
-        inv = inv.where{ref_number.like "%#{s}%"}
-      elsif params[:search].blank? && params[:date_start].present?
-        inv = inv.where(date: @date_range.range)
-      end
+  
+private
 
-      inv.page(@page)
-    end
+  def set_invt
+    # ここは伝票
+    @invt = Inventory.eager_load(:details).find(params[:id])
+  end
 
+
+  def get_invt_details
+    ret = InventoryDetail.joins(:inventory)
+    ret = ret.where('inventories.date >= ?', @search.date_start) if !@search.date_start.blank?
+    ret = ret.where('inventories.date <= ?', @search.date_end) if !@search.date_end.blank?
+
+    ret = ret.where('inventory_details.item_id = ?', @search.item_id) if !@search.item_id.blank?
+    ret = ret.where('inventories.store_id = ?', @search.store_id) if !@search.store_id.blank?
+    
+    return ret
+  end
+
+  
     def set_date_range
       if params[:date_start].present? && params[:date_end].present?
         @date_range = DateRange.parse(params[:date_start], params[:date_end])

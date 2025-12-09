@@ -207,12 +207,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
     t.integer "movement_type", limit: 2, null: false
     t.decimal "price", precision: 14, scale: 4, default: "0.0", null: false, comment: "機能通貨建ての単価"
     t.decimal "quantity", precision: 14, scale: 2, default: "0.0", null: false
-    t.integer "store_id", null: false
     t.timestamp "updated_at", null: false
     t.index ["inventory_id", "item_id"], name: "index_inventory_details_on_inventory_id_and_item_id", unique: true
     t.index ["inventory_id"], name: "index_inventory_details_on_inventory_id"
     t.index ["item_id"], name: "index_inventory_details_on_item_id"
-    t.index ["store_id"], name: "index_inventory_details_on_store_id"
   end
 
   create_table "item_accountings", id: :serial, force: :cascade do |t|
@@ -457,7 +455,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
   add_foreign_key "inventories", "stores"
   add_foreign_key "inventory_details", "inventories"
   add_foreign_key "inventory_details", "items"
-  add_foreign_key "inventory_details", "stores"
   add_foreign_key "item_accountings", "accounts", column: "ending_inv_ac_id"
   add_foreign_key "item_accountings", "accounts", column: "purchase_ac_id"
   add_foreign_key "item_accountings", "accounts", column: "revenue_ac_id"

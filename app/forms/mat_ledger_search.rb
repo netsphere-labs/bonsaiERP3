@@ -14,7 +14,7 @@ class MatLedgerSearch < BaseForm
 
   # @return [Array of InventoryDetail]
   def search()
-    raise ArgumentError if item_id.blank?
+    raise ArgumentError, "品目は必須" if item_id.blank?
   
     ret = InventoryDetail.joins(:inventory).where(item_id: item_id)
     ret = ret.where("ref_number ILIKE :s OR description ILIKE :s ", s: text) if !text.blank?
