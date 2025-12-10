@@ -1,57 +1,53 @@
+
+:ruby
+  @page_title = "入出庫伝票: ##{@invt.id}"
+  @crumbs = [
+    ["入出庫伝票", inventories_path] ]
+
 - content_for :links do
-  %ul.breadcrumbs.span6
-    %li
-      =link_to "Almacenes", stores_path
-    %li
-      %i.icon-caret-right
-    %li
-      =link_to @inventory.store, store_path(@inventory.store, tab: 'operations')
-
-.row-fluid
-  .span8
-    %h1
-      %span.muted.n(title='Operación de inventario' data-toggle='tooltip') Op. Inventario:
-      %strong= @inventory.ref_number
-      %small.b= @inventory.operation_tag
-  .span4.r
-    .btn-group
-      = link_to inventory_path(@inventory.id, format: 'print'), class: 'btn' do
-        %i.icon-print
-        Imprimir
-
-      = link_to inventory_path(@inventory.id, format: 'pdf'), class: 'btn' do
-        = image_tag 'pdf.png'
-        PDF
+  %div.btn-group{role: "group"}
+    = link_to "Print", inventory_path(@invt, format: 'print'), class: 'btn' 
 
 
-%h3.n
-  %span.muted Almacen:
-  = link_to @inventory.store, store_path(@inventory.store, anchor: 'operations-tab')
+%table.table
+  %tr
+    %th Date:
+    %td= @invt.date
+  %tr
+    %th Ref. Number:
+    %td= @invt.ref_number
+  %tr
+    %th Store:
+    %td
+      = link_to @invt.store.name, store_path(@invt.store, anchor: 'operations-tab')
+  %tr
+    %th Op. Inventario:
+    %td= @invt.operation
+  %tr
+    %th Description:
+    %td= @invt.description
+  %tr
+    %th Creator:
+    %td
+      = @invt.creator
+      = @invt.created_at
 
-.row-fluid
-  .span3
-    %h4.n.i= l @inventory.date
-  .span3
-    %i.icon-user(title='Creado por' data-toggle='tooltip')
-    = @inventory.creator
-    %i= l @inventory.created_at
-  .span6
-    %i.icon-file.muted(data-toggle='tooltip' title='Description')
-    = @inventory.description
 
-%h3 Items
-.row-fluid
-  %table#items.table.decorated
-    %tr
-      %th Item
-      %th Cantidad
-      %th Unidad
 
-    - @inventory.inventory_details.includes(:item).each do |det|
-      %tr.item
-        %td
-          = det.item
-        %td
-          = ntc det.quantity
-        %td
-          = det.item.unit_symbol
+
+%h2 Items
+
+%table#items.table.decorated
+  %tr
+    %th Item
+    %th Cantidad
+    %th Unidad
+
+  - @invt.details.includes(:item).each do |det|
+    %tr.item
+      %td
+        = det.item
+      %td
+        = ntc det.quantity
+      %td
+        = det.item.unit_symbol

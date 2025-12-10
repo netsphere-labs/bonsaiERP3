@@ -16,8 +16,9 @@ class AccountLedgers::Query < BaseForm
   # 勘定科目は必須. 人名勘定なので, 取引先を兼ねる
   attribute :account_id, :integer
 
-  attribute :amt_from, :bigint
-  attribute :amt_to, :bigint
+  # form 側は小数点あり
+  attribute :amt_from, :decimal
+  attribute :amt_to, :decimal
   
   attribute :state, array: true, default: ['approved']
   

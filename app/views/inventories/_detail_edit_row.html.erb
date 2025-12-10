@@ -30,12 +30,12 @@
     <div class="col-1">
       <%= order_det.item.unit.symbol %>
     </div>
-    <div class="col-1">
-      <%= order_det.balance %>
-    </div>
     <div class="col-2">
       <%= df.hidden_field :price %>
       <%= detail_obj.price %>
+    </div>
+    <div class="col-1">
+      <%= order_det.balance %>
     </div>
 <% else %>
     <div class="col-3">
@@ -47,10 +47,10 @@
 <% # TODO: display item's uom #' %>
     <div class="col-1"></div>  
     
-    <div class="col-1"> </div>
     <div class="col-2">
       <%= df.number_field :price, class:"form-control" %>
     </div>
+    <div class="col-1"> </div>
 <% end %>
 
     <div class="col-2">

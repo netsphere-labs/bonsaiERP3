@@ -6,7 +6,7 @@
 class TransferencesController < ApplicationController
   before_action :set_journal_entry, only: %i[show edit update destroy]
 
-
+  # 仕訳帳
   def index
     if params[:je_search].blank? || !params[:reset].blank?
       @search = JeSearch.new
@@ -57,7 +57,7 @@ private
   def set_journal_entry
     # form object
     @journal_entry = Transference.new(
-                        AccountLedger.where(entry_id: params[:entry_id]) )
+                        AccountLedger.where(entry_no: params[:entry_no]) )
   end
 
     def transference_params

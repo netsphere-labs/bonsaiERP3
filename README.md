@@ -34,7 +34,7 @@ Forked from <a href="https://github.com/Kintsugi-Design/bonsaiERP/">Kintsugi-Des
    + ✅ Chart of Accounts
    + ✅ Item Accounting Rule. 品目クラスに勘定科目を紐付ける.
    + ❌ Journal 仕訳帳  -- ● TODO: 振替伝票の表示
-   + ✅ General Ledger  総勘定元帳
+   + ✅ General Ledger  総勘定元帳. ● TODO: 相手科目, 残高が未実装.
    + Tags   --- どんな機能性だろう?
    
  - Sales
@@ -52,8 +52,8 @@ Forked from <a href="https://github.com/Kintsugi-Design/bonsaiERP/">Kintsugi-Des
  - Inventory
    + ✅ Inventory Transfer Request
    + Inventory Count and Adjustment  -- TODO: 実施記録のモデルデータが必要.
-   + Material Documents 入出庫伝票
-   + Material Ledger 品目元帳 (有高帳)
+   + ❌ Material Documents 入出庫伝票  -- TODO: 出庫の単価は、売価ではなく, 原価でなければならない。まず先に, 移動平均単価の計算を作る.
+   + ❌ Material Ledger 品目元帳 (有高帳) -- TODO: 入出庫と残高の計算
    
  - In-Store/Warehouse Operations
    + In-Store Sales w/o order
@@ -71,10 +71,11 @@ Forked from <a href="https://github.com/Kintsugi-Design/bonsaiERP/">Kintsugi-Des
  - Project
    + Production Order
 
- - Configuration
-   + Organisation     TODO: <s>Have a functional currency</s> fixed.
+ - Organisation
+   + Settings      TODO: <s>Have a functional currency</s> fixed.
    + User Profile   
-
+   + Sign Up
+   
  - Jobs
    + 月次総平均法
    + ころがし計算 (固定費調整)

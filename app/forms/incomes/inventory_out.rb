@@ -21,7 +21,7 @@ class Incomes::InventoryOut < Inventories::Form
                         else
                           raise "internal error"
                         end
-      m.store_id = store_id
+      #m.store_id = store_id
       (ary << m) if m.quantity != 0.0
     end
 
@@ -32,9 +32,9 @@ class Incomes::InventoryOut < Inventories::Form
   # TODO: 出庫の場合は, 現在庫の表示も必要
   def build_details_from_order
     order.details.each do |det|
-      # `balance` そのままではなく, 手入力する
       self.details << InventoryDetail.new(item_id: det.item_id ,
-                                          price: det.price, quantity: 0)
+                                          price: det.price,
+                                          quantity: det.balance)
     end
   end
 

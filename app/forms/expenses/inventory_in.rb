@@ -23,7 +23,7 @@ class Expenses::InventoryIn < Inventories::Form
                         else
                           raise "internal error"
                         end
-      m.store_id = store_id
+      #m.store_id = store_id
       if m.quantity != 0.0
         m.price = m.line_total / m.quantity if !h[:line_total].blank?
         ary << m
@@ -38,7 +38,8 @@ class Expenses::InventoryIn < Inventories::Form
     # The `balance` is the number of items that are not yet received.
     order.details.each do |det|
       self.details << InventoryDetail.new(item_id: det.item_id,
-                                          price: det.price, quantity: det.balance)
+                                          price: det.price,
+                                          quantity: det.balance)
     end
   end
 

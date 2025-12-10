@@ -2,7 +2,7 @@
 :ruby
   @page_title = "New Delivery"
   @crumbs = [
-    ["Back", {action:"index"}] ]
+    ["Back", {controller:"stores", id:@store.id, action:"outbound_orders"}] ]
 
 
 = bootstrap_form_with model: @invt, url: {action:"create"}, layout: :horizontal do |f|

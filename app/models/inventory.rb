@@ -41,10 +41,9 @@ class Inventory < BusinessRecord
   belongs_to :project, optional: true
 
   has_many :details, class_name: "InventoryDetail", dependent: :destroy
-  #accepts_nested_attributes_for :inventory_details, allow_destroy: true,
-  #                              reject_if: lambda {|attrs| attrs[:quantity].blank? || attrs[:quantity].to_d <= 0 }
 
   # Validations
+  
   validates_presence_of :date
   
   # 購買入庫, 販売出庫 with order の場合のみ

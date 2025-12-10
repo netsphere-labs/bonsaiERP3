@@ -1,23 +1,26 @@
 
-%li.row-fluid.account_ledger(id='#{ledger.id}')
-  .span5
-    %h4.ib
-      = link_to ledger, {controller:'transferences', action:"show", entry_no: ledger.entry_no}, class: 'code', title: 'Código'
-    %strong= ledger.operation
+%tr
+  %td= l ledger.date
+  %td
+    = link_to ledger.entry_no, {controller:'transferences', action:"show", entry_no: ledger.entry_no}, class: 'code', title: 'Código'
+  %td ●未実装
 
-    = ledger.status
+  - if ledger.amount >= 0
+    %td
+      = ntc ledger.amount
+      = currency_label ledger.currency
+    %td
+  - else
+    %td
+    %td
+      = ntc -ledger.amount
+      = currency_label ledger.currency
 
-    %p
-      %i= l ledger.date.to_date
-      %span.muted De:
-      = link_to ledger.account.name, ledger.account
-  .span5
+  %td ●未実装
+
+  %td
     = ledger.updater
     = ledger.creator
     = ledger.approver
     = ledger.nuller
-    .clearfix
 
-  .span2.r
-    = ntc ledger.amount
-    = currency_label ledger.currency

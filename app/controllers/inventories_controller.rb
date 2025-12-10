@@ -7,7 +7,6 @@ class InventoriesController < ApplicationController
   include Controllers::Print
 
   before_action :set_invt, only: %i[show]
-  #before_action :set_date_range, only: [:index]
 
   
   # GET /inventories

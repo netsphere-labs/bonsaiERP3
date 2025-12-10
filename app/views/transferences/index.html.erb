@@ -11,12 +11,14 @@
 <table class="table">
   <tr>
     <th>日付
+    <th>Entry No.
     <th>勘定科目
     <th>借方
     <th>貸方
 <% @journal_entries.each do |account_ledger| %>
   <tr>
-    <td><%= account_ledger.date %>        
+    <td><%= account_ledger.date %>
+    <td><%= account_ledger.entry_no %>
     <td><%= account_ledger.account.name %>
 <% if account_ledger.amount >= 0 %>
     <td><%= account_ledger.amount %>  <td>

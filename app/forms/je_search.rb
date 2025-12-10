@@ -7,8 +7,9 @@ class JeSearch < BaseForm
   # 勘定科目・取引先。optional
   attribute :account_id, :integer
 
-  attribute :amt_from, :bigint
-  attribute :amt_to, :bigint
+  # form 側は小数点あり
+  attribute :amt_from, :decimal
+  attribute :amt_to, :decimal
 
   
   # @return [Array of AccountLedger] 伝票ではない

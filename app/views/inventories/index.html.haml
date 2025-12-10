@@ -1,19 +1,24 @@
-- content_for :links do
-  %ul.breadcrumbs
-    %li
-      &nbsp;
 
-%h1 入出庫伝票の一覧
+:ruby
+  @page_title = "入出庫伝票"
 
 
-= render 'search', date_range: @date_range
+= render 'search'
 
-- paginate_html = paginate @inventories
+- paginate_html = paginate @invts
 
 = paginate_html
 
-%ul.listing.unstyled
-  = render @inventories
+%table.table
+  %tr
+    %th Ref.Number
+    %th Date
+    %th Operation
+    %th Store
+    %th Item
+
+  - @invts.each do |invt_detail|
+    = render partial: "inventory", locals:{detail: invt_detail}
 
 
 = paginate_html

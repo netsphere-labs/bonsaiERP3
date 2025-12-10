@@ -21,7 +21,15 @@
   - html = paginate @ledgers
   = html
 
-  %ul.unstyled.listing
+  %table.table
+    %tr
+      %th 日付
+      %th Entry No.
+      %th 相手科目
+      %th 借方
+      %th 貸方
+      %th 残高
+
     - @ledgers.each do |ledger| 
       = render partial: 'ledger', locals:{ledger:ledger}
 
