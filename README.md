@@ -33,7 +33,8 @@ Forked from <a href="https://github.com/Kintsugi-Design/bonsaiERP/">Kintsugi-Des
    + Tax  -- 消費税/VAT
    + ✅ Chart of Accounts
    + ✅ Item Accounting Rule. 品目クラスに勘定科目を紐付ける.
-   + ❌ Journal 仕訳帳  -- ● TODO: 振替伝票の表示
+   + ❌ Journal 仕訳帳
+     - ❌ 振替伝票   -- 未了
    + ✅ General Ledger  総勘定元帳. ● TODO: 相手科目, 残高が未実装.
    + Tags   --- どんな機能性だろう?
    

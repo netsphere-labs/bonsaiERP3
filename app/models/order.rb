@@ -18,7 +18,7 @@ class Order < BusinessRecord
   # Relationships
 
   has_many :details, -> {order('id ASC')},
-           class_name: "MovementDetail", dependent: :destroy
+           class_name: "OrderDetail", dependent: :destroy
 
   #belongs_to :project, optional: true
   

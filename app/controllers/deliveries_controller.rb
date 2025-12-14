@@ -118,13 +118,13 @@ class DeliveriesController < ApplicationController
         #   To prevent double submissions, the balances is subtracted even in
         #   draft state. It also needs to update them when the voucher is updated.
         
-        @invt.details.each do |inv_detail|
-          m = MovementDetail.where(order_id: @invt.order_id,
-                                   item_id: inv_detail.item_id).take ||
-              MovementDetail.new(order_id: @invt.order_id,
-                                 item_id: inv_detail.item_id,
-                                 price: inv_detail.price) # new price
-          m.balance -= inv_detail.quantity  # not amount
+        @invt.details.each do |invt_detail|
+          m = OrderDetail.where(order_id: @invt.order_id,
+                                   item_id: invt_detail.item_id).take ||
+              OrderDetail.new(order_id: @invt.order_id,
+                                 item_id: invt_detail.item_id,
+                                 price: invt_detail.txn_price) # new price
+          m.balance -= invt_detail.quantity  # not amount
           m.save!
         end
         @invt.order.state = 'delivered' # closed

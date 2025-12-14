@@ -192,7 +192,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
     t.string "ref_number"
     t.string "state", limit: 50, null: false
     t.integer "store_id", null: false
-    t.decimal "total", precision: 14, scale: 2, default: "0.0", null: false, comment: "機能通貨建ての金額"
+    t.string "txn_currency", limit: 3
     t.timestamp "updated_at", null: false
     t.integer "updater_id"
     t.index ["account_id"], name: "index_inventories_on_account_id"
@@ -205,8 +205,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
     t.integer "inventory_id", null: false
     t.integer "item_id", null: false
     t.integer "movement_type", limit: 2, null: false
-    t.decimal "price", precision: 14, scale: 4, default: "0.0", null: false, comment: "機能通貨建ての単価"
     t.decimal "quantity", precision: 14, scale: 2, default: "0.0", null: false
+    t.decimal "txn_price", precision: 14, scale: 4, default: "0.0", null: false, comment: "取引通貨建ての単価"
+    t.decimal "unitary_cost", precision: 14, scale: 4, default: "0.0", null: false, comment: "原価 (機能通貨)"
     t.timestamp "updated_at", null: false
     t.index ["inventory_id", "item_id"], name: "index_inventory_details_on_inventory_id_and_item_id", unique: true
     t.index ["inventory_id"], name: "index_inventory_details_on_inventory_id"
@@ -277,7 +278,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "movement_details", force: :cascade do |t|
+  create_table "order_details", force: :cascade do |t|
     t.integer "account_id"
     t.decimal "balance", precision: 14, scale: 2, default: "0.0", null: false
     t.timestamp "created_at", null: false
@@ -287,10 +288,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
     t.decimal "price", precision: 14, scale: 2, default: "0.0", null: false
     t.decimal "quantity", precision: 14, scale: 2, default: "0.0", null: false
     t.timestamp "updated_at", null: false
-    t.index ["account_id"], name: "index_movement_details_on_account_id"
-    t.index ["item_id"], name: "index_movement_details_on_item_id"
-    t.index ["order_id", "item_id"], name: "index_movement_details_on_order_id_and_item_id", unique: true
-    t.index ["order_id"], name: "index_movement_details_on_order_id"
+    t.index ["account_id"], name: "index_order_details_on_account_id"
+    t.index ["item_id"], name: "index_order_details_on_item_id"
+    t.index ["order_id", "item_id"], name: "index_order_details_on_order_id_and_item_id", unique: true
+    t.index ["order_id"], name: "index_order_details_on_order_id"
   end
 
   create_table "orders", id: :serial, force: :cascade do |t|
@@ -463,9 +464,9 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
   add_foreign_key "items", "units"
   add_foreign_key "links", "organisations"
   add_foreign_key "links", "users"
-  add_foreign_key "movement_details", "accounts"
-  add_foreign_key "movement_details", "items"
-  add_foreign_key "movement_details", "orders"
+  add_foreign_key "order_details", "accounts"
+  add_foreign_key "order_details", "items"
+  add_foreign_key "order_details", "orders"
   add_foreign_key "orders", "contacts"
   add_foreign_key "orders", "items", column: "prod_item_id"
   add_foreign_key "orders", "stores"

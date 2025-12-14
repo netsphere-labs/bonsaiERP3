@@ -41,7 +41,9 @@ class GoodsReceiptPosController < ApplicationController
     @order = PurchaseOrder.find params[:order_id]
     # wrap
     @invt = Expenses::InventoryIn.new(
-                Inventory.new store_id: @store.id, order: @order,
+                Inventory.new store_id: @store.id,
+                              order: @order,
+                              txn_currency: @order.currency,
                               creator_id: current_user.id,
                               operation: (case @order.state
                                           when 'confirmed'; 'exp_in'
@@ -109,13 +111,15 @@ class GoodsReceiptPosController < ApplicationController
         @invt.confirm! current_user #, current_organisation
 
         # データの安定のために, confirm 時に `order.balance` を減らす
-        @invt.details.each do |inv_detail|
-          m = MovementDetail.where(order_id: @invt.order_id,
-                                   item_id: inv_detail.item_id).take ||
-              MovementDetail.new(order_id: @invt.order_id,
-                                 item_id: inv_detail.item_id,
-                                 price: inv_detail.price) # new price
-          m.balance -= inv_detail.quantity  # not amount
+        # TODO:
+        #   UX が今ひとつ。draft 状態であっても, 未入荷からは消えてほしい
+        @invt.details.each do |invt_detail|
+          m = OrderDetail.where(order_id: @invt.order_id,
+                                   item_id: invt_detail.item_id).take ||
+              OrderDetail.new(order_id: @invt.order_id,
+                                 item_id: invt_detail.item_id,
+                                 price: invt_detail.txn_price) # new price
+          m.balance -= invt_detail.quantity  # not amount
           m.save!
         end
         @invt.order.state = 'delivered' # closed

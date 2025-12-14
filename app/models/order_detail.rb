@@ -3,7 +3,7 @@
 # email: boriscyber@gmail.com
 
 # order 内の明細行
-class MovementDetail < ApplicationRecord
+class OrderDetail < ApplicationRecord
   # 親
   belongs_to :order
 

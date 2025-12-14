@@ -26,7 +26,7 @@ class Movements::Form < BaseForm
   # SalesOrder or PurchaseOrder
   attr_reader :model_obj
 
-  # Array of MovementDetail
+  # Array of OrderDetail
   attr_reader :details
   
   # form fields
@@ -122,7 +122,7 @@ private
 
     ary = []
     detail_params.each do |_lineno, h|
-      m = MovementDetail.new h.permit(:item_id, :price, :quantity, :description)
+      m = OrderDetail.new h.permit(:item_id, :price, :quantity, :description)
       (ary << m) if m.quantity != 0.0
     end
 

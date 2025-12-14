@@ -15,7 +15,7 @@ class Incomes::InventoryOut < Inventories::Form
 
     ary = []
     detail_params.each do |_lineno, h|
-      m = InventoryDetail.new h.permit(:item_id, :price, :quantity)
+      m = InventoryDetail.new h.permit(:item_id, :txn_price, :quantity)
       m.movement_type = case model_obj.operation
                         when 'inc_out'; 261  # Goods issue for an order.
                         else
@@ -33,7 +33,7 @@ class Incomes::InventoryOut < Inventories::Form
   def build_details_from_order
     order.details.each do |det|
       self.details << InventoryDetail.new(item_id: det.item_id ,
-                                          price: det.price,
+                                          txn_price: det.price,
                                           quantity: det.balance)
     end
   end

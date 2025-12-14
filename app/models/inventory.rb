@@ -127,19 +127,19 @@ class Inventory < BusinessRecord
       # 三分法でやってみる
       amt[detail.item.accounting.purchase_ac_id] =
                         (amt[detail.item.accounting.purchase_ac_id] || 0) +
-                        detail.price * detail.quantity  # ここは機能通貨
+                        detail.txn_price * detail.quantity  # ここは取引通貨
     end
 
     entry_no = rand(2_000_000_000)
     # Dr.
     sum_amt = 0
     amt.each do |pur_ac_id, a|
-      # TODO: 金額は取引通貨でなければならない。が、機能通貨建てになっている
-      #       受入れのときに取引通貨と両方保存が必要
+      # TODO: 仕訳の金額は取引通貨。仕訳のほうで, 機能通貨建ての金額も必要
+      #       仕訳の側で, 換算が必要。
       r = AccountLedger.new date: self.date, entry_no: entry_no,
                             operation: 'trans',
                             account_id: pur_ac_id,  # Dr.
-                            amount: a,  
+                            amount: a,    # 取引通貨
                             currency: self.order.currency,
                             description: "goods receipt po",
                             creator_id: user.id,
@@ -173,15 +173,15 @@ class Inventory < BusinessRecord
     self.details.each do |detail|
       amt[detail.item.accounting.revenue_ac_id] =
                         (amt[detail.item.accounting.revenue_ac_id] || 0) +
-                        detail.price * detail.quantity
+                        detail.txn_price * detail.quantity  # ここは取引通貨
     end
 
     entry_no = rand(2_000_000_000)
     # Cr.
     sum_amt = 0
     amt.each do |rev_ac_id, a|
-      # TODO: 金額は取引通貨でなければならない。が、機能通貨建てになっている
-      #       受入れのときに取引通貨と両方保存が必要
+      # TODO: 仕訳の金額は取引通貨。仕訳のほうで, 機能通貨建ての金額も必要
+      #       仕訳の側で, 換算が必要。
       r = AccountLedger.new date: self.date, entry_no: entry_no,
                             operation: 'trans',
                             account_id: rev_ac_id,  # Cr.

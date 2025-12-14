@@ -32,7 +32,7 @@
 <% lines = [@order.details.length + 2, 6].max %>
 <% (0.. lines - 1).each do |idx|
      detail_obj = @order.details[idx] ||
-                  MovementDetail.new() %>
+                  OrderDetail.new() %>
   <%= render partial: "orders/detail_edit_row",
              locals: {lineno: idx + 1, detail_obj: detail_obj} %>
 <% end %>

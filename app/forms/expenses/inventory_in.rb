@@ -15,7 +15,7 @@ class Expenses::InventoryIn < Inventories::Form
     
     ary = []
     detail_params.each do |_lineno, h|
-      m = InventoryDetail.new h.permit(:item_id, :price, :quantity, :line_total)
+      m = InventoryDetail.new h.permit(:item_id, :txn_price, :quantity, :line_total)
       m.movement_type = case model_obj.operation
                         when 'exp_in';   101  # supplier -> unrestricted stock
                         when 'pur_tran'; 107  # supplier -> valued blocked stock
@@ -25,7 +25,7 @@ class Expenses::InventoryIn < Inventories::Form
                         end
       #m.store_id = store_id
       if m.quantity != 0.0
-        m.price = m.line_total / m.quantity if !h[:line_total].blank?
+        m.txn_price = m.line_total / m.quantity if !h[:line_total].blank?
         ary << m
       end
     end
@@ -38,7 +38,7 @@ class Expenses::InventoryIn < Inventories::Form
     # The `balance` is the number of items that are not yet received.
     order.details.each do |det|
       self.details << InventoryDetail.new(item_id: det.item_id,
-                                          price: det.price,
+                                          txn_price: det.price,
                                           quantity: det.balance)
     end
   end

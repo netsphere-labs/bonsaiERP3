@@ -21,8 +21,9 @@ class CreateInventoryOperations < ActiveRecord::Migration[5.2]
 
         t.string :description, null:false
 
-        t.decimal :total, :precision => 14, :scale => 2, null:false, default: 0, comment: "機能通貨建ての金額"
-
+        #t.decimal :total, :precision => 14, :scale => 2, null:false, default: 0, comment: "機能通貨建ての金額"
+        t.column :txn_currency, "CHAR(3)"
+        
         t.integer  :creator_id, null:false
         #t.integer  :transference_id
 

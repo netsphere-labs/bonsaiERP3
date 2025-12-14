@@ -14,8 +14,8 @@ class InventoryDetail < ApplicationRecord
 
   validates_presence_of :movement_type
 
-  # 単価 (機能通貨建て)
-  validates_presence_of :price
+  # 単価 (取引通貨建て)
+  validates_presence_of :txn_price
 
   #● TODO: 追加 project_id  nullable
   

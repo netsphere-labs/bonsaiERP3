@@ -18,7 +18,7 @@
   <div class="row border-bottom border-primary g-0"
        data-controller="inv-detail-row">
 <% if detail_obj.item %>
-<%   order_det = MovementDetail.where(order_id: @order.id,
+<%   order_det = OrderDetail.where(order_id: @order.id,
                                       item_id: detail_obj.item_id).take %>
     <div class="col-3">
       <%= df.hidden_field :item_id %>
@@ -31,8 +31,8 @@
       <%= order_det.item.unit.symbol %>
     </div>
     <div class="col-2">
-      <%= df.hidden_field :price %>
-      <%= detail_obj.price %>
+      <%= df.hidden_field :txn_price %>
+      <%= detail_obj.txn_price %>
     </div>
     <div class="col-1">
       <%= order_det.balance %>
@@ -48,7 +48,7 @@
     <div class="col-1"></div>  
     
     <div class="col-2">
-      <%= df.number_field :price, class:"form-control" %>
+      <%= df.number_field :txn_price, class:"form-control" %>
     </div>
     <div class="col-1"> </div>
 <% end %>
