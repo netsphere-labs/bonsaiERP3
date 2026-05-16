@@ -267,4 +267,6 @@ gem "sorcery", ">= 0.17.0"
 gem "pundit", "~> 2.5"
 
 # `error_messages_for`
-gem 'dynamic_form', '>= 1.3.0'
+# dynamic_form 1.3.1 depends on Ruby >= 2.7.0, < 3.4 (!)
+#gem 'dynamic_form', '>= 1.3.0'
+gem 'dynamic_form', path: 'vendor/dynamic_form'
