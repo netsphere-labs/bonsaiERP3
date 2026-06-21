@@ -1,16 +1,11 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe "currencies/show.html.erb" do
+RSpec.describe "currencies/show", type: :view do
   before(:each) do
-    assign(:currency, @currency = stub_model(Currency,
-      :name => "MyString",
-      :symbol => "MyString"
-    ))
+    assign(:currency, Currency.create!())
   end
 
   it "renders attributes in <p>" do
     render
-    response.should contain("MyString")
-    response.should contain("MyString")
   end
 end

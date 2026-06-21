@@ -7,7 +7,7 @@
 <% if ['new', 'create'].include?(action_name) %>
   <%= f.select :contact_id,
             options_from_collection_for_select(Contact.where(supplier:true), :id, :name, @order.contact_id),
-            required:false, help: "Only new record" %>
+            required:false, label:"Partner:", help: "Only new record" %>
 <% else %>
   <div class="row">
     <label><%= t('general.contact') %></label>
@@ -17,17 +17,42 @@
 
   
   <%= f.select :currency,
-            options_from_collection_for_select(Currency.all, :code, :to_s, @order.currency) %>
+            options_from_collection_for_select(Money::Currency.all, :iso_code, :iso_code, @order.currency) %>
 
-  <%= f.date_field :ship_date, label: "Delivery Date:",
-                   help:"If FOB and *CIF*, the date on the port of departure" %>
-  <%= f.text_field :delivery_loc %>
-  <%= f.text_field :incoterms %>
-  <%= f.date_field :delivery_date, label:"Arrival Date:",
-                   help:"Please enter if different from delivery date" %>
-      
-  <%= f.select :store_id,
-            options_from_collection_for_select(Store.all, :id, :name, @order.store_id), required:false, label:"Ship To:" %>
+<div class="row">
+  <%= f.label :ship_date, "Delivery Date:", class: "col-sm-2 col-form-label required" %>
+  <div class="col-sm-3">
+    <%= f.date_field :ship_date, wrapper:false %>
+  </div>
+  <%= f.label :delivery_loc, "Location:", class: "col-sm-1 col-form-label" %>
+  <div class="col-sm-3">
+    <%= f.text_field :delivery_loc, wrapper:false %>
+  </div>
+  <%= f.label :incoterms, "Incoterms:", class: "col-sm-1 col-form-label" %>
+  <div class="col-sm-2">
+    <%= f.text_field :incoterms, wrapper:false %>
+  </div>
+</div>
+<div class="row mb-3">
+  <div class="col-12">
+    <div class="form-text">If FOB and *CIF*, the date on the port of departure</div>
+  </div>
+</div>
+
+<div class="row">
+  <%= f.label :delivery_date, "Arrival Date:", class: "col-sm-2 col-form-label" %>
+  <div class="col-sm-3">
+    <%= f.date_field :delivery_date, wrapper:false %>
+  </div>
+  <%= f.label :store_id, "Ship To:", class: "col-sm-1 col-form-label" %>
+  <div class="col-sm-3">
+    <%= f.select :store_id,
+            options_from_collection_for_select(Store.all, :id, :name, @order.store_id), wrapper: false %>
+  </div>
+</div>
+<div class="row mb-3">
+    <div class="form-text">Please enter if different from the delivery date</div>
+</div>
 
   <%# Render items %>
   <%= render 'orders/form_items', f: f  %>

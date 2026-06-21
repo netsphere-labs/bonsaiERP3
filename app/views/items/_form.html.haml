@@ -20,7 +20,7 @@
   .row
     .span6.well.well-small
       = f.number_field :buy_price,
-        label: "Buy Price: <strong>Compra</strong> #{currency_label}".html_safe, input_html: {size: 12, type: 'decimal'}
+        label: "Buy Price: <strong>Compra</strong> ".html_safe, input_html: {size: 12, type: 'decimal'}
 
     .span6.well.well-small
       .row-fluid
@@ -28,7 +28,7 @@
           = f.check_box :for_sale, label: 'For Sale'.html_safe,
             hint: 'Permitir venta'
         .span6
-          = f.number_field :price, label: "Price: <strong>Venta</strong> #{currency_label}".html_safe,
+          = f.number_field :price, label: "Price: <strong>Venta</strong> ".html_safe,
             input_html: {size: 12, type: 'decimal'}
 
   .form-actions

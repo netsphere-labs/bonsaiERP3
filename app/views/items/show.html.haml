@@ -8,9 +8,9 @@
 - content_for :links do
   %div.btn-group{role: "group"}
     = link_to "Edit this item...", edit_item_path(@item), class: 'btn'
-    = button_to "Destroy this item", @item, class: 'btn', data:{turbo_confirm: "Esta seguro de borra el ítem"}, method: :delete
+    = button_to "Destroy this item", @item, class: 'btn btn-outline-danger', data:{turbo_confirm: "Esta seguro de borra el ítem"}, method: :delete
 
-
+    = link_to "BoM Structure", item_bom_structures_path(@item), class: 'btn'
 
 %div.row
   %div.col Name:
@@ -35,14 +35,12 @@
 .row-fluid
   .span6.well.well-small
     %span.text-muted.muted Precio de COMPRA
-    %strong= ntc @item.buy_price
-    = currency_label
+    %strong= @item.buy_price
 
   .span6.well.well-small
     %span.text-muted.muted Precio de VENTA:
 
-    %strong= ntc @item.price
-    = currency_label
+    %strong= @item.price
 
 .row-fluid
   .span6

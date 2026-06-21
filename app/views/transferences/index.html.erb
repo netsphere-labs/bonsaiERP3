@@ -7,24 +7,31 @@
   <%= f.submit 'Show', class: 'btn btn-primary' %>
 <% end %>
 
+<p><%= link_to "New journal entry...", new_transference_path %>
+  
+<%== @pagy.series_nav(:bootstrap) %>
 
-<table class="table">
+<table class="table table-sm">
   <tr>
     <th>日付
     <th>Entry No.
     <th>勘定科目
     <th>借方
     <th>貸方
-<% @journal_entries.each do |account_ledger| %>
+<% funct_curr = current_organisation.currency
+   @journal_entries.each do |account_ledger| %>
   <tr>
     <td><%= account_ledger.date %>
     <td><%= account_ledger.entry_no %>
     <td><%= account_ledger.account.name %>
-<% if account_ledger.amount >= 0 %>
-    <td><%= account_ledger.amount %>  <td>
+<% if account_ledger.funct_amount >= 0 %>
+    <td><%= format_amount(account_ledger.funct_amount, funct_curr) %> 
+    <td>
 <% else %>      
-    <td> <td><%= -account_ledger.amount %>
+    <td> <td><%= format_amount(-account_ledger.funct_amount, funct_curr) %> 
 <% end %>
     <td><%= link_to "Show", {action:"show", entry_no: account_ledger.entry_no} %>
 <% end %>
 </table>
+
+<%== @pagy.series_nav(:bootstrap) %>

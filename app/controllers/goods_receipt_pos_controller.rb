@@ -26,24 +26,28 @@ class GoodsReceiptPosController < ApplicationController
     @order = PurchaseOrder.find params[:order_id]
     
     # form object 
-    @invt = Expenses::InventoryIn.new(
+    @invt = Movements::ExpenseIn.new(
       Inventory.new store_id: @store.id, order: @order,
                     date: Time.zone.today,
                     description: "Recoger mercadería egreso PO##{@order.id}"
     )
     @invt.build_details_from_order
+
+    @invoice = Invoice.new inv_type: 'purchase',
+                           partner_id: @order.contact_id,
+                           curr_code: @order.currency
   end
 
   
   # POST /expenses_inventory_ins
-  # store_id&expense_id=:expense_id
+  # Invoice と兼ねる。
   def create
     @order = PurchaseOrder.find params[:order_id]
-    # wrap
-    @invt = Expenses::InventoryIn.new(
+    # wrap for goods receipt.
+    @invt = Movements::ExpenseIn.new(
                 Inventory.new store_id: @store.id,
                               order: @order,
-                              txn_currency: @order.currency,
+                              curr_code: @order.currency,
                               creator_id: current_user.id,
                               operation: (case @order.state
                                           when 'confirmed'; 'exp_in'
@@ -54,9 +58,20 @@ class GoodsReceiptPosController < ApplicationController
                               state: 'draft' )
     @invt.assign inventory_params, params.require(:detail), @store.id
 
+    @invoice = Invoice.new params.require(:movements_expense_in).require(:invoice)
+                        .permit(:due_date, :bp_bank_account_id, :lock_version)
+    @invoice.assign_attributes partner_id: @order.contact_id,
+                               curr_code: @order.currency,
+                               date: @invt.date,
+                               status: 'draft',
+                               doc_no: nil,
+                               inv_type: 'purchase'
     begin
       ActiveRecord::Base.transaction do
-        # atomic save in form object
+        @invoice.amount_total = @invt.details.reduce(0.0) {|r, item| r + item.txn_amount}
+        @invoice.save!
+        # atomic save in the form object
+        @invt.model_obj.invoice_id = @invoice.id
         @invt.save!
       end
     rescue ActiveRecord::RecordInvalid => e
@@ -74,20 +89,26 @@ class GoodsReceiptPosController < ApplicationController
 
 
   def edit
-    @order = @invt.order
+    @order   = @invt.order
+    @invoice = @invt.invoice
     # wrap
-    @invt = Expenses::InventoryIn.new(@invt)
+    @invt = Movements::ExpenseIn.new(@invt)
   end
 
   
   def update
     @order = @invt.order
+    @invoice = @invt.invoice
     # wrap
-    @invt = Expenses::InventoryIn.new(@invt)
+    @invt = Movements::ExpenseIn.new(@invt)
     @invt.assign inventory_params, params.require(:detail), @store.id
+    @invoice.assign_attributes params.require(:movements_expense_in).require(:invoice)
+                        .permit(:due_date, :bp_bank_account_id, :lock_version)
     
     begin
       ActiveRecord::Base.transaction do
+        @invoice.amount_total = @invt.details.reduce(0.0) {|r, item| r + item.txn_amount}
+        @invoice.save!
         # atomic save in form object
         @invt.save!
       end
@@ -110,6 +131,9 @@ class GoodsReceiptPosController < ApplicationController
         # 内部で save!() される
         @invt.confirm! current_user #, current_organisation
 
+        @invt.invoice.status = "confirmed"
+        @invt.invoice.save!
+        
         # データの安定のために, confirm 時に `order.balance` を減らす
         # TODO:
         #   UX が今ひとつ。draft 状態であっても, 未入荷からは消えてほしい
@@ -126,7 +150,7 @@ class GoodsReceiptPosController < ApplicationController
         @invt.order.save!
       
         if @invt.operation == 'exp_in'
-          @invt.gen_je_for_goods_received(current_user)
+          @invt.gen_je_for_goods_received(current_user, current_organisation)
         end
       end # transaction
     rescue ActiveRecord::RecordInvalid => e
@@ -172,7 +196,7 @@ private
   
   def inventory_params
     # form object
-    params.require(:expenses_inventory_in).permit(
+    params.require(:movements_expense_in).permit(
         :description, :date, :account_id,
         #inventory_details_attributes: [:item_id, :quantity]
       )

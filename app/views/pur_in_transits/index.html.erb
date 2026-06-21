@@ -7,30 +7,7 @@
 </ul>
 
 
-<h2>未受入の発注</h2>
-
-<table class="table">
-  <tr>
-    <th>PO# <th>発注日 <th>Delivery Date <th>Delivery Location
-    <th>Incoterms
-    <th>Arrival Date <th>Store/WHS <th>取引先
-  </tr>
-  <% @orders.each do |order| %>
-  <tr>
-    <td><%= order.id %>
-    <td><%= order.date %>
-    <td><%= order.ship_date %>
-    <td><%= order.delivery_loc %>
-    <td><%= order.incoterms %>
-    <td><%= order.delivery_date %>
-    <td><%= order.store.name %>
-    <td><%= order.contact.name %>
-    <td><%= link_to "あたらしい Purchase-in-Transit...", {action:"new", po_id: order.id} %>
-  <% end %>
-</table>
-
-
-<h2>Inventories</h2>
+<%== @pagy.series_nav(:bootstrap) %>
 
 <table class="table">
   <% @invts.each do |invt| %>
@@ -41,4 +18,5 @@
   <% end %>
 </table>
 
+<%== @pagy.series_nav(:bootstrap) %>
 

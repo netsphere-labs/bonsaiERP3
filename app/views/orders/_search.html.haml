@@ -2,18 +2,26 @@
 -# @param @search search object
 
 .search
-  = bootstrap_form_with model: @search, url:{action:"index"}, method: "get", layout: :inline  do |f|
+  = form_with model: @search, url:{action:"index"}, method: "get" do |f|
     %div.row
-      = f.text_field :search, hide_label: true, placeholder: t("views.incomes.index.search.search_placeholder"), inline: true
-
-      = f.date_field :date_start, label:"From:"
-      = f.date_field :date_end, label:"To:"
-
+      %label
+        = f.text_field :search, placeholder: t("views.incomes.index.search.search_placeholder")
+      %label
+        Order Date:
+        = f.date_field :date_start
+        = f.date_field :date_end
+      %label
+        Arrival Date:
+        = f.date_field :arrival_date_start
+        = f.date_field :arrival_date_end
+     
       -# params = "state"=>{"draft"=>"1", "approved"=>"1", "delivered"=>"1", "void"=>"0"}
       - Order::STATES.each do |st|
-        = f.check_box 'state', {multiple:true, label:st, checked: @search.state.include?(st)}, st
+        %label
+          = f.check_box 'state', {multiple:true, checked: @search.state.include?(st)}, st
+          = st
 
-      = f.date_field :overdue
+      = f.number_field :overdue
 
     = f.submit "Filter", class: "btn btn-primary"
     = f.submit 'Reset', name:"reset", class: 'btn btn-secondary'

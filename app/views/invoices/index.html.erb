@@ -1,0 +1,27 @@
+
+<% @page_title = "Invoice Checking" %>
+
+<% content_for :links do %>
+  <%= link_to 'New Purchase Invoice...', new_invoice_path, class: "btn btn-secondary" %>
+<% end %>
+
+
+<%== @pagy.series_nav(:bootstrap) %>
+
+<table class="table">
+  <tr>
+    <th>invoice date
+    <th>partner
+    <th>status
+    <th>total amount
+  </tr>
+
+<% @invoices.each do |invoice| %>
+  <tr>
+        <td><%= bonsai_links(invoice) %></td>
+  </tr>
+<% end %>
+</table>
+
+<%== @pagy.series_nav(:bootstrap) %>
+

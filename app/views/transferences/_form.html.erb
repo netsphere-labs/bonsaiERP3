@@ -1,0 +1,13 @@
+
+
+  <%= f.date_field :date %>
+  <%= f.text_field :reference %>
+
+  <%= error_messages_for :journal_entry %>
+  
+<% for i in 0..([6, @journal_entry.lines.size].max - 1)
+     entry = @journal_entry.lines[i] || AccountLedger.new %>
+  <%= render partial:"form_entry",
+             locals:{entry:entry, lineno: i + 1, firstline: i == 0 } %>
+<% end %>
+

@@ -8,6 +8,7 @@
 -content_for :links do
   %div.btn-group{role: "group"}
     = link_to "Edit this account...", edit_cash_path(@cash), class: 'btn'
+    = button_to 'Destroy', cash_path(@cash), data:{turbo_confirm:'Sure?'}, method: :delete, class: 'btn btn-outline-danger'
 
 
 
@@ -28,11 +29,9 @@
 
 %h2 Transacciones
 
-- txn = @cash.account.account_ledgers
+- txn = @cash.account.account_ledgers.limit(10)
 
-= paginate txn.page(@page)
 
 %ul.unstyled.listing
   = render partial: 'account_ledgers/money', collection: txn, as: :ledger, locals: { current_account_id: @cash.account.id }
 
-= paginate txn.page(@page)

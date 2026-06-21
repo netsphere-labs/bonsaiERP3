@@ -27,7 +27,7 @@ en:
       logout: Logout
     footer:
       slogan:
-        The simple ERP to manage your company.
+        A simple ERP for managing your business.
     sessions:
       flash_login: You have logged in correctly.
       flash_login_error: The email or password is incorrect.

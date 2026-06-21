@@ -10,7 +10,7 @@
     = link_to "Edit...", edit_store_path(@store.id), class: 'btn'
 
     = button_to "Destroy", store_path(@store.id), method: :delete,
-                data:{turbo_confirm: "Esta seguro de borrar el almacen?"}, class: 'btn'
+                data:{turbo_confirm: "Esta seguro de borrar el almacen?"}, class: 'btn btn-outline-danger'
 
 
 

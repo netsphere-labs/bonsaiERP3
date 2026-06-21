@@ -23,10 +23,15 @@ class PurchaseOrder < Order
   # ship_to: purchase only, NOT NULL
   belongs_to :store
 
+  
+  # Validations ##############################################
+  
   validates_presence_of :ship_date
 
+  validates_presence_of :gross_total
+  validates_presence_of :total
   validates_presence_of :currency
-  validates_inclusion_of :currency, in: CURRENCIES.keys
+  #validates_inclusion_of :currency, in: CURRENCIES.keys
   
   before_validation :set_delivery_date
 
@@ -34,16 +39,13 @@ class PurchaseOrder < Order
   ########################################
   # Scopes
   
-  #scope :approved, -> { where(state: 'approved') }
-  scope :active,   -> { where(state: %w(approved paid)) }
-
   # vendor
-  scope :contact, -> (cid) { where(contact_id: cid) }
+  #scope :contact, -> (cid) { where(contact_id: cid) }
   
   scope :pendent, -> { active.where.not(amount: 0) }
   scope :error, -> { active.where(has_error: true) }
-  scope :due, -> { approved.where("accounts.due_date < ?", Time.zone.now.to_date) }
-  #scope :nulled, -> { where(state: 'nulled') }
+  #scope :due, -> { approved.where("accounts.due_date < ?", Time.zone.now.to_date) }
+  
   scope :inventory, -> { active.where("extras->'delivered' = ?", 'false') }
   scope :like, -> (s) {
     s = "%#{s}%"

@@ -11,31 +11,44 @@ class TransferencesController < ApplicationController
     if params[:je_search].blank? || !params[:reset].blank?
       @search = JeSearch.new
       # Array of AccountLedger. 改ページは伝票単位ではない
-      @journal_entries = AccountLedger
+      query = AccountLedger
     else
       @search = JeSearch.new( params.require(:je_search)
-                                .permit(*JeSearch.attribute_names) )
-      @journal_entries = @search.search()
+                                    .permit(*JeSearch.attribute_names) )
+      query = @search.search()
     end
-    @journal_entries = @journal_entries.order(:date, :entry_no, :id)
-                                       .page(params[:page])
+    @pagy, @journal_entries = pagy(:offset, query.order(:date, :entry_no, :id))
   end
 
   
   # GET /transferences?account_id
   def new
     # form object
-    @journal_entry = Transference.new(account_id: params[:account_id], date: Time.zone.now.to_date)
+    @journal_entry = Transference.new([])
+    @journal_entry.date = Time.zone.now.to_date
   end
 
+  
   def create
-    @journal_entry = Transference.new(transference_params)
+    # form object
+    @journal_entry = Transference.new([])
+    @journal_entry.assign transference_params, params.require(:entries),
+                          current_organisation.currency
 
-    if @transference.transfer
-      redirect_to @transference.account, notice: 'Se realizo correctamente la transferencia.'
-    else
-      render 'new'
+    begin
+      ActiveRecord::Base.transaction do
+        @journal_entry.assign_attributes entry_no: rand(2_000_000_000),
+                                         operation: 'trans',
+                                         status: 'approved'
+        @journal_entry.save! current_user
+      end
+    rescue ActiveRecord::RecordInvalid
+      render 'new', status: :unprocessable_entity
+      return
     end
+    
+    redirect_to @journal_entry,
+                notice: 'Se realizo correctamente la transferencia.'
   end
 
 
@@ -60,9 +73,8 @@ private
                         AccountLedger.where(entry_no: params[:entry_no]) )
   end
 
-    def transference_params
-      transference_attrs = params.require(:transference).permit(:account_to_id, :amount, :date, :exchange_rate, :reference, :verification)
-      transference_attrs[:account_id] = @account.id
-      transference_attrs
-    end
+  
+  def transference_params
+    params.require(:transference).permit(:date, :reference )
+  end
 end

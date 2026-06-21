@@ -17,12 +17,15 @@ class Stock < ApplicationRecord
     10 => "Valuated Goods Receipt Blocked Stock",  # from 107, out 109
   }
   
-  #validations
+  # validations ###############################################
 
   validates_presence_of :date
 
   validates_presence_of :invt_type
   validates_inclusion_of :invt_type, in: INVT_TYPES.keys
+
+  validates_presence_of :quantity
+  validates_presence_of :unitary_cost
   
   validates_numericality_of :minimum, greater_than_or_equal_to: 0 #, allow_nil:  true
 
@@ -74,11 +77,14 @@ class Stock < ApplicationRecord
                    .to_h {|r| [r.item_id, r]}
       detail_ary.each do |det|
         # ナルの場合, 直近の日付の残高を引き継ぐ
+        prev = Stock.where('date <= ? AND store_id = ? AND invt_type = ? AND item_id = ?',
+                           date - 1, store_id, stock_type, det.item_id)
+                    .order('date DESC').limit(1).take
         stock[det.item_id] ||=
             Stock.new(date: date, store_id: store_id, invt_type: stock_type,
                       item_id: det.item_id,
-                      quantity: Stock.get_balance(date - 1, store_id, stock_type,
-                                              det.item_id) )
+                      quantity: (prev ? prev.quantity : 0),
+                      unitary_cost: (prev ? prev.unitary_cost : 0) )
         stock[det.item_id].quantity += det.quantity * weight
         stock[det.item_id].save!
       end

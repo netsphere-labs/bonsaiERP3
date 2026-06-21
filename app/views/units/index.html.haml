@@ -28,4 +28,4 @@
         = unit.symbol
       %td
         = link_to "Edit...", edit_unit_path(unit), class: 'btn'
-        = button_to "Destroy", unit, class: 'btn', method: :delete, data:{turbo_confirm: 'Esta segur@ de borrar la Unit of Measure?'}, form_class:"d-inline"
+        = button_to "Destroy", unit, class: 'btn btn-outline-danger', method: :delete, data:{turbo_confirm: 'Esta segur@ de borrar la Unit of Measure?'}, form_class:"d-inline"

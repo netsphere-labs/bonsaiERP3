@@ -25,6 +25,8 @@ class ApplicationController < ActionController::Base
   include Controllers::Authorization
   include Controllers::RescueFrom
 
+  include Pagy::Method
+  
   protect_from_forgery with: :exception
 
   
@@ -146,9 +148,9 @@ end
       end
     end
 
-    delegate :name, :currency, to: :current_organisation, prefix: :organisation, allow_nil: true
-    alias_method :currency, :organisation_currency
-    helper_method :currency, :organisation_name
+    #delegate :name, :currency, to: :current_organisation, prefix: :organisation, allow_nil: true
+    #alias_method :currency, :organisation_currency
+    #helper_method :currency, :organisation_name
 
     def set_page
       @page = params[:page] || 1

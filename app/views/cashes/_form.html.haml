@@ -3,6 +3,9 @@
 
 
 = bootstrap_form_for(@cash, layout: :horizontal) do |f|
+
+  = error_messages_for 'cash' 
+
   = f.fields_for @cash.account do |af|
     = render partial:"accounts/form", locals:{form: af}
 
@@ -10,7 +13,14 @@
     %legend Bank Information
     = f.text_field :bank_name, label:"Bank and Branch:"
     = f.text_field :bank_addr
-    = f.text_field :account_no
+    - if ["new", "create"].include?(action_name)
+      = f.text_field :account_no, help:"後から変更できません"
+    - else
+      %div.row
+        %label.col-2
+          Account No:
+        %div.col-10
+          = @cash.account_no
     = f.text_field :account_name
 
   .form-actions

@@ -1,5 +1,5 @@
 
-<% @page_title = "Contact Account: " + @contact_account.account.name %>
+<% @page_title = "Bank Account: #{@contact_account.account_no} #{@contact_account.account_name}" %>
 <% @crumbs = [
      ["Business Partners", partners_path],
      [@partner.name, partner_path(@partner)] ]

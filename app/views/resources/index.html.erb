@@ -1,0 +1,17 @@
+
+<% @page_title = "Resource Master" %>
+
+<p><%= link_to 'New Resource...', new_resource_path, :class => 'new' %>
+
+<table class="decorated nwl">
+  <tr>
+    <th></th>
+  </tr>
+
+<% @resources.each do |resource| %>
+  <tr>
+        <td><%= bonsai_links(resource) %></td>
+  </tr>
+<% end %>
+</table>
+

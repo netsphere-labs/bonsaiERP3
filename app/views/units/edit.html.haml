@@ -3,12 +3,8 @@
 
 - content_for :links do
   %ul.breadcrumps.span6
-    %li #{link_to "Unidades de medida", units_path}
+    %li #{link_to "Back", units_path}
   
-  .links.span6
-    = link_to 'New', @unit, :class => 'add'
-    = link_to 'Ver', @unit, :class => 'show'
-    = link_to 'Borrar', @unit, :class => 'delete'
 
 = render 'form' 
 

@@ -8,7 +8,7 @@
 - content_for :links do
   %div.btn-group{role: "group"}
     = link_to "Edit...", edit_partner_path(@partner), class: 'btn'
-    = button_to "Destroy", partner_path(@partner), class: 'btn', data: { turbo_confirm: "Esta seguro de borra el contacto" }, method: :delete
+    = button_to "Destroy", partner_path(@partner), class: 'btn btn-outline-danger', data: { turbo_confirm: "Esta seguro de borra el contacto" }, method: :delete
 
 
 
@@ -32,29 +32,33 @@
     %th Mobile:
     %td= @partner.mobile
 
-%h2 口座
+
+
+%h2 Bank accounts
 - @partner.contact_accounts.each do |ca|
   = render ca
 
-= link_to "New Contact Account...", new_partner_contact_account_path(@partner)
+%p
+  = link_to "New bank account...", new_partner_contact_account_path(@partner)
 
-%h3.n Operaciones  取引先との取引の一覧
 
-%ul.unstyled.inline
-  %li
-    = link_to "Todas", partner_path(@partner, operation: :all), class: param_bold_for(:operation, 'all')
-  %li
+
+%h2 Transactions 取引先との取引の一覧
+
+%ul(class='nav nav-tabs')
+  %li.nav-item
+    = link_to "Todas", partner_path(@partner, operation: :all), class: 'nav-link'
+  %li.nav-item
     = link_to "Ingresos", partner_path(@partner, operation: :income), class: param_bold_for(:operation, 'income')
-  %li
+  %li.nav-item
     = link_to "Expenses", partner_path(@partner, operation: :expense), class: param_bold_for(:operation, 'expense')
-  %li
+  %li.nav-item
     = link_to "Prestamos otorgados", partner_path(@partner, operation: :loangive), class: param_bold_for(:operation, 'loangive')
-  %li
+  %li.nav-item
     = link_to "Prestamos recibidos", partner_path(@partner, operation: :loanreceive), class: param_bold_for(:operation, 'loanreceive')
 
-- orders = @partner.op_list(:all).page(params[:page])  # TODO: params を使う
 
-= paginate(orders)
+- orders = @partner.op_list(:all).limit(10)
 
 %ul.listing.unstyled(style='margin-top: 10px')
   %li.row-fluid
@@ -68,5 +72,4 @@
   - orders.each do |order|
     = order.inspect  # TODO: impl.
 
-= paginate(orders)
 

@@ -11,14 +11,21 @@
   = @search.nothing? ? "" : "Search: " + @search.attributes.inspect
 
 
-- paginate_html = paginate @items
+- paginate_html = @pagy.series_nav(:bootstrap).html_safe
+= paginate_html
+
+%table(class='table table-sm')
+  %tr
+    %th Code
+    %th Name
+    %th UoM
+    %th Active?
+    %th Description
+    %th saleable?
+    %th stockable?
+  - @items.each do |item|
+    =render item
 
 = paginate_html
 
--# cache [organisation_name, @items] do
-%ul#items-list.unstyled.listing.has-row-check
-  =render @items
 
-= paginate_html
-
-= render 'index_tour'

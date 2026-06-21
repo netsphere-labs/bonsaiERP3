@@ -1,0 +1,38 @@
+
+<%= @partner.errors.inspect %>
+
+<%= error_messages_for 'partner' %>
+
+<%= f.text_field :matchcode, label: 'matchcode:',
+                 input_html: { class: 'matchcode span11' } %>
+<%= f.text_field :name %>
+
+<div class="row">
+  <%= f.country_select :country_code %>
+</div>
+
+<%= f.email_field :email, lanel: "E-mail:", input_html: { class: 'span11' } %>
+
+<%= f.text_field :phone, label: "Phone:", input_html: {size: 20} %>
+
+<%= f.text_field :mobile, label: "Mobile:", input_html: {size: 20} %>
+
+<%= f.text_field :tax_number, label: 'Tax Number:' %>
+<%= f.text_field :address, input_html: {rows: 3, cols: 45}, label: 'Address:' %>
+
+<fieldset class="row mb-3">
+  <legend class="col-form-label col-sm-2 pt-0">Kind:</legend>
+  <div class="col-sm-10">
+<% [:client, :supplier, :staff].each do |sym| %>
+  <div class="form-check form-check-inline">
+    <%= tag.label class:"form-check-label" do %>
+      <%= tag.input name:"contact[#{sym}]", type: "hidden", value:"0" %>
+      <%= tag.input name:"contact[#{sym}]", type: "checkbox", value:"1",
+	            checked: @partner.send(sym), class: "form-check-input" %>
+      <%= sym %>
+    <% end %>
+  </div>
+  <% end %>
+  </div>
+</fieldset>
+

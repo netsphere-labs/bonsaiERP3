@@ -1,8 +1,12 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# Base of SalesOrder and PurchaseOrder
-class Order < BusinessRecord 
+# Base of `SalesOrder`, `CustomerReturnRequest`,
+#         `PurchaseOrder`, `GoodsReturnRequest`,
+#         `TransferRequest` and `ProdOrder`
+class Order < BusinessRecord
+  # table `orders`
+  #self.abstract_class = true
 
   # `delivered` = closed
   # TODO: `partial`: PO = Partially Received, SO = Partially Fulfilled
@@ -12,7 +16,8 @@ class Order < BusinessRecord
   # PO:
   #   ●TODO: 未着品計上し、商品受領したときに差異があった場合どうするか?
   STATES = %w(draft confirmed in_transit delivered void).freeze
-
+  enum :state, STATES.map{|x| [x,x]}.to_h
+  
 
   ########################################
   # Relationships
@@ -26,25 +31,26 @@ class Order < BusinessRecord
   
   has_many :inventories #, foreign_key: :account_id
 
+  # Attachments
+  has_many :attachments, -> { order('attachments.position') }, dependent: :destroy
+
+  
   ########################################
   # Validations
   
   validates_presence_of :date
   
-  enum :state, STATES.map{|x| [x,x]}.to_h
-  
   validate  :valid_currency_change, on: :update
-  validate  :greater_or_equal_due_date
+  validate  :greater_or_equal_ship_date
 
-  validates_inclusion_of :state, in: STATES
   
   ########################################
   # Delegations
-  delegate :name, :percentage, :percentage_dec, to: :tax, prefix: true, allow_nil: true
+  #delegate :name, :percentage, :percentage_dec, to: :tax, prefix: true, allow_nil: true
   
-  def self.movements
-    Account.where(type: ['Income', 'Expense'])
-  end
+  #def self.movements
+  #  Account.where(type: ['Income', 'Expense'])
+  #end
 
   
   ########################################
@@ -126,14 +132,6 @@ class Order < BusinessRecord
     end
   end
 
-=begin
-  def can_null?
-    return false  if draft? || nulled?
-    return false  if ledgers.pendent.any?
-    return false  if inventory_was_moved?
-    total === amount
-  end
-=end
   
   def inventory_was_moved?
     details.any? { |det| det.quantity != det.balance }
@@ -176,7 +174,7 @@ private
 
    
   # for validate()
-  def greater_or_equal_due_date
+  def greater_or_equal_ship_date
     if date && ship_date && !(date <= ship_date)
       errors.add(:ship_date, "must be >= order_date" )
     end

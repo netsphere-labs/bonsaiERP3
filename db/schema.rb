@@ -10,37 +10,40 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
+ActiveRecord::Schema[8.1].define(version: 2026_06_02_051009) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
 
   create_table "account_ledgers", force: :cascade do |t|
-    t.decimal "account_balance", precision: 14, scale: 2, default: "0.0", null: false
     t.integer "account_id", null: false
-    t.decimal "amount", precision: 14, scale: 2, default: "0.0", null: false, comment: "借方がプラス"
     t.timestamp "approver_datetime"
     t.integer "approver_id"
+    t.integer "bp_bank_account_id"
     t.timestamp "created_at", null: false
     t.integer "creator_id", null: false
-    t.string "currency", limit: 3, null: false, comment: "取引通貨"
     t.date "date", null: false
     t.string "description", null: false
     t.integer "entry_no", null: false
-    t.string "error_messages"
-    t.decimal "exchange_rate", precision: 14, scale: 4, default: "1.0", null: false
-    t.boolean "has_error", default: false
+    t.jsonb "error_messages"
+    t.bigint "funct_amount", null: false
+    t.bigint "fx_amount", comment: "借方がプラス"
+    t.string "fx_curr_code", limit: 3, comment: "取引通貨"
+    t.boolean "has_error", default: false, null: false
     t.integer "inventory_id"
     t.boolean "inverse", default: false, null: false
     t.timestamp "nuller_datetime"
     t.integer "nuller_id"
     t.string "operation", limit: 20, null: false
+    t.integer "partner_id"
     t.string "reference"
-    t.string "status", limit: 50, default: "approved", null: false
+    t.string "status", limit: 20, default: "approved", null: false
     t.timestamp "updated_at", null: false
     t.integer "updater_id"
     t.index ["account_id"], name: "index_account_ledgers_on_account_id"
+    t.index ["bp_bank_account_id"], name: "index_account_ledgers_on_bp_bank_account_id"
     t.index ["inventory_id"], name: "index_account_ledgers_on_inventory_id"
+    t.index ["partner_id"], name: "index_account_ledgers_on_partner_id"
   end
 
   create_table "accounts", id: :serial, force: :cascade do |t|
@@ -52,72 +55,55 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
     t.string "currency", limit: 3
     t.string "description", limit: 500, null: false
     t.jsonb "error_messages"
-    t.decimal "exchange_rate", precision: 14, scale: 4, default: "1.0"
     t.jsonb "extras"
     t.boolean "has_error", default: false, null: false
     t.string "name", null: false
     t.integer "nuller_id"
     t.string "subtype", limit: 40, null: false
     t.integer "tag_ids", default: [], array: true
-    t.integer "tax_id"
     t.boolean "tax_in_out", default: false
-    t.decimal "tax_percentage", precision: 5, scale: 2, default: "0.0"
     t.timestamp "updated_at", null: false
     t.integer "updater_id"
+    t.index ["accountable_type", "accountable_id"], name: "index_accounts_on_accountable_type_and_accountable_id", unique: true
     t.index ["creator_id"], name: "index_accounts_on_creator_id"
     t.index ["extras"], name: "index_accounts_on_extras"
     t.index ["name"], name: "index_accounts_on_name", unique: true
     t.index ["nuller_id"], name: "index_accounts_on_nuller_id"
     t.index ["tag_ids"], name: "index_accounts_on_tag_ids"
-    t.index ["tax_id"], name: "index_accounts_on_tax_id"
     t.index ["tax_in_out"], name: "index_accounts_on_tax_in_out"
   end
 
-  create_table "active_storage_attachments", force: :cascade do |t|
-    t.bigint "blob_id", null: false
-    t.timestamp "created_at", null: false
-    t.string "name", null: false
-    t.bigint "record_id", null: false
-    t.string "record_type", null: false
-    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
-    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
-  end
-
-  create_table "active_storage_blobs", force: :cascade do |t|
-    t.bigint "byte_size", null: false
-    t.string "checksum"
-    t.string "content_type"
-    t.timestamp "created_at", null: false
-    t.string "filename", null: false
-    t.string "key", null: false
-    t.text "metadata"
-    t.string "service_name", null: false
-    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
-  end
-
-  create_table "active_storage_variant_records", force: :cascade do |t|
-    t.bigint "blob_id", null: false
-    t.string "variation_digest", null: false
-    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
-  end
-
   create_table "attachments", force: :cascade do |t|
-    t.integer "attachable_id"
-    t.string "attachable_type"
-    t.string "attachment_uid"
     t.timestamp "created_at", null: false
-    t.boolean "image", default: false
-    t.json "image_attributes"
-    t.string "name"
-    t.integer "position", default: 0
+    t.jsonb "image_data"
+    t.bigint "inventory_id"
+    t.bigint "item_id"
+    t.string "name", null: false
+    t.bigint "order_id"
+    t.integer "position", null: false
     t.boolean "publish", default: false
-    t.integer "size"
     t.timestamp "updated_at", null: false
-    t.integer "user_id"
-    t.index ["attachable_id", "attachable_type"], name: "index_attachments_on_attachable_id_and_attachable_type"
-    t.index ["image"], name: "index_attachments_on_image"
+    t.integer "user_id", null: false
+    t.index ["inventory_id"], name: "index_attachments_on_inventory_id"
+    t.index ["item_id"], name: "index_attachments_on_item_id"
+    t.index ["order_id"], name: "index_attachments_on_order_id"
     t.index ["publish"], name: "index_attachments_on_publish"
-    t.index ["user_id"], name: "index_attachments_on_user_id"
+  end
+
+  create_table "bom_structures", force: :cascade do |t|
+    t.bigint "child_item_id"
+    t.bigint "child_res_id"
+    t.integer "child_type", limit: 2, null: false
+    t.datetime "created_at", null: false
+    t.bigint "parent_id", null: false
+    t.decimal "qty", precision: 14, scale: 2, null: false
+    t.bigint "sales_order_id"
+    t.string "text"
+    t.datetime "updated_at", null: false
+    t.index ["child_item_id"], name: "index_bom_structures_on_child_item_id"
+    t.index ["child_res_id"], name: "index_bom_structures_on_child_res_id"
+    t.index ["parent_id"], name: "index_bom_structures_on_parent_id"
+    t.index ["sales_order_id"], name: "index_bom_structures_on_sales_order_id"
   end
 
   create_table "cashes", force: :cascade do |t|
@@ -127,18 +113,18 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
     t.string "bank_name", comment: "銀行名+支店名"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["bank_name", "account_no"], name: "index_cashes_on_bank_name_and_account_no", unique: true
+    t.index ["account_no"], name: "index_cashes_on_account_no", unique: true
   end
 
   create_table "contact_accounts", force: :cascade do |t|
-    t.string "account_name"
-    t.string "account_no"
+    t.string "account_name", null: false
+    t.string "account_no", null: false
     t.string "bank_addr"
-    t.string "bank_name", comment: "銀行名+支店名"
+    t.string "bank_name", null: false, comment: "銀行名+支店名"
     t.integer "contact_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["contact_id", "account_no"], name: "index_contact_accounts_on_contact_id_and_account_no", unique: true
+    t.index ["account_no"], name: "index_contact_accounts_on_account_no", unique: true
     t.index ["contact_id"], name: "index_contact_accounts_on_contact_id"
   end
 
@@ -147,6 +133,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
     t.string "address", limit: 250, comment: "headquarters"
     t.string "aditional_info", limit: 250
     t.boolean "client", default: false, null: false
+    t.string "country_code", limit: 2, null: false
     t.timestamp "created_at", null: false
     t.string "email", limit: 200
     t.jsonb "expenses_status", default: "{}"
@@ -161,9 +148,18 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
     t.integer "tag_ids", default: [], array: true
     t.string "tax_number", limit: 30
     t.timestamp "updated_at", null: false
+    t.index ["country_code", "tax_number"], name: "index_contacts_on_country_code_and_tax_number", unique: true
     t.index ["matchcode"], name: "index_contacts_on_matchcode", unique: true
     t.index ["tag_ids"], name: "index_contacts_on_tag_ids"
-    t.index ["tax_number"], name: "index_contacts_on_tax_number", unique: true
+  end
+
+  create_table "curr_xchgs", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "curr_code", limit: 3, null: false
+    t.date "date", null: false
+    t.float "rate", null: false
+    t.datetime "updated_at", null: false
+    t.index ["date", "curr_code"], name: "index_curr_xchgs_on_date_and_curr_code", unique: true
   end
 
   create_table "histories", force: :cascade do |t|
@@ -180,22 +176,22 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
   end
 
   create_table "inventories", id: :serial, force: :cascade do |t|
-    t.integer "account_id"
     t.timestamp "created_at", null: false
     t.integer "creator_id", null: false
+    t.string "curr_code", limit: 3
     t.date "date", null: false
     t.string "description", null: false
     t.jsonb "error_messages"
     t.boolean "has_error", default: false, null: false
+    t.integer "invoice_id"
     t.string "operation", limit: 10, null: false
     t.integer "order_id"
     t.string "ref_number"
-    t.string "state", limit: 50, null: false
+    t.string "state", limit: 20, null: false
     t.integer "store_id", null: false
-    t.string "txn_currency", limit: 3
     t.timestamp "updated_at", null: false
     t.integer "updater_id"
-    t.index ["account_id"], name: "index_inventories_on_account_id"
+    t.index ["invoice_id"], name: "index_inventories_on_invoice_id"
     t.index ["order_id"], name: "index_inventories_on_order_id"
     t.index ["store_id"], name: "index_inventories_on_store_id"
   end
@@ -204,14 +200,30 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
     t.timestamp "created_at", null: false
     t.integer "inventory_id", null: false
     t.integer "item_id", null: false
-    t.integer "movement_type", limit: 2, null: false
-    t.decimal "quantity", precision: 14, scale: 2, default: "0.0", null: false
-    t.decimal "txn_price", precision: 14, scale: 4, default: "0.0", null: false, comment: "取引通貨建ての単価"
-    t.decimal "unitary_cost", precision: 14, scale: 4, default: "0.0", null: false, comment: "原価 (機能通貨)"
+    t.decimal "quantity", precision: 14, scale: 2, null: false
+    t.bigint "txn_amount", comment: "取引通貨建ての line amount (if any)"
     t.timestamp "updated_at", null: false
     t.index ["inventory_id", "item_id"], name: "index_inventory_details_on_inventory_id_and_item_id", unique: true
     t.index ["inventory_id"], name: "index_inventory_details_on_inventory_id"
     t.index ["item_id"], name: "index_inventory_details_on_item_id"
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.bigint "amount_total", null: false
+    t.bigint "bp_bank_account_id"
+    t.datetime "created_at", null: false
+    t.string "curr_code", limit: 3, null: false
+    t.date "date", null: false
+    t.string "doc_no"
+    t.date "due_date", null: false
+    t.string "inv_type", limit: 10, null: false
+    t.integer "lock_version", null: false
+    t.bigint "partner_id", null: false
+    t.string "status", limit: 20, null: false
+    t.datetime "updated_at", null: false
+    t.index ["bp_bank_account_id"], name: "index_invoices_on_bp_bank_account_id"
+    t.index ["partner_id", "doc_no"], name: "index_invoices_on_partner_id_and_doc_no", unique: true
+    t.index ["partner_id"], name: "index_invoices_on_partner_id"
   end
 
   create_table "item_accountings", id: :serial, force: :cascade do |t|
@@ -238,13 +250,11 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
     t.integer "creator_id", null: false
     t.string "description", null: false
     t.boolean "for_sale", default: true, null: false
-    t.string "name", limit: 255, null: false
+    t.string "name", null: false
     t.decimal "price", precision: 14, scale: 2, default: "0.0", null: false
     t.boolean "stockable", default: true, null: false
     t.integer "tag_ids", default: [], array: true
     t.integer "unit_id", null: false
-    t.string "unit_name", limit: 255
-    t.string "unit_symbol", limit: 20
     t.timestamp "updated_at", null: false
     t.integer "updater_id"
     t.index ["accounting_id"], name: "index_items_on_accounting_id"
@@ -280,13 +290,13 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
 
   create_table "order_details", force: :cascade do |t|
     t.integer "account_id"
+    t.bigint "amount", null: false
     t.decimal "balance", precision: 14, scale: 2, default: "0.0", null: false
     t.timestamp "created_at", null: false
     t.string "description", null: false
     t.integer "item_id"
     t.integer "order_id", null: false
-    t.decimal "price", precision: 14, scale: 2, default: "0.0", null: false
-    t.decimal "quantity", precision: 14, scale: 2, default: "0.0", null: false
+    t.decimal "quantity", precision: 14, scale: 2
     t.timestamp "updated_at", null: false
     t.index ["account_id"], name: "index_order_details_on_account_id"
     t.index ["item_id"], name: "index_order_details_on_item_id"
@@ -297,8 +307,6 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
   create_table "orders", id: :serial, force: :cascade do |t|
     t.timestamp "approver_datetime"
     t.integer "approver_id"
-    t.decimal "balance_inventory", precision: 14, scale: 2, default: "0.0"
-    t.string "bill_number"
     t.integer "contact_id"
     t.timestamp "created_at", null: false
     t.integer "creator_id", null: false
@@ -309,18 +317,17 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
     t.string "delivery_loc"
     t.boolean "devolution", default: false, null: false
     t.boolean "discounted", default: false, null: false
-    t.decimal "gross_total", precision: 14, scale: 2, default: "0.0"
+    t.bigint "gross_total"
     t.string "incoterms", limit: 10
     t.boolean "no_inventory", default: false, null: false
     t.string "null_reason", limit: 400
     t.integer "nuller"
     t.timestamp "nuller_datetime"
-    t.decimal "original_total", precision: 14, scale: 2, default: "0.0"
     t.integer "prod_item_id"
     t.date "ship_date", comment: "If FOB and *CIF*, the date on the port of departure"
     t.string "state", limit: 50, null: false
     t.integer "store_id"
-    t.decimal "total", precision: 14, scale: 2, default: "0.0", null: false
+    t.bigint "total"
     t.integer "trans_to_id"
     t.string "type", limit: 80, null: false
     t.timestamp "updated_at", null: false
@@ -354,15 +361,25 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
     t.index ["tenant"], name: "index_organisations_on_tenant", unique: true
   end
 
+  create_table "resources", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.integer "res_type", limit: 2, null: false
+    t.bigint "unit_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_resources_on_name", unique: true
+    t.index ["unit_id"], name: "index_resources_on_unit_id"
+  end
+
   create_table "stocks", force: :cascade do |t|
     t.timestamp "created_at", null: false
     t.date "date", null: false
     t.integer "invt_type", limit: 2, null: false
     t.integer "item_id", null: false
     t.decimal "minimum", precision: 14, scale: 2, default: "0.0", null: false, comment: "安全在庫の履歴"
-    t.decimal "quantity", precision: 14, scale: 2, default: "0.0", null: false
+    t.decimal "quantity", precision: 14, scale: 2, null: false
     t.integer "store_id", null: false
-    t.decimal "unitary_cost", precision: 14, scale: 2, default: "0.0", null: false
+    t.decimal "unitary_cost", precision: 14, scale: 2, null: false
     t.timestamp "updated_at", null: false
     t.index ["date", "store_id", "item_id", "invt_type"], name: "index_stocks_on_date_and_store_id_and_item_id_and_invt_type", unique: true
     t.index ["item_id"], name: "index_stocks_on_item_id"
@@ -407,11 +424,12 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
 
   create_table "units", id: :serial, force: :cascade do |t|
     t.timestamp "created_at", null: false
-    t.boolean "integer", default: false
+    t.boolean "integer", default: false, null: false
     t.string "name", limit: 100, null: false
     t.string "symbol", limit: 20, null: false
     t.timestamp "updated_at", null: false
-    t.boolean "visible", default: true
+    t.boolean "visible", default: true, null: false
+    t.index ["symbol"], name: "index_units_on_symbol", unique: true
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
@@ -447,15 +465,24 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
   end
 
   add_foreign_key "account_ledgers", "accounts"
+  add_foreign_key "account_ledgers", "contact_accounts", column: "bp_bank_account_id"
+  add_foreign_key "account_ledgers", "contacts", column: "partner_id"
   add_foreign_key "account_ledgers", "inventories"
-  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "attachments", "inventories"
+  add_foreign_key "attachments", "items"
+  add_foreign_key "attachments", "orders"
+  add_foreign_key "bom_structures", "items", column: "child_item_id"
+  add_foreign_key "bom_structures", "items", column: "parent_id"
+  add_foreign_key "bom_structures", "orders", column: "sales_order_id"
+  add_foreign_key "bom_structures", "resources", column: "child_res_id"
   add_foreign_key "contact_accounts", "contacts"
-  add_foreign_key "inventories", "accounts"
+  add_foreign_key "inventories", "invoices"
   add_foreign_key "inventories", "orders"
   add_foreign_key "inventories", "stores"
   add_foreign_key "inventory_details", "inventories"
   add_foreign_key "inventory_details", "items"
+  add_foreign_key "invoices", "contact_accounts", column: "bp_bank_account_id"
+  add_foreign_key "invoices", "contacts", column: "partner_id"
   add_foreign_key "item_accountings", "accounts", column: "ending_inv_ac_id"
   add_foreign_key "item_accountings", "accounts", column: "purchase_ac_id"
   add_foreign_key "item_accountings", "accounts", column: "revenue_ac_id"
@@ -471,6 +498,7 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_26_084238) do
   add_foreign_key "orders", "items", column: "prod_item_id"
   add_foreign_key "orders", "stores"
   add_foreign_key "orders", "stores", column: "trans_to_id"
+  add_foreign_key "resources", "units"
   add_foreign_key "stocks", "items"
   add_foreign_key "stocks", "stores"
 end

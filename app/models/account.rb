@@ -14,16 +14,17 @@
 #   Cash.eager_load(:account)
 #
 class Account < ApplicationRecord
-  include ActionView::Helpers::NumberHelper
+  #include ActionView::Helpers::NumberHelper
   include ::Models::Tag
-  #include ::Models::Updater
+
   
   ########################################
   # Relationships
 
-  # schema: accountable_type, accountable_id
-  delegated_type :accountable, types: %w[Cash ContactAccount Loan],
-                 optional: true
+  # DB schema: accountable_type, accountable_id
+  # 親レコードの削除に合わせて子レコードも削除するには dependent: :destroy
+  delegated_type :accountable, optional: true, dependent: :destroy,
+                 types: %w[Cash Loan]
   # 次はサブクラスでオーバライドする場合の書き方
   #delegate :name, to: :accountable
   
@@ -36,7 +37,7 @@ class Account < ApplicationRecord
   # 不課税は nil
   belongs_to :tax, optional: true
 
-  before_save :update_name
+  before_validation :update_name
 
   
   ########################################
@@ -45,24 +46,32 @@ class Account < ApplicationRecord
   validates_presence_of :name
   validates_uniqueness_of :name
 
-  with_options if: ->{ ['CASH', 'APAR'].include?(subtype) } do |r|
+  with_options if: ->{ ['A:CASH', 'A:AR', 'L:AP'].include?(subtype) } do |r|
     r.validates_presence_of :currency
-    r.validates_inclusion_of :currency, in: CURRENCIES.keys
   end
+  validates :currency, format: {with: /\A[A-Z][A-Z][A-Z]\z/}, allow_nil: true
 
   # TODO: `account_types` 表で設定可能にする
   SUBTYPES = {
     # Assets / Liabilities
-    'CASH' => 'Assets:Cash and Bank Account',
-    'APAR' => 'Accounts Payable and Receivable',
-    'INV' => 'Assets:Inventory',  # stock は完成品のみ, inventory は材料も含むイメージ
+    'A:CASH'  => 'assets:Cash and Bank Account',
+    'A:AR'    => 'assets:Accounts Receivable',
+    'A:INV'   => 'assets:Inventory',  # stock は完成品のみ, inventory は材料も含むイメージ
+    'A:OTHER' => 'assets:Other',
+    
+    'L:AP'    => 'liabilities:Accounts Payable',
+    'L:OTHER' => 'liabilities:Other',
 
+    'EQUITY'  => 'Equity',
+    
     # P/L
-    'REV' => 'Revenue',
-    'VC' => 'Expenses:Variable Cost',
-    'NON-VC' => 'Expenses:Non-Variable Costs',
-    'INTEREST' => '利息',
-    'GAIN_LOSS' => '評価損益・売却損益'
+    'REV'           => 'Revenue',
+    'OP:VC'         => 'OP:Variable Cost',
+    'OP:OTHER-INCOME' => 'OP:Other Income',
+    'OP:NON-VC'     => 'OP:Non-Variable Costs',
+    'INVEST:GAIN-LOSS' => 'INVEST:評価損益・売却損益',
+    'FIN:INTEREST'  => 'FIN:利息',
+    'INCOME-TAX'    => 'Income Tax'
   }
   validates_inclusion_of :subtype, in: SUBTYPES.keys
   
@@ -85,25 +94,21 @@ class Account < ApplicationRecord
 
   ########################################
   # Methods
-  def to_s
-    name
-  end
+  #def to_s
+  #  name
+  #end
 
-  def curr
-    @curr ||= Currency.find(currency)
-  end
+  #def curr
+  #  @curr ||= Currency.find(currency)
+  #end
 
   
 private
   
-  # for `before_save()`
+  # for `before_validation()`
   # `Account` の側が参照するので, こちらに仕込む
   def update_name
-    if subtype == "APAR"
-      ac_name = name.split('/', 2)
-      self.name = contact_account.contact.name + '/' +
-                                        ac_name[ac_name[1].blank? ? 0 : 1]
-    end
+    self.currency = nil if currency.blank?
   end
   
 end

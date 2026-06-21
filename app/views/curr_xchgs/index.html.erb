@@ -1,0 +1,23 @@
+
+<% @page_title = "Exchange rates" %>
+
+<p><%= link_to "Back", currencies_path %>
+  
+<p>BASE currency = <%= CurrXchg::BASE_CURR %>
+
+<table class="table table-sm">
+  <tr>
+    <td>
+  <% @curr_list.each do |curr_code| %>
+    <th><%= curr_code %></th>
+  <% end %>
+
+<% @days.each do |day| %>
+  <tr>
+    <td><%= day %>
+  <% @curr_list.each do |curr_code| %>
+    <td><%= @matrix[day][curr_code] %>
+  <% end %>
+<% end %>
+</table>
+

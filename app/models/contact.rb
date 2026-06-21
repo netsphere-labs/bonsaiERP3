@@ -12,7 +12,7 @@ class Contact < ApplicationRecord
   ########################################
   # Relationships
 
-  # 口座. 口座なしも一つづつ作る。勘定科目と紐づき.
+  # bank accounts.
   has_many :contact_accounts
 
   has_many :incomes, -> { where(type: 'Income').order('accounts.date desc, accounts.id desc') },
@@ -26,6 +26,9 @@ class Contact < ApplicationRecord
   ########################################
   # Validations
 
+  validates_presence_of :country_code
+  validates :tax_number, uniqueness: {scope: :country_code}, allow_nil: true
+  
   before_validation :norm
   validate :check
   
@@ -48,11 +51,6 @@ class Contact < ApplicationRecord
     sql = %w(matchcode name email phone mobile).map {|field| "contacts.#{field} ILIKE :s" }
     where(sql.join(' OR ' ), s: "%#{search_term}%")
   end
-
-
-  # Serialization
-  #serialize :incomes_status, coder: JSON
-  #serialize :expenses_status, coder: JSON
 
   delegate :total_in, :total_out, to: :calculation
 

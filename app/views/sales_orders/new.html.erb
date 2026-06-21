@@ -6,4 +6,8 @@
 
 
 <%= @order.errors.inspect %>
-<%= render partial: 'form'  %>
+
+<%= bootstrap_form_with model: @order, url:{action:"create"}, layout: :horizontal do |f| %>
+  <%= render partial: 'form', locals:{f:f}  %>
+<% end %>
+  

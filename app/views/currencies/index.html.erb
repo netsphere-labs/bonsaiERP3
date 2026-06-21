@@ -1,0 +1,33 @@
+
+<% @page_title = "Currencies" %>
+
+<p><%= link_to "Exchange rates", curr_xchgs_path  %>
+  
+<%= form_with url:"/currencies/", method: :get, model: @search do |f| %>
+  <%= f.text_field :search %>
+<% end %>
+<%= link_to "Reset", "/currencies/" %>
+
+
+<%== @pagy.series_nav(:bootstrap) %>
+
+<table class="table">
+  <tr>
+    <th>iso_code</th>
+    <th>name
+    <th>symbol
+    <th>subunit_to_unit
+  </tr>
+
+<% @currencies.each do |currency| %>
+  <tr>
+    <td><%= currency.iso_code %>
+    <td><%= currency.name %>
+    <td><%= currency.symbol %>
+    <td><%= currency.subunit_to_unit %>
+  </tr>
+<% end %>
+</table>
+
+
+<%== @pagy.series_nav(:bootstrap) %>

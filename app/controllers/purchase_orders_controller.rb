@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# 発注 (order). モデル = `PurchaseOrder`. form object = `Movements::Form`
+# 発注 (order). モデル = `PurchaseOrder`. form object = `Orders::Form`
 # 購買入庫は `GoodsReceiptPosController`
 class PurchaseOrdersController < ApplicationController
   include Controllers::TagSearch
@@ -10,19 +10,20 @@ class PurchaseOrdersController < ApplicationController
   before_action :set_order,
                 only: %i[show edit update destroy confirm void inventory ]
 
-  # GET /expenses
+  # GET /purchase_orders/
   def index
-    if params[:movements_search].blank? || !params[:reset].blank?
-      @search = Movements::Search.new
+    if params[:orders_search].blank? || !params[:reset].blank?
+      @search = Orders::Search.new
     else
       #raise params.inspect
-      @search = Movements::Search.new params.require(:movements_search)
-                                        .permit(*Movements::Search.attribute_names)
+      @search = Orders::Search.new params.require(:orders_search)
+                                .permit(*Orders::Search.attribute_names)
       # `permit()` returns `Parameters {}`. why?
-      @search.state = params.require(:movements_search)['state']
+      @search.state = params.require(:orders_search)['state']
     end
 
-    @orders = @search.search_by_text(PurchaseOrder).order(date: :desc).page(params[:page])
+    @pagy, @orders = pagy(:offset,
+                @search.search_by_text(PurchaseOrder).order(date: :desc))
   end
 
   
@@ -35,22 +36,16 @@ class PurchaseOrdersController < ApplicationController
   def new
     # Use the form object.
     # TODO: default currency = partner's one.
-    @order = Movements::Form.new(PurchaseOrder.new date: Time.zone.today,
+    @order = Orders::Form.new(PurchaseOrder.new date: Time.zone.today,
                                                    state: 'draft')
     #@order_details = []
-  end
-
-  # GET /expenses/1/edit
-  def edit
-    # wrap
-    @order = Movements::Form.new(@order)
   end
 
   
   # POST /expenses
   def create
     # the form object
-    @order = Movements::Form.new(
+    @order = Orders::Form.new(
                 PurchaseOrder.new creator_id: current_user.id,
                                   state: 'draft' )
     @order.assign expense_params, params.require(:detail)
@@ -70,16 +65,30 @@ class PurchaseOrdersController < ApplicationController
   end
 
   
+  # GET /expenses/1/edit
+  def edit
+    # wrap
+    @order = Orders::Form.new(@order)
+  end
+
+
   # PATCH /expenses/:id
   def update
     # wrap
-    @order = Movements::Form.new(@order)
-    
-    if update_or_approve
-      redirect_to expense_path(@es.expense), notice: 'El Egreso fue actualizado!.'
-    else
-      render :edit, status: :unprocessable_entity 
+    @order = Orders::Form.new(@order)
+    @order.assign expense_params, params.require(:detail)
+    begin
+      ActiveRecord::Base.transaction do
+        # form object 内で同時保存する
+        @order.save!
+      end
+    rescue ActiveRecord::RecordInvalid => e
+      render :edit, status: :unprocessable_entity
+      return
     end
+
+    
+    redirect_to @order.model_obj, notice: 'El Egreso fue actualizado!.'
   end
 
 
@@ -172,7 +181,7 @@ private
 
   def expense_params
     # form object
-    params.require(:movements_form)
+    params.require(:orders_form)
           .permit(:contact_id, :date, :currency, :ship_date, :delivery_loc,
                   :incoterms, :delivery_date, :store_id)
   end

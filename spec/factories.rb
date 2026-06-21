@@ -1,5 +1,29 @@
 # encoding: utf-8
 FactoryBot.define do
+  factory :resource do
+    
+  end
+
+  factory :prod_re do
+    
+  end
+
+  factory :bom_structure do
+    
+  end
+
+  factory :curr_xchg do
+    
+  end
+
+  factory :invoice do
+    
+  end
+
+  factory :currency do
+    
+  end
+
   factory :transfer_request do
     
   end

@@ -20,7 +20,6 @@
 </ul>
 
 <table>
-  <tr><th>Account: <td><%= @invt.account.name %>
   <tr><th>State: <td><%= @invt.state %>
 </table>
 
@@ -29,15 +28,16 @@
 <table class="table">
   <tr>
     <th>Item
-    <th>Price (機能通貨)
+    <th>Price (<%= @invt.curr_code %>)
     <th>Qty
     <th>Amount
       
   <% @invt.details.each do |detail| %>
   <tr>
     <td><%= detail.item.name %>
-    <td><%= detail.price %>
+    <td><%= format_amount(detail.unit_price, @invt.curr_code) %>
     <td><%= detail.quantity %>
-    <td><%= detail.price * detail.quantity %>
+    <td><%= format_amount(detail.txn_amount, @invt.curr_code) %>
+      <%= @invt.curr_code %>
   <% end %>
 </table>

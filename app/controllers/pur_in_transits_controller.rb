@@ -11,10 +11,9 @@ class PurInTransitsController < ApplicationController
 
   
   def index
-    @orders = PurchaseOrder.where(state: ['confirmed'])
+    #@orders = PurchaseOrder.where(state: ['confirmed'])
     # TODO: 品目元帳として表示すべき
-    @invts = Inventory.where(operation: 'pur_tran')
-                     .page(params[:page])
+    @pagy, @invts = pagy(:offset, Inventory.where(operation: 'pur_tran'))
   end
 
   
@@ -42,6 +41,7 @@ class PurInTransitsController < ApplicationController
                 Inventory.new order: @order, store_id: @order.store_id,
                               creator_id: current_user.id,
                               operation: 'pur_tran',
+                              curr_code: @order.currency,
                               state: 'draft' )
     @invt.assign inventory_params, params.require(:detail), @order.store_id
 
@@ -87,7 +87,8 @@ class PurInTransitsController < ApplicationController
         @invt.order.state = 'in_transit'
         @invt.order.save!
 
-        @invt.gen_je_for_goods_received(current_user)
+        # いったん、リアルタイム生成は止める
+        #@invt.gen_je_for_goods_received(current_user)
       end # transaction
     rescue ActiveRecord::RecordInvalid => e
       raise e.inspect

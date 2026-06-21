@@ -1,26 +1,9 @@
 
-- content_for :links do
-  %ul.breadcrumbs.span6
-    %li
-      = link_to 'Ingresos', incomes_path
-    %li
-      %i.icon-caret-right
-    %li
-      = link_to @is.income, @is.income
+:ruby
+  @page_title = "Edit Sales Order"
+  @crumbs = [
+    ['Back', sales_order_path(@order.model_obj)] ]
 
-  %ul.breadcrumbs.r.span6
-    %a#incomes-help-link.dark(href='javascript:;')
-      %i.icon-question-sign
-      Help
 
-- inc_presenter = present @is.income
-.row-fluid
-  .span6
-    %h1
-      %span.muted.n New Ingreso
-      %span.code(title="Código del ingreso: Ingreso-Año-Número" data-toggle='tooltip')= @is.income
-      %small.state(title='Status' data-toggle='tooltip')= inc_presenter.state_tag
-  .span6.r
-    = link_to icon_show_text, income_path(@is.income_id), class: 'btn'
-
-= render 'incomes/form', income_service: @is
+= bootstrap_form_with model: @order, url:{action:"update", id:@order.model_obj}, method: :put, layout: :horizontal do |f|
+  = render 'form', f:f

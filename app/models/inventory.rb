@@ -5,8 +5,6 @@
 # 入出庫伝票
 class Inventory < BusinessRecord
 
-  #include ::Models::Updater
-
   # exp_in  購買入庫
   # pur_tran  purchase-in-transit
   # pit_in  PIT -> IN
@@ -26,13 +24,18 @@ class Inventory < BusinessRecord
 
   # transfer-out の場合   => Use `TransferRequest#trans_to`
   #belongs_to :store_to, class_name: "Store", optional:true
-  #validates_presence_of :store_to_id, if: -> r {r.operation == 'out'}
     
   # 購買入庫、販売出庫の場合
   belongs_to :order, optional: true
   validates_presence_of :order_id,
         if: -> r {%w[exp_in pur_tran pit_in inc_out out in].include? r.operation}
 
+  # only `exp_in`, `pur_tran`, `inc_out`
+  belongs_to :invoice, optional: true
+  
+  validates_presence_of :curr_code,
+        if: -> r {%w[exp_in pur_tran pit_in inc_out ].include? r.operation}
+                        
   belongs_to :creator, class_name: "User"
   
   # scrap の場合 expense / PO partner
@@ -42,14 +45,19 @@ class Inventory < BusinessRecord
 
   has_many :details, class_name: "InventoryDetail", dependent: :destroy
 
-  # Validations
+  # Attachments
+  has_many :attachments, -> { order('attachments.position') }, dependent: :destroy
+
+  
+  # Validations ########################################################
   
   validates_presence_of :date
   
   # 購買入庫, 販売出庫 with order の場合のみ
   #validates_presence_of :ref_number,
   #              if: -> x {%w(exp_in inc_out).include?(x.operation) }
-  
+
+  validates_presence_of :operation
   validates_inclusion_of :operation, in: OPERATIONS
   validates_lengths_from_database
 
@@ -121,44 +129,52 @@ class Inventory < BusinessRecord
   # journal entry
   # 債権債務が絡む取引は、都度つど仕訳を作る
   # The caller must initiate a transaction
-  def gen_je_for_goods_received user
+  def gen_je_for_goods_received user, org
     amt = {}
     self.details.each do |detail|
       # 三分法でやってみる
       amt[detail.item.accounting.purchase_ac_id] =
                         (amt[detail.item.accounting.purchase_ac_id] || 0) +
-                        detail.txn_price * detail.quantity  # ここは取引通貨
+                        detail.txn_amount   # ここは取引通貨
     end
 
     entry_no = rand(2_000_000_000)
+    funct_curr = Money::Currency.find(org.currency)
     # Dr.
-    sum_amt = 0
+    sum_amt = 0; funct_amt = 0.0
     amt.each do |pur_ac_id, a|
-      # TODO: 仕訳の金額は取引通貨。仕訳のほうで, 機能通貨建ての金額も必要
-      #       仕訳の側で, 換算が必要。
+      # 仕訳のほうで, 機能通貨建ての金額も必要. 仕訳の側で, 換算.
+      converted = CurrXchg.convert(Money.from_cents(a, order.currency),
+                                   funct_curr, self.date)
       r = AccountLedger.new date: self.date, entry_no: entry_no,
-                            operation: 'trans',
-                            account_id: pur_ac_id,  # Dr.
-                            amount: a,    # 取引通貨
-                            currency: self.order.currency,
-                            description: "goods receipt po",
-                            creator_id: user.id,
-                            status: 'approved',
-                            inventory_id: self.id
+                operation: 'trans',
+                account_id: pur_ac_id,  # Dr.
+                fx_amount: a,    # 取引通貨
+                fx_curr_code: order.currency,
+                funct_amount: converted,
+                description: "goods receipt po",
+                creator_id: user.id,
+                status: 'approved',
+                inventory_id: self.id
       r.save!
       sum_amt += a
+      funct_amt += converted
     end
 
     # Cr.
+    # funct_amount: 端数がずれないように, 明細の足し上げにする
     r = AccountLedger.new date: self.date, entry_no: entry_no,
-                            operation: 'trans',
-                            account_id: self.account_id,
-                            amount: -sum_amt,  # 取引通貨, 貸方マイナス
-                            currency: self.order.currency,
-                            description: "goods receipt po",
-                            creator_id: user.id,
-                            status: 'approved',
-                            inventory_id: self.id
+                operation: 'trans',
+                account_id: Account.where(subtype: "L:AP", currency: order.currency).take.id,
+                partner_id: order.contact.id,
+                bp_bank_account_id: self.invoice.bp_bank_account &.id,
+                fx_amount: -sum_amt,  # 取引通貨, 貸方マイナス
+                fx_curr_code: self.order.currency,
+                funct_amount: -funct_amt,  # Cr.
+                description: "goods receipt po",
+                creator_id: user.id,
+                status: 'approved',
+                inventory_id: self.id
     r.save!
   end
 

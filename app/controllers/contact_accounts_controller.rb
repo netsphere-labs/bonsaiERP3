@@ -11,7 +11,7 @@ class ContactAccountsController < ApplicationController
 
   # GET /contact_accounts/new
   def new
-    @contact_account = ContactAccount.new account: Account.new(currency:"JPY", active:true, subtype:'APAR')
+    @contact_account = ContactAccount.new #account: Account.new(currency:"JPY", active:true, subtype:'APAR')
   end
 
   # GET /contact_accounts/1/edit
@@ -21,20 +21,16 @@ class ContactAccountsController < ApplicationController
   
   # POST /contact_accounts or /contact_accounts.json
   def create
-    @contact_account =
-      ContactAccount.new account: Account.new(params.require(:contact_account)
-                            .require(:account)
-                            .permit(:name, :currency, :active, :description))
-    @contact_account.assign_attributes contact_account_params
+    @contact_account = ContactAccount.new contact_account_params
     @contact_account.contact_id = @partner.id
     begin
       ActiveRecord::Base.transaction do
         # ContactAccount#save! だけだと account が作られない
         @contact_account.save!
-        @contact_account.account.accountable = @contact_account
-        @contact_account.account.subtype = 'APAR'
-        @contact_account.account.creator_id = current_user.id
-        @contact_account.account.save!
+        #@contact_account.account.accountable = @contact_account
+        #@contact_account.account.subtype = 'APAR'
+        #@contact_account.account.creator_id = current_user.id
+        #@contact_account.account.save!
       end
     rescue ActiveRecord::RecordInvalid => e
       #raise e.inspect
@@ -50,16 +46,16 @@ class ContactAccountsController < ApplicationController
   # PATCH/PUT /contact_accounts/1 or /contact_accounts/1.json
   def update
     @contact_account.assign_attributes contact_account_params
-    @contact_account.account.assign_attributes(
-                        params.require(:contact_account).require(:account)
-                              .permit(:name, :active, :description) )
+    #@contact_account.account.assign_attributes(
+    #                    params.require(:contact_account).require(:account)
+    #                          .permit(:name, :active, :description) )
     
     begin
       ActiveRecord::Base.transaction do
         # contact_account 側を保存すれば両方反映? ->contact_account 側だけ.
         # account 側では?  -> これも account 側だけ
         @contact_account.save!
-        @contact_account.account.save!
+        #@contact_account.account.save!
       end
     rescue ActiveRecord::RecordInvalid => e
       #raise e.inspect

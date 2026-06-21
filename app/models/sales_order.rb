@@ -24,10 +24,11 @@ class SalesOrder < Order
   # what's this?
   #has_many :devolutions, -> { where(operation: 'devout') }, class_name: 'AccountLedger', foreign_key: :account_id
 
+  
   ########################################
   # Scopes
 
-  scope :active,   -> { where(state: ['approved', 'paid']) }
+  #scope :active,   -> { where(state: ['approved', 'paid']) }
 
   # customer
   scope :contact, -> (cid) { where(contact_id: cid) }
@@ -35,7 +36,7 @@ class SalesOrder < Order
   scope :pendent, -> { active.where.not(amount: 0) }
   scope :error, -> { active.where(has_error: true) }
   scope :due, -> { approved.where("accounts.due_date < ?", Time.zone.now.to_date) }
-  #scope :nulled, -> { where(state: 'nulled') }
+  
   scope :inventory, -> { active.where("extras->'delivered' = ?", 'false') }
   scope :like, -> (search) {
     search = "%#{search}%"
@@ -49,8 +50,10 @@ class SalesOrder < Order
     r.validates_presence_of :ship_date
   end
 
+  validates_presence_of :gross_total
+  validates_presence_of :total
   validates_presence_of :currency
-  validates_inclusion_of :currency, in: CURRENCIES.keys
+  #validates_inclusion_of :currency, in: CURRENCIES.keys
 
   
   def subtotal

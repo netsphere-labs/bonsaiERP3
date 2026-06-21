@@ -1,44 +1,17 @@
 
-%li.row-fluid(id='#{item.id}')
-  .span6
-    .fl
-      %input.row-check(type='checkbox' id='#{ item.id }')
-    .fl
-      %h4.ib
-        = link_to item, item
+-# called from `index.html.haml`
 
-      %strong.fs110= item.code
-      = item.unit.symbol
-    .clearfix
-    %tagsfor(tag_ids="#{item.tag_ids}" id="#{item.id}")
-  .span6
-    .row-fluid
-      .span10
-        -#.ib.pill.bg-gray-lighter(style='padding: 0px 4px')
+%tr
+  %td= item.code
+  %td
+    = link_to item.name, item
 
-        .row-fluid
-          .span6.c
-            %span.b.muted Visible:
-            %span(class="icon-large icon-#{item.active?}")
+  %td= item.unit.symbol
+  %th= item.active
+  %th= item.description
+  %th= item.for_sale
+  %th= item.stockable
 
-            .r
-              %small.muted
-                P.
-                %strong COMPRA:
-              = ntc item.buy_price
-              = currency_label
-          .span6.c
-            %span.b.muted.text-muted Venta:
-            %span(class="icon-large icon-#{item.for_sale?}")
-
-            .r
-              %small.muted
-                P.
-                %strong VENTA:
-              = ntc item.price
-              = currency_label
-
-      .span2.nw.r
-        = link_to icon_edit, edit_item_path(item), class: 'dark'
-        = link_to icon_delete, item, class: 'dark', method: 'delete', remote: true, data: { confirm: 'Esta seguro de eliminar el ítem?' }
+  %th= item.buy_price
+  %th= item.price
 

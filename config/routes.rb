@@ -7,6 +7,11 @@ require "sidekiq/web" # require the web UI
 
 
 BonsaiErp::Application.routes.draw do
+  resources :resources
+
+  resources :curr_xchgs
+  resources :invoices
+
   # namespace :api
   draw :api
   

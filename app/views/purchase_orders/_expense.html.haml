@@ -2,14 +2,16 @@
 -# @param order order object
 
 %tr
-  %td
-    %input.row-check(type='checkbox' id="#{order.id}")
-    %h4.ib
-      = link_to order.id, order
-  %td= link_to order.contact, partner_path(order.contact.id)
-
-  %td= order.state
   %td= order.date
+  %td= link_to order.contact, partner_path(order.contact.id)
+  %td= order.state
+  %td= order.delivery_date
+  %td(style='text-align:right')
+    = format_amount(order.total, order.currency)
+    = order.currency
+  %td
+    = link_to "[Show]", order
+
 -# if expense.tax
 
 -#      = expense.inventory_tag
@@ -21,14 +23,6 @@
     = order.creator
     = order.approver
     = order.nuller
-  %td
-    = order.delivery_date
-
-  %td
-    = order.total
-    = order.currency
 
   %td
     = order.balance
-  %td
-    = link_to "Edit...", edit_purchase_order_path(order.id), class: 'dark' if !order.nulled?

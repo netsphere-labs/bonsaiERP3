@@ -24,13 +24,15 @@ class OrderDetail < ApplicationRecord
 
   delegate :unit_name, :unit_symbol, to: :item, allow_nil: true
 
-  def line_total
-    quantity * price
+  # for form object
+  attribute :edit_price, :decimal
+  
+  def unit_price
+    # `amount` は正規化されているので、単に小数点以下2桁目までを求める
+    #curr = Money::Currency.find(order.currency)
+    return (BigDecimal(amount) / quantity).round(2)
   end
 
-  #def changed_price?
-  #!(price === original_price)
-  #end
 
   def data_hash
     {

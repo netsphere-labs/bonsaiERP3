@@ -7,6 +7,11 @@ class Cash < ApplicationRecord # Account から派生
   # 仮想的な親: 勘定科目
   include Accountable
 
+  # たまたま別銀行で口座番号が一致する、のは考えない
+  validates :account_no, uniqueness: true, allow_nil: true #{scope: :bank_name}
+  
+  before_validation :check_account_no
+  
 =begin
   # can't use Bank.stored_attributes methods[:extras]
   alias_method :old_attributes, :attributes
@@ -30,7 +35,12 @@ class Cash < ApplicationRecord # Account から派生
 
   
 private
-  
+  # before_validation
+  def check_account_no
+    self.bank_name  = nil if self.bank_name.blank?
+    self.account_no = nil if self.account_no.blank? 
+  end
+
     def set_defaults
       self.total_amount ||= 0.0
     end

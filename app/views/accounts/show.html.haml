@@ -8,7 +8,7 @@
 - content_for :links do
   %div.btn-group{role: "group"}
     = link_to 'Edit...', edit_account_path(@account), :class => 'btn'
-    = button_to 'Destroy', account_path(@account), data:{turbo_confirm:'Sure?'}, method: :delete
+    = button_to 'Destroy', account_path(@account), data:{turbo_confirm:'Sure?'}, method: :delete, class:'btn btn-outline-danger'
 
 
 

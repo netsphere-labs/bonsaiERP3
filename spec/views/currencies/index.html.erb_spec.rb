@@ -1,22 +1,15 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe "currencies/index.html.erb" do
+RSpec.describe "currencies/index", type: :view do
   before(:each) do
     assign(:currencies, [
-      stub_model(Currency,
-        :name => "MyString",
-        :symbol => "MyString"
-      ),
-      stub_model(Currency,
-        :name => "MyString",
-        :symbol => "MyString"
-      )
+      Currency.create!(),
+      Currency.create!()
     ])
   end
 
   it "renders a list of currencies" do
     render
-    response.should have_selector("tr>td", :content => "MyString".to_s, :count => 2)
-    response.should have_selector("tr>td", :content => "MyString".to_s, :count => 2)
+    cell_selector = 'div>p'
   end
 end

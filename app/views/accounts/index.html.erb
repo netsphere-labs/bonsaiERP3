@@ -13,7 +13,11 @@
   
 <table class="table">
   <tr>
-    <th>Name</th>
+    <th>name</th>
+    <th>active?
+    <th>subtype
+    <th>currency
+    <th>description
   </tr>
 
 <% @accounts.each do |account| %>
@@ -21,7 +25,7 @@
     <td><%= account.name %>
     <td><%= account.active  %>
     <td><%= account.subtype %>
-    <td><%= account.currency  %>
+    <td><%= account.currency ? (Money::Currency.find(account.currency) || "internal error") : ""  %>
     <td><%= account.description  %>
     <td><%= link_to account.name, account %>
   </tr>

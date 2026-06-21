@@ -21,18 +21,20 @@
   <% # なぜかエラーになる. why? => must call `super()` in `initialize()` %>
   <%= f.text_field :description, label: 'Description:' %>
 
-  <%= f.select :account_id,
+<!--
+   f.select :account_id,
             options_from_collection_for_select(
                     ContactAccount.joins(:account).where('contact_accounts.contact_id = ? AND accounts.currency = ?', @order.contact_id, @order.currency), 
                     :account_id, :name, @invt.account_id),
             required:false %>
-
+  -->
+  
 <div class="row text-bg-secondary">
   <div class="col-3">Item</div>
   <div class="col-1">Ordered Qty</div>
   <div class="col-1"></div>   
   <div class="col-1">Not yet received</div>
-  <div class="col-2">Unit Price</div>
+  <div class="col-2">Unit Price (<%= @order.currency %>)</div>
   <div class="col-2">Received Qty</div>
   <div class="col-2">Amount Override</div>
 </div>

@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# Sales Orders. model = `SalesOrder`. form object = `Movements::Form`
+# Sales Orders. model = `SalesOrder`. form object = `Orders::Form`
 # 倉庫からの出庫は `DeliveriesController`
 class SalesOrdersController < ApplicationController
   include Controllers::TagSearch
@@ -14,14 +14,14 @@ class SalesOrdersController < ApplicationController
   
   # GET /incomes
   def index
-    if params[:movements_search].blank? || !params[:reset].blank?
-      @search = Movements::Search.new
+    if params[:orders_search].blank? || !params[:reset].blank?
+      @search = Orders::Search.new
     else
-      @search = Movements::Search.new params.require(:movements_search)
-                                        .permit(*Movements::Search.attribute_names)
+      @search = Orders::Search.new( params.require(:orders_search)
+                                  .permit(*Orders::Search.attribute_names) )
     end
     
-    @orders = @search.search_by_text(SalesOrder).order(date: :desc).page(params[:page])
+    @pagy, @orders = pagy(:offset, @search.search_by_text(SalesOrder).order(date: :desc) )
   end
 
   
@@ -40,22 +40,15 @@ class SalesOrdersController < ApplicationController
   # GET /incomes/new
   def new
     # Use form object.
-    @order = Movements::Form.new(SalesOrder.new date: Time.zone.today, state: 'draft')
+    @order = Orders::Form.new(SalesOrder.new date: Time.zone.today, state: 'draft')
     #@order_details = []
-  end
-
-  
-  # GET /incomes/1/edit
-  def edit
-    # wrap
-    @order = Movements::Form.new(@order)
   end
 
   
   # POST /incomes
   def create
     # ここでフォームオブジェクトを使っている
-    @order = Movements::Form.new(SalesOrder.new creator_id: current_user.id,
+    @order = Orders::Form.new(SalesOrder.new creator_id: current_user.id,
                                                 state: 'draft' )                          
     @order.assign income_params, params.require(:detail)
     
@@ -74,10 +67,17 @@ class SalesOrdersController < ApplicationController
   end
 
   
+  # GET /incomes/1/edit
+  def edit
+    # wrap
+    @order = Orders::Form.new(@order)
+  end
+
+
   # PATCH /incomes/:id
   def update
     # wrap
-    @order = Movements::Form.new(@order)
+    @order = Orders::Form.new(@order)
     @order.assign income_params, params.require(:detail)
     
     if update_or_approve
@@ -161,7 +161,7 @@ private
 
   def income_params
     # form object
-    params.require(:movements_form)
+    params.require(:orders_form)
           .permit(:contact_id, :date, :store_id, :ship_date, :currency)
   end
 

@@ -1,13 +1,22 @@
+
+
 class Attachment < ApplicationRecord
-  belongs_to :attachable, polymorphic: true
+  include ImageUploader::Attachment(:image) # adds an `image` virtual attribute
+  
+  # created by
   belongs_to :user
 
-  dragonfly_accessor :attachment do
-    copy_to(:small_attachment) { |a| a.thumb('200x200')   if a.image? }
-    copy_to(:medium_attachment) { |a| a.thumb('500x500')  if a.image? }
-  end
-  dragonfly_accessor :small_attachment
-  dragonfly_accessor :medium_attachment
+  # parent. oneof:
+  belongs_to :item, optional: true
+  belongs_to :order, optional: true
+  belongs_to :inventory, optional: true
+  
+  #dragonfly_accessor :attachment do
+  #  copy_to(:small_attachment) { |a| a.thumb('200x200')   if a.image? }
+  #  copy_to(:medium_attachment) { |a| a.thumb('500x500')  if a.image? }
+  #end
+  #dragonfly_accessor :small_attachment
+  #dragonfly_accessor :medium_attachment
 
   validates :attachment, presence: true
   validates :attachable, presence: true, :if => :has_attachable?

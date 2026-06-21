@@ -5,6 +5,6 @@
     ['Back', purchase_order_path(@order.model_obj)] ]
 
 
-= bootstrap_form_with model: @order, url:{action:"update", id:@order.model_obj}, layout: :horizontal do |f| 
+= bootstrap_form_with model: @order, url:{action:"update", id:@order.model_obj}, method: :put, layout: :horizontal do |f| 
   = render 'form', f:f 
 

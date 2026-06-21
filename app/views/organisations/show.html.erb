@@ -1,10 +1,6 @@
 
-<% org = current_organisation %>
-<% @page_title = "Organisation: " + org.name %>
+<% @page_title = "Organisation: " + @org.name %>
 
-<table>
-  <tr><th>Name: <td><%= org.name %>
-  <tr><th>Functional Currency: <td><%= org.currency %>
-  <tr><th>Country: <td><%= org.country %>
-</table>
+<%= render partial:"show", locals:{org: @org} %>
+
         

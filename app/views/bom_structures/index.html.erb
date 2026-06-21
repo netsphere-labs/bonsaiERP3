@@ -1,0 +1,18 @@
+
+<% @page_title = "BoM Structure" %>
+
+
+<%= link_to 'Edit BoM Structure...', new_item_bom_structure_path(@item), class: 'btn' %>
+
+<table class="decorated nwl">
+  <tr>
+    <th></th>
+  </tr>
+
+<% @bom_structures.each do |bom_structure| %>
+  <tr>
+        <td><%= bonsai_links(bom_structure) %></td>
+  </tr>
+<% end %>
+</table>
+

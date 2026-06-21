@@ -1,7 +1,10 @@
+
 class CreateTransactions < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
 
+      # Base of `SalesOrder`, `PurchaseOrder`, `TransferRequest` and
+      # `ProdOrder`
       create_table :orders, id: :serial do |t|
         # STI は `type` が必要
         t.string :type, limit:80, null:false
@@ -22,24 +25,22 @@ class CreateTransactions < ActiveRecord::Migration[5.2]
 
         t.references :prod_item, type: :integer, foreign_key: {to_table:'items'}
         
-        # before discount
-        t.decimal :gross_total, precision: 14, scale: 2, default: 0.0
+        # PO/SO only: before discount
+        t.bigint :gross_total #, null:false
 
-        # after discount
-        # Use Account#amount for total, create alias
-        t.decimal :total, precision: 14, scale: 2, null:false, default: 0.0
+        # PO/SO only: after discount
+        t.bigint :total #, null:false
 
         # PO/SO required
         # trans. not needed
         t.column :currency, "CHAR(3)"
 
         # Use Account#name for ref_number create alias
-        t.string  :bill_number
+        #t.string  :bill_number
 
-        t.decimal :original_total, precision: 14, scale: 2, default: 0.0
-        t.decimal :balance_inventory, precision: 14, scale: 2, default: 0.0
+        #t.decimal :balance_inventory, precision: 14, scale: 2, default: 0.0
 
-        # PO: When D-group, ship_date = delivery_date
+        # PO: When incoterms D-group, ship_date = delivery_date
         # SO: ship_date nullable
         t.date    :ship_date, #null:false,
                   comment: "If FOB and *CIF*, the date on the port of departure"

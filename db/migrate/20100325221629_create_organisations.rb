@@ -2,7 +2,8 @@ class CreateOrganisations < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas only: ['common', 'public'] do
       create_table :organisations, id: :serial do |t|
-        #t.integer :country_id
+        t.string  :country_code, limit:2, null:false
+        
         t.string  :name, limit: 100, null:false
         t.string  :address
         t.string  :address_alt

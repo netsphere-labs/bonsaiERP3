@@ -1,0 +1,32 @@
+
+<% # called from `configurations/show.html.erb`
+   # @param org  the organisation
+  %>
+
+<table>
+  <tr><th>Name:     <td><%= org.name %>
+  <tr><th>Functional Currency: <td><%= org.currency %>
+  <tr><th>Country:  <td><%= org.country %>
+
+
+  <tr><th>Inventory Active:
+    <td><%= org.inventory_active %>
+
+  <tr><th>Time Zone:
+    <td><%= org.time_zone %>
+
+  <tr><th>Phone: 
+    <td><%= org.phone %>
+
+  <tr><th>Mobile: 
+    <td><%= org.mobile %>
+
+  <tr><th>Email:
+    <td><%= org.email %>
+
+  <tr><th>Website:
+    <td><%= org.website %>
+
+  <tr><th>Address:
+    <td><%= nl2br org.address %>
+</table>

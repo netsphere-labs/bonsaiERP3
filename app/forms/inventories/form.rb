@@ -17,7 +17,7 @@ class Inventories::Form < BaseForm
     @store ||= Store.active.where(id: store_id).take
   end
   
-  delegate :ref_number, :project_id, :order_id, :account_id,
+  delegate :ref_number, :project_id, :order_id, #:account_id,
            to: :model_obj, allow_nil: true
 
   # `belongs_to()` が使えない
@@ -44,6 +44,7 @@ class Inventories::Form < BaseForm
     @details = model.details
   end
 
+  
   def assign model_params, detail_params, store_id
     raise TypeError if !store_id
     
@@ -68,6 +69,7 @@ class Inventories::Form < BaseForm
       raise ActiveRecord::RecordInvalid.new(self)
     end
 
+    # replace
     if model_obj.id
       InventoryDetail.where(inventory_id: model_obj.id).delete_all
     end

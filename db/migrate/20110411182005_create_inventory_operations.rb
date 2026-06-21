@@ -8,21 +8,25 @@ class CreateInventoryOperations < ActiveRecord::Migration[5.2]
         t.string :ref_number
         t.string :operation, limit: 10, null:false
 
-        t.string "state", limit: 50, null: false
+        t.string "state", limit: 20, null: false
 
         # sales, purchase, transfer, production order. nullable
         t.references :order, type: :integer, foreign_key:true
 
+        # operation = `exp_in`, `pur_tran`, `inc_out`
+        t.references "invoice", type: :integer, foreign_key: true
+        
         # 店は必須
         t.references :store, type: :integer, null:false, foreign_key:true
 
-        # sales order なしの出庫 = 売上科目
-        t.references :account, type: :integer, foreign_key:true
+        # sales order なしの出庫は認めない
+        #t.references :account, type: :integer, foreign_key:true
 
         t.string :description, null:false
 
-        #t.decimal :total, :precision => 14, :scale => 2, null:false, default: 0, comment: "機能通貨建ての金額"
-        t.column :txn_currency, "CHAR(3)"
+        # 例えば, 購買入庫で数量違いの場合、取引通貨での金額が必要. -> details 側に持つ
+        # nullable
+        t.column :curr_code, "CHAR(3)"
         
         t.integer  :creator_id, null:false
         #t.integer  :transference_id

@@ -1,5 +1,4 @@
 
-<%= bootstrap_form_with model: @order, url:{action:"create"}, layout: :horizontal do |f| %>
   <%= error_messages_for 'order' %>
 
 <% if ['new', 'create'].include?(action_name) %>
@@ -16,7 +15,7 @@
   <%= f.date_field :date, label: "Order Date:" %>
 
   <%= f.select :currency,
-            options_from_collection_for_select(Currency.all, :code, :to_s, @order.currency) %>
+            options_from_collection_for_select(Money::Currency.all, :iso_code, :iso_code, @order.currency) %>
 
   <%= f.select :store_id,
             options_from_collection_for_select(Store.all, :id, :name, @order.store_id), required:false, label:"Ship From:" %>
@@ -41,21 +40,5 @@
         </div>
     <% else %>
         <%= f.submit 'Save', class: 'btn btn-primary btn-large b' %>
-      <% end %>
-    </div>
-  <% end %>
-</div>
-
-<%# Help tours %>
-<%# = render 'incomes/tour' %>
-
-<script type="text/javascript">
-  (function($) {
-    $('body').on('new-contact', '.contact-form', function(event, resp) {
-      $('.contact_id').val(resp.matchcode).data('value', resp.matchcode)
-      .prev().val(resp.matchcode);
-    })
-
-    fx.rates = exchangeRates.rates;
-  })(jQuery)
-</script>
+    <% end %>
+  </div>

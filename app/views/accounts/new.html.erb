@@ -9,7 +9,7 @@
 
 <% if ['new', 'create'].include?(action_name) %>
   <%= f.select :subtype,
-            Account::SUBTYPES.filter {|k, v| k != 'CASH' && k != 'APAR'}. map {|k, v| [v, k]},
+            Account::SUBTYPES.filter {|k, v| k != 'CASH'}. map {|k, v| [v, k]},
             help:"Only new record" %>
 <% else %>
   <div class="row">

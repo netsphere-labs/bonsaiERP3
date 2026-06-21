@@ -24,7 +24,7 @@ def make_org_and_admin_user()
     inventory_active: true,
     country_code: 'JP',
     time_zone: TZInfo::Timezone.get('Asia/Tokyo').name,
-    currency: 'JPY',
+    currency: 'USD',
     stock_fixed_date: Date.today - 2,
     email: 'info@kintsugi.design'
   )
@@ -81,23 +81,22 @@ end
 def make_test_data user
   raise TypeError if !user.is_a?(User)
   
-  ActiveRecord::Base.transaction do
     # BP - contact account
     bp1 = Contact.create! matchcode: "tanaka", name:"田中商事", active:true,
-                          client:true
-    bp1_a = ContactAccount.create! contact: bp1,
-                account: Account.new(name: "口座JPY", currency:"JPY",
-                                     active:true, description:"",
-                                     subtype: "APAR",
-                                     creator: user)
+                          client:true, country_code:"JP"
+    #bp1_a = ContactAccount.create! contact: bp1 #,
+                #account: Account.new(name: "口座JPY", currency:"JPY",
+                #                     active:true, description:"",
+                #                     subtype: "APAR",
+                #                     creator: user)
 
     bp2 = Contact.create! matchcode: "sato", name:"佐藤商店", active:true,
-                          supplier:true
+                          supplier:true, country_code:"JP"
     bp2_a = ContactAccount.create! contact: bp2,
-                account: Account.new(name: "振込先JPY", currency:"JPY",
-                                     active:true, description:"",
-                                     subtype:"APAR",
-                                     creator:user),
+                #account: Account.new(name: "振込先JPY", currency:"JPY",
+                #                     active:true, description:"",
+                #                     subtype:"APAR",
+                #                     creator:user),
                 bank_name: "三菱銀行, ふが支店",
                 account_no: "1234567",
                 account_name: "サトウショウテン"
@@ -110,23 +109,23 @@ def make_test_data user
     our_bank1 = Cash.create!(
                     account: Account.new(name:"自社口座1", currency:"JPY",
                                          active:true, description:"",
-                                         subtype:"CASH",
+                                         subtype:"A:CASH",
                                          creator:user),
                     bank_name:"住友銀行, ほげ支店",
                     account_no:"456789",
                     account_name:"ジシャコウザ" )
 
-    ac1 = Account.create! name: "棚卸資産:商品", description:"", subtype:"INV",
+    ac1 = Account.create! name: "棚卸資産:商品", description:"", subtype:"A:INV",
                           active:true,
                           creator:user
     ac2 = Account.create! name: "売上:商品売上", description:"", subtype:"REV",
                           active:true,
                           creator:user
-    ac3 = Account.create! name: "変動費:商品仕入", description:"", subtype:"VC",
+    ac3 = Account.create! name: "変動費:商品仕入", description:"", subtype:"OP:VC",
                           active:true,
                           creator:user
     ac4 = Account.create! name: "変動費:期末商品棚卸高", description:"",
-                          subtype:"VC", active:true,
+                          subtype:"OP:VC", active:true,
                           creator:user
 
     ia = ItemAccounting.create! name: "商品の会計",
@@ -156,7 +155,6 @@ def make_test_data user
                          accounting:ia,
                          active:true,
                          creator:user
-  end
 end
 
 
@@ -178,7 +176,9 @@ if USE_SUBDOMAIN
     ActiveRecord::Base.connection.execute("DROP TABLE users")
   end
 else
-  make_org_and_admin_user()
-  make_test_data(User.first)
+  ActiveRecord::Base.transaction do
+    make_org_and_admin_user()
+    make_test_data(User.first)
+  end
 end # USE_SUBDOMAIN
 

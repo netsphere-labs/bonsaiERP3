@@ -1,15 +1,19 @@
 
-# $ rails new BonsaiErp --skip-active-storage --database=postgresql --javascript=esbuild --skip-bundle
+# $ rails new BonsaiErp --database=postgresql --skip-active-storage --javascript=webpack --skip-bundle --css=bootstrap
 # $ bundle config set --local path vendor/bundle
 # $ bundle
 
 source "https://rubygems.org"
 
 # v3.3.1 では、ピンポイントで bootsnap が動かない.
-ruby '>= 3.3.2'
+ruby '>= 4.0.2'
+
+if RUBY_VERSION >= "4.0.0"
+  gem 'ostruct'
+end
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 8.1.1"
+gem "rails", "~> 8.1.3"
 
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 # "propshaft" 単体ではトランスパイルを行わない。TypeScript, Sass を使う場合は,
@@ -50,7 +54,7 @@ gem "stimulus-rails"
 gem "jbuilder"
 
 # Use Redis adapter to run Action Cable in production
-gem "redis", "~> 5.4.0"
+gem "redis", "~> 5.4"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -70,9 +74,6 @@ if RUBY_VERSION != '3.3.1'
   # Reduces boot times through caching; required in config/boot.rb
   gem "bootsnap", require: false
 end
-
-# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-# gem "image_processing", "~> 1.2"
 
 # Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
 gem "kamal", require: false
@@ -104,8 +105,9 @@ gem 'bootstrap_form', '~> 5.4'
 gem 'haml' 
 
 # Pagination
-gem 'kaminari', '~> 1.2' 
-
+#gem 'kaminari', '~> 1.2' 
+gem 'pagy', '>= 43.5'
+    
 # ActiveRecord Classes to encode in JSON
 # v0.10.15  2024 Dec
 # コントローラで `render json: ar_obj` と書くと, シリアライザクラスで事前定義し
@@ -134,7 +136,18 @@ gem 'validates_lengths_from_database'
 # 固定フィールドを JSON にするのは本末転倒.
 #gem 'jsonb_accessor', '~> 1.4'
 
-gem 'dragonfly', '~> 1.4'
+# 'carrierwave' は非推奨. メンテナンスモード、使うのが複雑すぎる.
+# 移行先は,
+#  - 'activestorage' - rails 標準.
+#  - 'shrine' - Toolkit for file attachments in Ruby applications.    16,900 K downloads
+#  - 'dragonfly' - Ideal gem for handling attachments in Rails, Sinatra and Rack applications.
+#                  8,980 K downloads. 
+#  - 'paperclip' - File attachments as attributes for ActiveRecord. 80 M downloads. 2018年が最終。廃れた。
+#gem 'dragonfly', '~> 1.4'
+gem 'shrine', '~> 3.7'
+
+# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
+# gem "image_processing", "~> 1.2"
 
 #gem "responders", "~> 3.0.0"  # Compatible with Rails 6.0
 
@@ -237,7 +250,7 @@ gem "rack-cors"
 #gem "active_hash"
 
 # do `bundle exec vite install`
-# サブドメインで上手く動かせなかった. 剥がす
+# サブドメイン (multi tenant) で上手く動かせなかった. 剥がす
 #gem "vite_rails"
 
 # 各テナントを PostgreSQL のスキーマを使って完全に分ける
@@ -247,7 +260,8 @@ gem "ros-apartment", "~> 3.2", require: 'apartment'
 # country_select -> countries 通貨を有効にするときは "money" gem が必要
 # 換算は `Money::Bank::VariableExchange` クラスか
 #       API は https://www.xe.com/xecurrencydata/
-gem "money", ">= 6.0"
+# v7.0.0 December 2025
+gem "money", "~> 7.0"
 
 # A library for converting various objects into `Money` objects.
 #   Monetize.parse("£100") 

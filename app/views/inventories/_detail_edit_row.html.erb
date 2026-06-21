@@ -24,18 +24,18 @@
       <%= df.hidden_field :item_id %>
       <%= detail_obj.item.name %>
     </div>
-    <div class="col-1">
+    <div class="col-1" style="text-align:right">
       <%= order_det.quantity %>
     </div>
     <div class="col-1">
       <%= order_det.item.unit.symbol %>
     </div>
-    <div class="col-2">
-      <%= df.hidden_field :txn_price %>
-      <%= detail_obj.txn_price %>
-    </div>
-    <div class="col-1">
+    <div class="col-1" style="text-align:right">
       <%= order_det.balance %>
+    </div>
+    <div class="col-2" style="text-align:right">
+      <%= df.hidden_field :txn_price, value: edit_amount(order_det.unit_price, @order.currency) %>
+      <%= format_amount(order_det.unit_price, @order.currency) %>
     </div>
 <% else %>
     <div class="col-3">
@@ -46,18 +46,18 @@
     <div class="col-1"></div>
 <% # TODO: display item's uom #' %>
     <div class="col-1"></div>  
+    <div class="col-1"></div>
     
     <div class="col-2">
-      <%= df.number_field :txn_price, class:"form-control" %>
+      <%= df.number_field :txn_price, step: "0.0001", class:"form-control" %>
     </div>
-    <div class="col-1"> </div>
 <% end %>
 
     <div class="col-2">
-      <%= df.number_field :quantity, class:"form-control" %>
+      <%= df.number_field :quantity, step: "0.01", class:"form-control" %>
     </div>
     <div class="col-2">
-      <%= df.number_field :line_total, class:"form-control" %>
+      <%= df.number_field :txn_amount, step: "0.01", class:"form-control" %>
     </div>
   </div>
 <%   end # fields_for %>

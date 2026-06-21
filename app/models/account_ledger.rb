@@ -5,11 +5,6 @@
 # 仕訳の半分. 一つの仕訳ごとに2行以上
 class AccountLedger < ApplicationRecord
 
-  #include ::Models::Updater
-  #extend Models::AccountCode
-
-  #self.code_name = 'T'
-
   ########################################
   # Constants
 
@@ -33,14 +28,19 @@ class AccountLedger < ApplicationRecord
   # 仕訳は基本 `approved` で作る. `pendent` は仮仕訳
   STATUSES = %w(pendent approved void).freeze
 
+  #validates_inclusion_of :status, in: STATUSES
+  enum :status, STATUSES.map{|x| [x,x]}.to_h
+
+  scope :active, -> { where(status: ['pendent', 'approved']) }
+
+  
   ########################################
   # Callbacks
   
-  #before_validation :set_currency
   #before_create :set_code
 
   # Includes
-  include ActionView::Helpers::NumberHelper
+  #include ActionView::Helpers::NumberHelper
 
   ########################################
   # Relationships
@@ -48,8 +48,8 @@ class AccountLedger < ApplicationRecord
   # 勘定科目
   belongs_to :account
   
-  # 人名勘定で行くので, 逆に contact はなし.
-  #belongs_to :contact, optional: true
+  belongs_to :partner, class_name:"Contact", optional: true
+  belongs_to :bp_bank_account, class_name:"ContactAccount", optional: true
   
   belongs_to :project, optional:true
   
@@ -58,33 +58,35 @@ class AccountLedger < ApplicationRecord
   belongs_to :creator,  class_name: 'User'
   belongs_to :updater,  class_name: 'User', optional:true
 
+  # dummy for form object
+  attribute :dr_amt, :string
+  attribute :cr_amt, :string
+  
+  
   ########################################
   # Validations
+
+  validates_presence_of :date, :entry_no
+
+  # Transaction amount & currency: nullable.
+  validates_presence_of :fx_curr_code,
+                        if: -> r { r.fx_amount && r.fx_amount != 0}
+  validates :fx_curr_code, format: {with: /\A[A-Z][A-Z][A-Z]\z/}, allow_nil: true
+
+  # NOT NULL
+  validates_presence_of :funct_amount
   
-  validates_presence_of :amount, :currency
-  validates_presence_of :date
-  #validate :different_accounts
-
   validates_inclusion_of :operation, in: OPERATIONS
-
-  #validates_inclusion_of :status, in: STATUSES
-  enum :status, STATUSES.map{|x| [x,x]}.to_h
-       
-  validates_numericality_of :exchange_rate, greater_than: 0
+      
   #validates_presence_of :contact_id, unless: :is_trans?
   #validates :reference,
   #          length: { within: 3..300, allow_blank: false }
 
   validates_lengths_from_database
 
-  ########################################
-  # scopes, optional: true, optional: true
-  #scope :pendent, -> { where(status: 'pendent') }
-  #scope :nulled,  -> { where(status: 'nulled') }
-  #scope :approved, -> { where(status: 'approved') }
-  
-  scope :active, -> { where(status: ['pendent', 'approved']) }
+  validate :check_amount
 
+  
   ########################################
   # delegates
   
@@ -92,7 +94,7 @@ class AccountLedger < ApplicationRecord
   #         to: :account, prefix: true, allow_nil: true
   #delegate :name, :amount, :currency, :contact,
   #         to: :account_to, prefix: true, allow_nil: true
-  delegate :same_currency?, to: :currency_exchange
+  #delegate :same_currency?, to: :currency_exchange
 
   OPERATIONS.each do |op|
     define_method :"is_#{op}?" do
@@ -100,24 +102,15 @@ class AccountLedger < ApplicationRecord
     end
   end
 
-  STATUSES.each do |st|
-    define_method :"is_#{st}?" do
-      st == status
-    end
-  end
-
-  #def to_s
-  #  name
-  #end
 
   # Determines if the ledger can be conciliated or nulled
   def can_conciliate_or_null?
     !(nuller_id.present? || approver_id.present?)
   end
 
-  def amount_currency
-    currency_exchange.exchange(amount)
-  end
+  #def amount_currency
+  #currency_exchange.exchange(amount)
+  #end
 
   def save_ledger
     if is_approved?
@@ -127,29 +120,24 @@ class AccountLedger < ApplicationRecord
     end
   end
 
-  def update_reference(txt)
-    self.reference = txt
-
-    save
-  end
-
   
 private
 
-    def currency_exchange
-      @currency_exchange ||= CurrencyExchange.new(
-        account: account, account_to: account_to, exchange_rate: exchange_rate
-      )
-    end
-
-  # 取引の通貨は, 勘定科目の通貨とは限らない
-  #  def set_currency
-  #    self.currency = account_to_currency
-  #  end
-
-    #def set_creator
-    #  self.creator_id = UserSession.id
+    #def currency_exchange
+    #  @currency_exchange ||= CurrencyExchange.new(
+    #    account: account, account_to: account_to, exchange_rate: exchange_rate
+    #  )
     #end
+
+  # for `validate()`
+  def check_amount
+    if fx_amount && fx_amount != 0
+      # "0".sign => +1, "-0".sign => -1
+      errors.add(:funct_amount, "sign mismatch") if fx_amount.positive? != funct_amount.positive?
+    end
+  end
+  
+
 
   #def set_code
   #    self.name = self.class.get_code_number

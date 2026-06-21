@@ -56,11 +56,18 @@ class CashesController < ApplicationController
   # PUT /banks/1
   def update
     @cash.assign_attributes(update_bank_params)
-    if @cash.save
-      redirect_to @cash, notice: 'Se actualizo  correctamente la cuenta de banco.'
-    else
+    @cash.account.assign_attributes(params.require(:cash).require(:account)
+                                      .permit(:name, :active, :description))
+                    
+    ActiveRecord::Base.transaction do
+      @cash.save!
+      @cash.account.save!
+    rescue ActiveRecord::RecordInvalid => e
       render :edit, status: :unprocessable_entity 
+      return
     end
+
+    redirect_to @cash, notice: 'Se actualizo  correctamente la cuenta de banco.'
   end
 
   
@@ -88,7 +95,7 @@ private
   end
 
   def update_bank_params
-      params.require(:bank).permit(:name, :number, :active, :address, :phone, :website)
+    params.require(:cash).permit(:bank_name, :bank_addr, :account_name)
   end
 
   def create_bank_params

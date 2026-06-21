@@ -7,11 +7,10 @@ class CreateAccounts < ActiveRecord::Migration[5.2]
       create_table :accounts, id: :serial do |t|
         t.string  :name, null:false, index: {unique:true}
 
-        # 通貨は勘定科目ごとに持つ。人名勘定なので可能.
+        # 通貨は勘定科目ごとに持つ。restriction
         # 現金預金と債権債務以外は, 通貨不要. nullable.
         t.column  :currency, "CHAR(3) "
         
-        t.boolean :active, null:false, default: true
         t.string  :description, limit: 500, null:false
 
         # delegated_type (= polymorphic) にする. nullable
@@ -22,21 +21,15 @@ class CreateAccounts < ActiveRecord::Migration[5.2]
         t.string :subtype, limit:40, null:false
         
         # この意味?
-        t.decimal :exchange_rate, precision: 14, scale: 4, default: 1.0
-        #t.decimal :amount, precision: 14, scale: 2, default: 0.0
-
-        #t.integer :contact_id
-        #t.integer :project_id
-        
-        # この意味?
-        #t.date    :date
         #t.string  :state, limit: 30
+        t.boolean :active, null:false, default: true
         
         t.boolean :has_error, null:false, default: false
         t.jsonb   :error_messages #, limit: 400
 
         t.timestamps
       end
+      add_index :accounts, [:accountable_type, :accountable_id], unique:true
     end
   end
 end

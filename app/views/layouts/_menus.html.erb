@@ -26,6 +26,10 @@
             <li><%= link_to "Product/Item Master", items_path,
                             class:"dropdown-item" %>
             <li><%= link_to "Store/Warehouse", stores_path, class:"dropdown-item" %>
+            <li><%= link_to "Resource Master", "/resources/", class:"dropdown-item" %>
+	    <li><hr class="dropdown-divider"></li>
+            <li><%= link_to "Currency", currencies_path,
+                            class:"dropdown-item" %>
           </ul>
         </li>
         
@@ -36,7 +40,7 @@
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="/cashes/">Cash &amp; Bank Account</a>
-            <li><a class="dropdown-item" href="/loans/">Loan</a>
+            <li><a class="dropdown-item" href="/loans/">❌️未了 Loan</a>
             <li><a class="dropdown-item" href="/payments/">Payment</a>
             <li><a class="dropdown-item" href="/taxes/">Tax</a>
 	      
@@ -64,17 +68,6 @@
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button"
              data-bs-toggle="dropdown" aria-expanded="false">
-            Sales
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="/sales_orders/">Sales Order</a>
-            <li><a class="dropdown-item" href="/devolutions/">Customer Return Request</a>
-          </ul>
-        </li>
-
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button"
-             data-bs-toggle="dropdown" aria-expanded="false">
             Purchasing
           </a>
           <ul class="dropdown-menu">
@@ -87,7 +80,18 @@
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button"
              data-bs-toggle="dropdown" aria-expanded="false">
-            Inventory
+            Sales
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/sales_orders/">Sales Order</a>
+            <li><a class="dropdown-item" href="/devolutions/">Customer Return Request</a>
+          </ul>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button"
+             data-bs-toggle="dropdown" aria-expanded="false">
+            Warehouse
           </a>
           <ul class="dropdown-menu">
 	    <li><a class="dropdown-item" href="/transfer_requests/">Invt. Transfer Requests</a>
@@ -116,7 +120,7 @@
 <% # 以上が left menu bar %>
 
       <span class="navbar-text me-2">
-        <%= current_organisation %>
+        <%= current_organisation &.name %>
         <%= " (" + Apartment::Tenant.current + ")" %>
       </span>
       

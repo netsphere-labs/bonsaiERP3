@@ -4,40 +4,42 @@
 #items
   %h2 Items
 
-  %table.table
+  %table(class='table table-sm')
     %thead
       %tr
         %th Item
         %th Unit Price (#{@order.currency})
         %th Qty
         %th UoM
-        %th Total fila #{@order.currency}
+        %th Amount (#{@order.currency})
+        %th description
         %th Undelivered qty
 
       - @order.details.includes(:item => [:unit]).each do |det|
         %tr
-          %td= link_to det.item, det.item, 'data-title' => det.item
-          %td= det.price
-          %td.cur= ntc det.quantity
-          %td.cur= det.item.unit
-          %td.total_row.cur= ntc det.line_total
-          %td.cur= det.balance
+          %td= link_to det.item.name, det.item, 'data-title' => det.item
+          %td(style='text-align:right')= format_amount(det.unit_price, @order.currency)
+          %td(style='text-align:right')= det.quantity
+          %td(style='text-align:right')= det.item.unit
+          %td(style='text-align:right')= format_amount(det.amount, @order.currency)
+          %td= det.description
+          %td(style='text-align:right')= det.balance
 
     %tr.extra.pad_top
       %td
       %td.cur{:colspan => 3} Subtotal
-      %td#subtotal.cur= ntc @order.gross_total
+      %td(style='text-align:right')= format_amount(@order.gross_total, @order.currency)
 
     %tr.extra
       %td
       %td.cur{:colspan => 3}
         %i.icon-minus-sign
-        Descuento (<span id="discount_percentage" data-val="#{@order.discount_percent}">#{ntc @order.discount_percent}</span>%)
-      %td#discount_total.cur= ntc -@order.total_discount
+        Descuento (<span id="discount_percentage" data-val="#{@order.discount_percent}">#{@order.discount_percent}</span>%)
+      %td(style='text-align:right')= format_amount(-@order.total_discount, @order.currency)
 
     %tr.extra
       %td
         %td.cur.b.dark{:colspan => 3} Total
-      %td#total_value.cur.b{'data-val' => @order.total} #{@order.currency} #{ntc @order.total}
+      %td(style='text-align:right') #{@order.currency} #{format_amount(@order.total, @order.currency)}
 
 

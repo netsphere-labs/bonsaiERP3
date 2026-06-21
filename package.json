@@ -1,15 +1,15 @@
 {
   "private": true,
   "devDependencies": {
-    "sass": "^1.93.2",
-    "webpack": "^5.102.1",
-    "webpack-cli": "^6.0.1"
+    "sass": "^1.100.0",
+    "webpack": "^5.107.2",
+    "webpack-cli": "^7.0.3"
   },
-  "packageManager": "yarn@4.10.3",
+  "packageManager": "yarn@4.16.0",
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
-    "@hotwired/turbo-rails": "^8.0.18",
-    "apexcharts": "^5.3.6"
+    "@hotwired/turbo-rails": "^8.0.23",
+    "apexcharts": "^5.13.0"
   },
   "scripts": {
     "build:css": "sass ./app/assets/stylesheets/application.sass.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules",

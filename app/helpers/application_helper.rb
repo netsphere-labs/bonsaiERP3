@@ -3,9 +3,9 @@
 module ApplicationHelper
   # Checks if is set the organisation session
   # @return [True, False]
-  def organisation?
-    session[:organisation] and session[:organisation].size > 0
-  end
+  #def organisation?
+  #  session[:organisation] && session[:organisation].size > 0
+  #end
 
 
   # Presens the logo of an organisation based on the session
@@ -28,12 +28,14 @@ module ApplicationHelper
     link_to text, url_for(url_hash), options
   end
 
+=begin
   # Presents number to currency
   def ntc(val = nil, options = {})
     #number_to_currency(val.to_f, options)
     number_with_delimiter(val.to_f, t("number.format").merge(options))
   end
-
+=end
+  
   # Format addres to present on the
   def nl2br(val)
     unless val.blank?
@@ -53,23 +55,6 @@ module ApplicationHelper
     end
   end
 
-  def jquery_tabs(text, url)
-    params[:tab]
-  end
-
-  def jqueryui_ul
-    content_tag(:ul, class: 'ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all') do
-      yield
-    end
-  end
-
-  def jquery_tabs(options = {}, &bl)
-    id = options[:tab_id] || "tab"
-
-    content_tag(:div, id: id, class: 'ui-tabs ui-widget ui-widget-content ui-corner-all') do
-      yield
-    end
-  end
 
   def tab(text, url, type)
     css = 'ui-state-default ui-corner-top'
@@ -83,6 +68,41 @@ module ApplicationHelper
     end
   end
 
+
+  # @return [String]
+  def edit_amount(n, curr_code)
+    raise TypeError if curr_code && !curr_code.is_a?(String)
+    return "" if !n
+
+    exp = curr_code.blank? ? 0 : Money::Currency.find(curr_code).exponent
+    if exp != 0
+      # SQL decimal <-> Ruby BigDecimal
+      (BigDecimal(n) / (10 ** exp)).to_s
+    else
+      n.to_s
+    end
+  end
+
+  
+  # @param curr_code [String] currency code
+  def format_amount(n, curr_code)
+    raise TypeError, "n must be Numeric, but #{n.class}" if !n.is_a?(Numeric)
+    raise TypeError if curr_code && !curr_code.is_a?(String)
+
+    exp = curr_code.blank? ? 0 : Money::Currency.find(curr_code).exponent
+    n = BigDecimal(n.to_s) / (BigDecimal("10.0") ** exp) if exp != 0
+
+    intpart, exppart = n.to_s.split('.', 2)
+    intstr = intpart.reverse.split(/([0-9]{1,3})/).collect {|d| d == "" ? ',' : d}.join('').reverse.chop
+
+    return (if exppart == ""
+              intstr
+            else
+              sprintf("%s.%s", intstr, exppart)
+            end)
+  end
+
+  
   # Presents a class with currency
   def with_currency(klass, amount = :amount, options = {})
     options = {:precision => 2}.merge(options)

@@ -9,20 +9,30 @@
   %span{class: @order.display_state}= @order.state
 
   %div.btn-group{role: "group"}
-    = button_to 'Confirm', confirm_purchase_order_path(@order.id), class: 'btn btn-success', method: :patch  if policy(@order).confirm?
+    - if policy(@order).confirm?
+      = button_to 'Confirm', confirm_purchase_order_path(@order.id), class: 'btn btn-success', method: :patch  
 
-    = button_to 'Destroy', purchase_order_path(@order.id), method: :delete, class: 'btn btn-danger',
-      data:{turbo_confirm: 'Sure?'}  if policy(@order).destroy?
+    - if @order.state == "confirmed"
+      = link_to "Purchase-in-Transit...", new_pur_in_transit_path(po_id: @order.id), class:"btn" 
+    - else
+      %a(class="btn disabled") Purchase-in-Transit...
 
-    = button_to 'Void', void_purchase_order_path(@order.id), method: :patch, class: 'btn btn-danger',
-      data:{turbo_confirm: 'Esta segur@ de anular el Ingreso?'}  if policy(@order).void?
+    - if policy(@order).destroy?
+      = button_to 'Delete', purchase_order_path(@order.id), method: :delete, class: 'btn btn-outline-danger', data:{turbo_confirm: 'Sure?'}  
+    - elsif policy(@order).void?
+      = button_to 'Void', void_purchase_order_path(@order.id), method: :patch, class: 'btn btn-outline-danger', data:{turbo_confirm: 'Esta segur@ de anular el Ingreso?'}  
+    - else
+      %a(class="btn disabled") Delete
+
     -# = button_to 'Force Close', {action:"force_close"}
-    = link_to "Edit...", edit_purchase_order_path(@order.id), class: 'btn'  if policy(@order).update?
-
+    - if policy(@order).update?
+      = link_to "Edit...", edit_purchase_order_path(@order.id), class: 'btn'  
+    - else
+      %a(class="btn disabled") Edit...
 
 
 %div.row
-  %div.col-2 Contact:
+  %div.col-2 Partner:
   %div.col-6
     = link_to @order.contact, partner_path(@order.contact.id), title: 'Contacto', data: {toggle: 'tooltip'}
   %div.col-2 To:
@@ -42,18 +52,21 @@
     .moneybox
       %label TOTAL
       %h5.n
-        %span.total= ntc @order.total
+        %span.total= format_amount(@order.total, @order.currency)
         = @order.currency
-
-    .moneybox
-      %label SALDO
-      %h5.n
-        %span.balance= ntc @order.balance_inventory
 
 
 
 
 = render "orders/items"
+
+
+.row-fluid
+  .span6
+    %h3 Adjuntos
+    = render 'attachments/attachments', attachable: @order
+
+
 
 %h2 Purchase In Transit
 

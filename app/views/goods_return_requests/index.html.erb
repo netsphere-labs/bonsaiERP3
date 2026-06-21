@@ -1,3 +1,20 @@
 
 
 <% @page_title = "Goods Return Request" %>
+
+<%= content_for :links do %>
+  <div class="btn-group" role="group">
+    <%= link_to "New Goods Return Request...", new_goods_return_request_path, class: 'btn btn-secondary' %>
+  </div>
+<% end %>
+
+<%= render partial: 'orders/search' %>
+
+<%== @pagy.series_nav(:bootstrap) %>
+<table class="table">
+  <% @orders.each do |order| %>
+    <%= render 'purchase_orders/expense', order: order %>
+  <% end %>
+</table>
+<%== @pagy.series_nav(:bootstrap) %>
+

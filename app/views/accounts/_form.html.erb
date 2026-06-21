@@ -12,11 +12,17 @@
 
   <%= form.text_field :name, help: "e.g. Expenses:Health:Medical" %>  
   <%= form.check_box  :active  %>
-<% if ['CASH', 'APAR'].include?(form.object.subtype) %>
-  <%= form.select :currency,
-            options_from_collection_for_select(Currency.all, :code, :to_s, form.object.currency),
-            required:false, label:"Currency:", help:"後から変更できません" %>  
-<% end %>
-  
+
+  <% if ["new", "create"].include?(action_name) %>
+    <%= form.select :currency,
+            options_from_collection_for_select(Money::Currency.all, :iso_code, :iso_code, form.object.currency), include_blank:true,
+            required:false, label:"Currency:", help:"資金と債権債務は通貨が必須。後から変更できません" %>  
+  <% else %>
+    <div class="row">  
+      <label class="col-2">Currency:</label>  
+      <div class="col-2"><%= form.object.currency %></div>
+    </div>
+  <% end %>
+
   <%= form.text_field :description  %>  
 

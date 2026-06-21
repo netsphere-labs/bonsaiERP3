@@ -1,0 +1,29 @@
+
+<div class="tab-content">
+  <div id="users" class="tab-pane fade">
+    <p>
+      <%= link_to new_admin_user_path, class: 'btn' do %>
+        <i class="icon-plus-circle"></i>
+        Add User
+      <% end %>
+    </p>
+
+    <h3 class="n">Users</h3>
+
+    <ul class="unstyled listing users">
+      <li class="row-fluid">
+        <div class="span4">
+          <strong class="muted">Full Name</strong>
+        </div>
+        <div class="span4">
+          <strong class="muted">Email</strong>
+        </div>
+        <div class="span2">
+          <strong class="muted">Role</strong>
+        </div>
+        <div class="span2"></div>
+      </li>
+
+      <%= render partial: 'user', collection: current_organisation.users.includes(:links).order('users.id'), as: :user %>
+    </ul>
+  </div>

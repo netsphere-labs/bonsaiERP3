@@ -1,0 +1,10 @@
+
+<% @page_title = "Editing " + @account.name %>
+
+<p><%= link_to "Back", "/accounts/" %>
+
+<%= bootstrap_form_for @account, layout: :horizontal do |f| %>
+  <%= render partial: "form", locals: {form: f} %>
+
+  <%= f.submit class:"btn btn-primary" %>
+<% end %>

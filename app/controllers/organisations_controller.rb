@@ -4,12 +4,16 @@
 
 # 組織. テナントと 1:1
 class OrganisationsController < ApplicationController
+  before_action :redirect_app_domain
+  
   # `current_user` がテナントのアクセス権を持っているかどうか
   skip_before_action :check_authorization!, only: [:index, :new, :create]
 
   before_action :check_user_master_account, except: [:index, :new, :create]
 
+  before_action :set_org, only: %i[show edit update ]
 
+  
   def index
     # TODO: superuser の場合は, 全部を表示
     @organisations = Organisation.joins(:links)
@@ -24,6 +28,14 @@ class OrganisationsController < ApplicationController
 
   
   def create
+  end
+
+
+  def show
+  end
+
+
+  def edit
   end
 
   
@@ -44,7 +56,21 @@ class OrganisationsController < ApplicationController
     end
   end
 
-  private
+  
+private
+
+  def set_org
+    @org = Organisation.find params[:id]
+  end
+
+  # for `before_action`
+  def redirect_app_domain
+if USE_SUBDOMAIN
+    if request.host != "app.#{DOMAIN}"      
+      redirect_to organisations_url(subdomain:"app"), allow_other_host:true
+    end
+end
+  end
 
 =begin
     def check_tenant_creation

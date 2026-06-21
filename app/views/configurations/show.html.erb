@@ -1,0 +1,24 @@
+
+<% @page_title = "Organisation: " + current_organisation.name %>
+
+  <div id="organisation" class="tab-pane">
+    <p>
+      <%= link_to edit_organisation_update_path(current_organisation.id), class: 'btn' do %>
+        <i class="icon-pencil"></i>
+        Edit Configuration...
+      <% end %>
+    </p>
+
+<%= render partial:"organisations/show", locals:{org: current_organisation} %>
+
+
+
+<script type="text/javascript">
+  $(function() {
+    activeTab();
+
+    $('body').on('click', 'li .active', function() {
+      $(this).parents('li').addClass('marked');
+    });
+  });
+</script>

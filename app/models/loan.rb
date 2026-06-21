@@ -13,6 +13,8 @@ class Loan < ApplicationRecord # Account から派生
   include Models::History
 
   STATES = %w(approved paid nulled).freeze
+  enum :state, STATES.map{|x| [x,x]}.to_h
+
   LOAN_TYPES = %w(Loans::Receive Loans::Give).freeze
 
   # Store
@@ -24,7 +26,7 @@ class Loan < ApplicationRecord # Account から派生
   validates_presence_of :date, :due_date, :name, :contact, :contact_id
   validates :total, numericality: { greater_than: 0 }
   validate :valid_greater_due_date
-  validates :state, inclusion: { in: STATES }
+
 
   class << self
     def find(id)
@@ -37,13 +39,8 @@ class Loan < ApplicationRecord # Account から派生
     old_attributes.merge("interests" => interests)
   end
 
-  STATES.each do |m|
-    define_method :"is_#{m}?" do
-      state == m
-    end
-  end
 
-  private
+private
 
     def valid_greater_due_date
       if due_date.present? && date.present? && due_date < date

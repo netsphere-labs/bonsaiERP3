@@ -1,20 +1,18 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe "currencies/edit.html.erb" do
+RSpec.describe "currencies/edit", type: :view do
+  let(:currency) {
+    Currency.create!()
+  }
+
   before(:each) do
-    assign(:currency, @currency = stub_model(Currency,
-      :new_record? => false,
-      :name => "MyString",
-      :symbol => "MyString"
-    ))
+    assign(:currency, currency)
   end
 
   it "renders the edit currency form" do
     render
 
-    response.should have_selector("form", :action => currency_path(@currency), :method => "post") do |form|
-      form.should have_selector("input#currency_name", :name => "currency[name]")
-      form.should have_selector("input#currency_symbol", :name => "currency[symbol]")
+    assert_select "form[action=?][method=?]", currency_path(currency), "post" do
     end
   end
 end

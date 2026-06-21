@@ -5,6 +5,7 @@ module Accountable
 
   included do
     # `touch:` 関連づけられたオブジェクトの `updated_at` も更新される
-    has_one :account, as: :accountable, touch: true
+    # 子レコード側 (Cash, Loan) を削除した場合も親レコードを削除したい場合は dependent: :destroy
+    has_one :account, as: :accountable, touch: true, dependent: :destroy
   end
 end

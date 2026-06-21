@@ -17,7 +17,7 @@ class ItemsController < ApplicationController
                                      .permit(*ItemSearch.attribute_names)
     end
 
-    @items = @search.search_by_text().order('items.name ASC').page(params[:page])
+    @pagy, @items = pagy(:offset, @search.search_by_text().order('items.name ASC'))
   end
 
   

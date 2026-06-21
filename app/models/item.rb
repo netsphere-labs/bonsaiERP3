@@ -17,7 +17,7 @@ class Item < ApplicationRecord
   # Callbacks
   
   before_validation :trim_code
-  before_save :set_unit
+  #before_save :set_unit
   before_destroy :check_items_destroy
 
   ##########################################
@@ -36,11 +36,8 @@ class Item < ApplicationRecord
   belongs_to :creator,  class_name: 'User'
   
   # Attachments
-  with_options class_name: 'Attachment', as: :attachable do |attach|
-    attach.has_one  :image, -> { where(image: true).order('attachments.position') }
-    attach.has_many :images, -> { where(image: true).order('attachments.position') }
-    attach.has_many :attachments, -> { order('attachments.position') }, dependent: :destroy
-  end
+  has_many :attachments, -> { order('attachments.position') }, dependent: :destroy
+
 
   ##########################################
   # Validations
@@ -65,9 +62,6 @@ class Item < ApplicationRecord
     where("items.name ILIKE :s OR items.code ILIKE :s", s: "%#{s}%")
   }
 
-  def to_s
-    name
-  end
 
   # Sums the stocks of a item
   def total_stock
@@ -92,8 +86,8 @@ private
     self.code = code.to_s.unicode_normalize(:nfkc).strip.upcase
   end
 
-    def set_unit
-      self.unit_symbol = unit.symbol
-      self.unit_name = unit.name
-    end
+  #  def set_unit
+  #    self.unit_symbol = unit.symbol
+  #    self.unit_name = unit.name
+  #  end
 end

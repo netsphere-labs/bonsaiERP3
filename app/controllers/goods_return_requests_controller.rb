@@ -9,29 +9,19 @@ class GoodsReturnRequestsController < ApplicationController
   before_action :set_order,
                 only: %i[show edit update destroy confirm void]
   
-=begin
-  # GET /devolutions/:id/new_income
-  def new_income
-    @devolution = Incomes::Devolution.new(account_id: params[:id], date: Date.today)
-    check_income
-  end
-
-  # POST /devolutions/:id/income
-  def income
-    @devolution = Incomes::Devolution.new(income_params)
-    check_income
-
-    if @devolution.pay_back
-      flash[:notice] = 'La devolución se realizo correctamente.'
-      render 'income.js'
-    else
-      render :new_income
-    end
-  end
-=end
 
   def index
-    @orders = GoodsReturnRequest.order(date: :desc).page(params[:page])
+    if params[:movements_search].blank? || !params[:reset].blank?
+      @search = Movements::Search.new
+    else
+      #raise params.inspect
+      @search = Movements::Search.new params.require(:movements_search)
+                                .permit(*Movements::Search.attribute_names)
+      # `permit()` returns `Parameters {}`. why?
+      @search.state = params.require(:movements_search)['state']
+    end
+    
+    @pagy, @orders = pagy(:offset, @search.search_by_text(GoodsReturnRequest).order(date: :desc))
   end
 
 

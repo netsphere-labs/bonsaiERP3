@@ -1,0 +1,48 @@
+
+<% # @param entry [AccountLedger] モデルデータ
+   # @param lineno 行番号. 1始まり
+   # @param firstline 最初の行のとき true
+  %>
+
+  <%= fields_for "entries[#{lineno}]", entry do |sub| %>
+<% if !entry.errors.empty? %>
+  <div style="color:red"><%= entry.errors.inspect %></div>
+<% end %>
+
+<% # two lines %>
+  <div class="row">
+    <div class="col-2">
+      <%= sub.select :account_id,
+	        options_from_collection_for_select(Account.all, :id, :name) %>
+    </div>
+    
+    <div class="col-2">
+      <%= sub.select :partner_id,
+	        options_from_collection_for_select(Contact.all, :id, :name),
+	  include_blank: true %>
+    </div>
+
+    <div class="col-3">
+      <%= sub.text_field :description %>
+    </div>
+
+    <div class="col-2">
+      <%= sub.text_field :dr_amt %>
+    </div>
+    <div class="col-2">
+      <%= sub.text_field :cr_amt %>
+    </div>
+
+    <div class="col-2">
+      due date
+    </div>
+
+    <div class="col-2">
+      <%= sub.select :bp_bank_account_id,
+	        options_from_collection_for_select(ContactAccount.all,
+	                                :id, :long_name),
+	        include_blank: "(cash)" %>
+    </div>
+  </div> <!-- /.row -->
+    
+  <% end # of fields_for %>

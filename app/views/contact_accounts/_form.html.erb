@@ -1,16 +1,9 @@
 
-<% # partners/new からも呼び出される
-  %>
 
-<%= f.fields_for @contact_account.account do |af| %>
-  <%= render partial:"accounts/form", locals:{form:af} %>
-<% end %>
 
-<fieldset>
-  <legend>Bank Information</legend>
 <%= f.text_field :bank_name, label:"Bank Name, Branch:" %>
 <%= f.text_field :bank_addr %>
 <%= f.text_field :account_no %>
 <%= f.text_field :account_name %>
-</fieldset>
+
 

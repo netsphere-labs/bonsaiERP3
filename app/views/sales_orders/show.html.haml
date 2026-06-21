@@ -9,9 +9,14 @@
 
   %div.btn-group{role:"group"}
     = button_to 'Confirm', confirm_sales_order_path(@order), method: :patch, class: 'btn btn-success'  if policy(@order).confirm?
-    -# Null form
-    = button_to 'Void', void_sales_order_path(@order), method: :patch, class: 'btn btn-danger', data: { turbo_confirm: 'Esta segur@ de anular' }  if policy(@order).void?
 
+    - if policy(@order).destroy?
+      = button_to 'Delete', sales_order_path(@order.id), method: :delete, class: 'btn btn-outline-danger', data:{turbo_confirm: 'Sure?'}  
+    - elsif policy(@order).void?
+      = button_to 'Void', void_sales_order_path(@order), method: :patch, class: 'btn btn-outline-danger', data: { turbo_confirm: 'Esta segur@ de anular' }
+    - else
+      %a(class="btn disabled") Delete
+      
     = link_to "Edit this SO...", edit_sales_order_path(@order.id), class: 'btn' if policy(@order).update?
 
     = link_to "Print Order", sales_order_path(@order.id, format: 'print'), class: 'btn' 
@@ -36,14 +41,10 @@
     .moneybox
       %label TOTAL
       %h5.n
-        %span.total= ntc @order.total
-        = currency_label @order.currency
+        %span.total= format_amount(@order.total, @order.currency)
+        = @order.currency
 
-    .moneybox
-      %label SALDO
-      %h5.n
-        %span#balance(data-amount="#{@order.balance_inventory}")= ntc @order.balance_inventory
-        = currency_label @order.currency
+
 
   .span6
     -#%span.muted Proyecto:

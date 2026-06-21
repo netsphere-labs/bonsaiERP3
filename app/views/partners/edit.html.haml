@@ -12,7 +12,7 @@
 
 .row-fluid
   .span6.r
-    = link_to icon_show_text, partner_path(@partner.id), class: 'btn'
+    = link_to "Back", partner_path(@partner.id), class: 'btn'
 
 = bootstrap_form_with model: @partner, url:{action:"update", id: @partner},
                       layout: :horizontal do |f|

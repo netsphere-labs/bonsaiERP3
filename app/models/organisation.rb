@@ -46,21 +46,22 @@ end
 
   validates_email_format_of :email, if: -> { email.present? }, message: I18n.t('errors.messages.email')
 
-  with_options if: :persisted? do |val|
-    val.validates_presence_of :country_code, :currency
-    val.validates_inclusion_of :currency, in: CURRENCIES.keys
-    val.validates_inclusion_of :country_code, in: COUNTRIES.keys
-  end
+  #with_options if: :persisted? do |val|
+  validates_presence_of :country_code
+  validates_presence_of :currency
+    #val.validates_inclusion_of :currency, in: CURRENCIES.keys
+  #validates_inclusion_of :country_code, in: COUNTRIES.keys
+  #end
 
   ########################################
   # Delegations
-  delegate :name, :to_s, to: :currency_klass, prefix: 'currency'
+  #delegate :name, :to_s, to: :currency_klass, prefix: 'currency'
 
   ########################################
   # Methods
-  def to_s
-    name
-  end
+  #def to_s
+  #  name
+  #end
 
   def active_users
     users.where('links.active = ?', true)
@@ -71,10 +72,12 @@ end
     self.master_link.creator = true
   end
 
+  
   def country
-    Country.find country_code
+    ISO3166::Country.new country_code
   end
 
+  
   def create_organisation
     self.build_master_account
     user = master_link.user
@@ -159,9 +162,9 @@ end
   end
   
 
-    def currency_klass
-      @currency_klass ||= Currency.find(currency)
-    end
+    #def currency_klass
+    #  @currency_klass ||= Currency.find(currency)
+    #end
 
   # Sets or checks that the header_css is valid
   # for `before_validation()`  

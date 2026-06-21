@@ -1,0 +1,16 @@
+
+<%= bootstrap_form_with model: @resource, layout: :horizontal do |f| %>
+  <%= error_messages_for 'resource' %>
+
+  <%= f.select :res_type, options_for_select(Resource::RES_TYPES.map {|name, v| [name,name]}) %>
+
+  <%= f.text_field :name %>
+
+  <%= f.select :unit_id,
+               options_from_collection_for_select(Unit.all, :id, :name),
+               required:false, include_blank: false %>
+  
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

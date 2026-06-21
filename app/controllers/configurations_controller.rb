@@ -1,7 +1,14 @@
+
+# singular resource
 class ConfigurationsController < ApplicationController
   # GET /configurations
-  def index
+  def show
     # Explicitly render the ERB template
-    render 'index'
+  end
+
+  def update
+  end
+  
+  def members
   end
 end

@@ -28,7 +28,9 @@ resources :admin_users, except: [:index] do
   patch :active, on: :member
 end
 
-resources :configurations, only: [:index]
+resource :configurations, only: [:show, :update] do
+  get :members
+end
 
 
 ######################################################################
@@ -39,6 +41,8 @@ resources :items do
   get :search_income, on: :collection
   get :search_expense, on: :collection
   get :search_inventory, on: :member
+
+  resources :bom_structures
 end
 
 # UoM
@@ -51,6 +55,8 @@ resources :partners do
   get :incomes, on: :member
   get :expenses, on: :member
 end
+
+resources :currencies
 
 
 ######################################################################

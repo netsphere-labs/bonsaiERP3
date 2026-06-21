@@ -14,12 +14,11 @@ class PartnersController < ApplicationController
     @search_term = !params[:search].blank? ? params[:search] : nil
     
     if @search_term
-      @partners = Contact.search(@search_term)
+      @pagy, @partners = pagy(:offset, Contact.search(@search_term))
     else
-      @partners = Contact.order('matchcode asc')
+      @pagy, @partners = pagy(:offset, Contact.order('matchcode asc'))
     end
-    @partners = @partners.page(@page)
-    
+
     #@contacts = @contacts.any_tags(*tag_ids)  if tag_ids
   end
 
@@ -31,9 +30,8 @@ class PartnersController < ApplicationController
 
   # GET /contacts/new
   def new
-    # 最初から口座を一つ作る
     @partner = Contact.new
-    @contact_account = ContactAccount.new account: Account.new(currency:"JPY", active:true, subtype:'APAR')
+    #@contact_account = ContactAccount.new account: Account.new(currency:"JPY", active:true, subtype:'APAR')
   end
 
   # GET /contacts/1/edit
@@ -44,29 +42,30 @@ class PartnersController < ApplicationController
   def create
     @partner = Contact.new(contact_params)
     # copy from `contact_accounts/create`
-    @contact_account =
-      ContactAccount.new account: Account.new(params.require(:contact)
-                            .require(:contact_account).require(:account)
-                            .permit(:name, :currency, :active, :description))
-    @contact_account.assign_attributes contact_account_params
-    @contact_account.account.subtype = 'APAR'
+    #@contact_account =
+    #  ContactAccount.new account: Account.new(params.require(:contact)
+    #                        .require(:contact_account).require(:account)
+    #                        .permit(:name, :currency, :active, :description))
+    #@contact_account.assign_attributes contact_account_params
+    #@contact_account.account.subtype = 'APAR'
 
     begin
       ActiveRecord::Base.transaction do
         @partner.save! 
-        @contact_account.contact_id = @partner.id
+        #@contact_account.contact_id = @partner.id
         # save! だけだと account が作られない
-        @contact_account.save!
-        @contact_account.account.accountable = @contact_account
-        @contact_account.account.creator_id = current_user.id
-        @contact_account.account.save!
+        #@contact_account.save!
+        #@contact_account.account.accountable = @contact_account
+        #@contact_account.account.creator_id = current_user.id
+        #@contact_account.account.save!
       end
     rescue ActiveRecord::RecordInvalid => e
       render :new, status: :unprocessable_entity 
       return
     end
     
-    redirect_to({action:"show", id: @partner}, notice: 'Se ha creado el contacto.')
+    redirect_to({action:"show", id: @partner},
+                notice: 'Se ha creado el contacto.')
   end
 
   
@@ -108,10 +107,10 @@ class PartnersController < ApplicationController
   
 private
 
-  def contact_account_params
-    params.require(:contact).require(:contact_account)
-          .permit(:bank_name, :bank_addr, :account_no, :account_name)
-  end
+  #def contact_account_params
+  #  params.require(:contact).require(:contact_account)
+  #        .permit(:bank_name, :bank_addr, :account_no, :account_name)
+  #end
 
   def set_partner
     @partner = Contact.find(params[:id])
@@ -119,7 +118,7 @@ private
 
   def contact_params
     params.require(:contact).permit(:matchcode, :name, :email, :phone, :mobile,
-                        :tax_number, :address, :client, :supplier, :staff)
+                        :tax_number, :address, :client, :supplier, :staff, :country_code)
   end
 
 

@@ -8,7 +8,9 @@
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
 
-  <title><%= @page_title %> - <%= current_organisation %> - bonsaiERP</title>
+  <title><%= @page_title %>
+    <%= current_organisation ? " : #{current_organisation.name}" : "" %>
+    - bonsaiERP</title>
 
   <link rel="shortcut icon" href="/bonsai.ico" type="image/x-icon">
 
@@ -20,7 +22,6 @@
   <!-- Load jQuery and other libraries from CDN -->
   <script src="/lib/jquery-3.7.1.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-  <script src="/lib/jquery-ui-1.14.1/jquery-ui.min.js"></script>
   <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
 
   <%= yield :head %>
