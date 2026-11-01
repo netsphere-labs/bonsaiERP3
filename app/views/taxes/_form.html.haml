@@ -1,9 +1,14 @@
-= simple_form_for tax do |f|
+
+
+= bootstrap_form_with model: @tax, layout: :horizontal do |f|
   .row-fluid
-    .span6
-      = f.input :name, label: false, input_html: { placeholder: 'Impuesto' }
-    .span6
-      = f.input :percentage, label: false, input_html: { placeholder: 'Porcentaje %', type: 'decimal' }
+    = f.country_select :country_code 
+
+    = f.text_field :name, input_html: { placeholder: 'Impuesto' }
+
+    = f.text_field :abbreviation
+
+    = f.text_field :percentage, label:"Percentage (%):", input_html: { placeholder: 'Porcentaje %', type: 'decimal' }
 
   .form-actions
     = f.submit 'Save', class: 'b btn btn-primary'

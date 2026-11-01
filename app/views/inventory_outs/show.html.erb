@@ -1,0 +1,44 @@
+
+<% @page_title = "Transfer Out ##{@invt.id}" %>
+<% @crumbs = [
+     ["Store/Warehouse", stores_path],
+     [@store.name, @store],
+     ["Outbound Delivery", {controller:"stores", id: @store, action:"outbound_orders"}] ] %>
+
+
+<% content_for :links do %>
+  State: <%= tag.span class: @invt.display_state do %> <%= @invt.state %><% end %>
+
+
+  <div class="btn-group" role="group">
+<% if policy(@invt).update? %>
+  <%= link_to 'Edit...', {action:"edit", id:@invt} %>
+<% end %>
+<% if policy(@invt).destroy? %>
+  <%= button_to 'Destroy', {action:"destroy", id:@invt.id}, method: :delete, class: 'btn btn-danger',
+                data:{turbo_confirm: 'Sure?'}  %>
+<% end %>
+  
+<% if policy(@invt).confirm? %>
+  <%= button_to 'Confirm', {action:"confirm", id:@invt} %>
+<% end %>
+  </div>
+<% end %>
+
+
+
+
+  
+<table class="table">
+  <tr>
+    <th>Item
+    <th>Price (取引通貨)
+    <th>Qty
+    <th>Amount
+      
+  <% @invt.details.each do |detail| %>
+  <tr>
+    <td><%= detail.item.name %>
+    <td><%= detail.quantity %>
+  <% end %>
+</table>

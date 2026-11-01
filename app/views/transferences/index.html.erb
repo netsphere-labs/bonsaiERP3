@@ -19,18 +19,21 @@
     <th>借方
     <th>貸方
 <% funct_curr = current_organisation.currency
-   @journal_entries.each do |account_ledger| %>
+   cur_entry_no = nil
+   @journal_entries.each do |je_line| %>
   <tr>
-    <td><%= account_ledger.date %>
-    <td><%= account_ledger.entry_no %>
-    <td><%= account_ledger.account.name %>
-<% if account_ledger.funct_amount >= 0 %>
-    <td><%= format_amount(account_ledger.funct_amount, funct_curr) %> 
+    <td><%= cur_entry_no != je_line.entry_no ? je_line.date : '' %>
+    <td><%= cur_entry_no != je_line.entry_no ? je_line.entry_no : '' %>
+    <td><%= je_line.account.name %>
+<% if je_line.funct_amount >= 0 %>
+    <td><%= format_amount(je_line.funct_amount, funct_curr) %> 
     <td>
 <% else %>      
-    <td> <td><%= format_amount(-account_ledger.funct_amount, funct_curr) %> 
+    <td> <td><%= format_amount(-je_line.funct_amount, funct_curr) %> 
 <% end %>
-    <td><%= link_to "Show", {action:"show", entry_no: account_ledger.entry_no} %>
+    <td><%= cur_entry_no != je_line.entry_no ?
+	    (link_to "Show", {action:"show", entry_no: je_line.entry_no}) : '' %>
+<%   cur_entry_no = je_line.entry_no %>
 <% end %>
 </table>
 

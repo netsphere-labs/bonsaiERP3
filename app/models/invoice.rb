@@ -3,6 +3,8 @@
 class Invoice < ApplicationRecord
   belongs_to :partner, class_name: "Contact"
 
+  belongs_to :order, optional:true
+  
   # only pur-inv
   belongs_to :bp_bank_account, class_name: "ContactAccount", optional:true
   

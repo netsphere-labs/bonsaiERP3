@@ -1,7 +1,9 @@
 
-<% @page_title = "Exchange rates" %>
+<% @page_title = "Exchange rates"
+   @crumbs = [
+     ["Currency", currencies_path] ] %>
 
-<p><%= link_to "Back", currencies_path %>
+
   
 <p>BASE currency = <%= CurrXchg::BASE_CURR %>
 

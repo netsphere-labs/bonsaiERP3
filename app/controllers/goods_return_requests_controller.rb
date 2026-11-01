@@ -11,14 +11,14 @@ class GoodsReturnRequestsController < ApplicationController
   
 
   def index
-    if params[:movements_search].blank? || !params[:reset].blank?
-      @search = Movements::Search.new
+    if params[:orders_search].blank? || !params[:reset].blank?
+      @search = Orders::Search.new
     else
       #raise params.inspect
-      @search = Movements::Search.new params.require(:movements_search)
-                                .permit(*Movements::Search.attribute_names)
+      @search = Orders::Search.new params.require(:orders_search)
+                                .permit(*Orders::Search.attribute_names)
       # `permit()` returns `Parameters {}`. why?
-      @search.state = params.require(:movements_search)['state']
+      @search.state = params.require(:orders_search)['state']
     end
     
     @pagy, @orders = pagy(:offset, @search.search_by_text(GoodsReturnRequest).order(date: :desc))

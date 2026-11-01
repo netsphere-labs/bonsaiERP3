@@ -1,12 +1,15 @@
 
 :ruby
   @page_title = "購買入庫"
-  @crumbs = [
-    ["Back", {controller:"stores", id:@store.id, action:"inbound_orders"}] ]
 
+= link_to "Back", {controller:"stores", id:@store.id, action:"inbound_orders"}
+
+%p(style='color:red') TODO:
+%ul
+  %li(style='color:red') 
 
 
 = @invt.errors.inspect  
 
-= bootstrap_form_with model: @invt, url: {action:"create"}, layout: :horizontal do |f|
+= bootstrap_form_with model: @invt, url: {action:"create", store_id: @store.id}, layout: :horizontal do |f|
   = render 'form', f:f

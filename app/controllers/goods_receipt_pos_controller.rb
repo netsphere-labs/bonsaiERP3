@@ -4,7 +4,7 @@
 
 # 倉庫での購買入庫. PO は `PurchaseOrdersController`
 class GoodsReceiptPosController < ApplicationController
-  before_action :set_store
+  before_action :set_store, only: %i[new create ]
 
   before_action :set_invt, only: %i[show edit update destroy confirm void]
 
@@ -33,9 +33,13 @@ class GoodsReceiptPosController < ApplicationController
     )
     @invt.build_details_from_order
 
-    @invoice = Invoice.new inv_type: 'purchase',
+    if @order.state == 'confirmed'
+      # Usually, both of inventory and invoice.
+      @invoice = Invoice.new inv_type: 'purchase',
                            partner_id: @order.contact_id,
-                           curr_code: @order.currency
+                           curr_code: @order.currency,
+                           order: @order
+    end
   end
 
   
@@ -56,24 +60,42 @@ class GoodsReceiptPosController < ApplicationController
                                             raise "internal error"
                                           end),
                               state: 'draft' )
-    @invt.assign inventory_params, params.require(:detail), @store.id
+    @invt.assign inventory_params, params.require(:detail), @store.id, current_organisation
 
-    @invoice = Invoice.new params.require(:movements_expense_in).require(:invoice)
-                        .permit(:due_date, :bp_bank_account_id, :lock_version)
-    @invoice.assign_attributes partner_id: @order.contact_id,
+    if @order.state == 'confirmed'
+      @invoice = Invoice.new(
+                params.require(:movements_expense_in).require(:invoice)
+                      .permit(:due_date, :bp_bank_account_id, :lock_version))
+      @invoice.assign_attributes partner_id: @order.contact_id,
                                curr_code: @order.currency,
                                date: @invt.date,
                                status: 'draft',
                                doc_no: nil,
-                               inv_type: 'purchase'
+                               inv_type: 'purchase',
+                               order: @order
+    end
+    
     begin
       ActiveRecord::Base.transaction do
-        @invoice.amount_total = @invt.details.reduce(0.0) {|r, item| r + item.txn_amount}
-        @invoice.save!
+        if @order.state == 'confirmed'
+          @invoice.amount_total = @invt.details.reduce(0.0) {|r, item| r + item.txn_amount}
+          @invoice.save!
+          @invt.model_obj.invoice_id = @invoice.id
+        end
+        
         # atomic save in the form object
-        @invt.model_obj.invoice_id = @invoice.id
         @invt.save!
-      end
+
+        if @order.state == 'confirmed'
+          # copy to invoice
+          @invt.details.each do |detail|
+            InvoiceGood.create! invoice_id: @invoice.id,
+                              item_id: detail.item_id,
+                              qty: detail.quantity,
+                              txn_amount: detail.txn_amount
+          end
+        end
+      end # transaction
     rescue ActiveRecord::RecordInvalid => e
       render :new, status: :unprocessable_entity
       return
@@ -85,12 +107,14 @@ class GoodsReceiptPosController < ApplicationController
 
 
   def show
+    @store = @invt.store
   end
 
 
   def edit
     @order   = @invt.order
     @invoice = @invt.invoice
+    @store   = @invt.store
     # wrap
     @invt = Movements::ExpenseIn.new(@invt)
   end
@@ -98,20 +122,41 @@ class GoodsReceiptPosController < ApplicationController
   
   def update
     @order = @invt.order
-    @invoice = @invt.invoice
+    @store = @invt.store
+    if @order.state == 'confirmed'
+      @invoice = @invt.invoice
+    end
     # wrap
     @invt = Movements::ExpenseIn.new(@invt)
-    @invt.assign inventory_params, params.require(:detail), @store.id
-    @invoice.assign_attributes params.require(:movements_expense_in).require(:invoice)
-                        .permit(:due_date, :bp_bank_account_id, :lock_version)
+    @invt.assign inventory_params, params.require(:detail), @store.id, current_organisation
+    
+    if @order.state == 'confirmed'
+      @invoice.assign_attributes( params.require(:movements_expense_in)
+                        .require(:invoice)
+                        .permit(:due_date, :bp_bank_account_id, :lock_version))
+    end
     
     begin
       ActiveRecord::Base.transaction do
-        @invoice.amount_total = @invt.details.reduce(0.0) {|r, item| r + item.txn_amount}
-        @invoice.save!
+        if @order.state == 'confirmed'
+          @invoice.amount_total = @invt.details.reduce(0.0) {|r, item| r + item.txn_amount}
+          @invoice.save!
+        end
+        
         # atomic save in form object
         @invt.save!
-      end
+        
+        if @order.state == 'confirmed'
+          # copy to invoice
+          InvoiceGood.where(invoice_id: @invoice.id).delete_all
+          @invt.details.each do |detail|
+            InvoiceGood.create! invoice_id: @invoice.id,
+                              item_id: detail.item_id,
+                              qty: detail.quantity,
+                              txn_amount: detail.txn_amount
+          end
+        end
+      end # transaction
     rescue ActiveRecord::RecordInvalid => e
       render :edit, status: :unprocessable_entity
       return
@@ -131,9 +176,10 @@ class GoodsReceiptPosController < ApplicationController
         # 内部で save!() される
         @invt.confirm! current_user #, current_organisation
 
-        @invt.invoice.status = "confirmed"
-        @invt.invoice.save!
-        
+        if @invt.operation == 'exp_in'
+          @invt.invoice.status = "confirmed"
+          @invt.invoice.save!
+        end
         # データの安定のために, confirm 時に `order.balance` を減らす
         # TODO:
         #   UX が今ひとつ。draft 状態であっても, 未入荷からは消えてほしい

@@ -4,6 +4,12 @@
 <p><%= link_to "Back", "/accounts/" %>
 
 <%= bootstrap_form_for @account, layout: :horizontal do |f| %>
+
+  <div class="row">
+    <label>Subtype:</label>
+    <%= f.object.subtype %>
+  </div>
+
   <%= render partial: "form", locals: {form: f} %>
 
   <%= f.submit class:"btn btn-primary" %>

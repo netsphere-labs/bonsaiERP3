@@ -1,0 +1,3 @@
+
+class PurItemPrice < ApplicationRecord
+end

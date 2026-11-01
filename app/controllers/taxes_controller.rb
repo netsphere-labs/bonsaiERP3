@@ -5,7 +5,7 @@ class TaxesController < ApplicationController
 
   
   def index
-    @taxes = Tax.all
+    @pagy, @taxes = pagy(:offset, Tax.all)
   end
 
   
@@ -28,6 +28,7 @@ class TaxesController < ApplicationController
   def edit
   end
 
+
   def update
   end
 
@@ -43,6 +44,6 @@ private
   end
   
   def tax_params
-    params.require(:tax).permit(:name, :abbreviation, :percentage)
+    params.require(:tax).permit(:country_code, :name, :abbreviation, :percentage)
   end
 end

@@ -1,0 +1,11 @@
+
+:ruby
+  @page_title = "New Product/Item"
+
+
+= link_to "Back", products_path 
+
+- if params[:for_sale] == 'true'
+  = render 'form_sale'
+- else
+  = render 'form'

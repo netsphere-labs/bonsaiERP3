@@ -1,33 +1,33 @@
-- content_for :links do
-  %ul.breadcrumbs.span6
-    %li
-      =link_to @inv.store, @inv.store
+
+:ruby
+  @page_title = "Transfer Out"
+
+=link_to "Back", outbound_orders_store_path(@invt.store)
 
 .row-fluid
   .span12
     %h2
-      = @inv.inventory.ref_number
+      = @invt.model_obj.ref_number
       %small.text-error Egreso de items
 
-%div(ng-controller='InventoryController')
-  = simple_form_for @inv, url: store_inventory_outs_path(@inv.store_id) do |f|
-    = bonsai_form_error(f)
+%div
+  = bootstrap_form_with model: @invt, url: {controller:"inventory_outs", action:"create", store_id: @invt.store_id}, layout: :horizontal do |f|
 
-    = f.hidden_field :store_id
+    = error_messages_for 'invt' 
+    = hidden_field_tag :order_id, @order.id 
 
     .row-fluid
       .span3
         %label Almacen
-        %h4.n= link_to @inv.store, @inv.store, target: '_blank'
+        %h4.n= link_to @invt.store, @invt.store, target: '_blank'
       .span3
-        = f.input :date, label: 'Fecha', as: :datepicker
+        = f.date_field :date, label: 'Fecha', as: :datepicker
       .span6
-        = f.input :description, as: :text, label: 'Description' ,input_html: { rows: 3, cols: 55 }
+        = f.text_field :description, as: :text, label: 'Description' ,input_html: { rows: 3, cols: 55 }
 
-    %input#details(type='hidden' data-details='#{@inv.details_serialized.to_json}')
-
+    
     .row-fluid
-      = render 'inventories/form', f: f, inventory: f.object, store_id: @inv.store_id
+      = render 'form', f: f
 
     .form-actions
       = f.submit 'Egresar ítems', class: 'btn btn-primary b'

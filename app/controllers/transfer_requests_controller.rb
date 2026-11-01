@@ -7,7 +7,7 @@ class TransferRequestsController < ApplicationController
   
   # GET /transfer_requests or /transfer_requests.json
   def index
-    @orders = TransferRequest.order(date: :desc).page(params[:page])
+    @pagy, @orders = pagy(:offset, TransferRequest.order(date: :desc))
   end
 
   # GET /transfer_requests/1 or /transfer_requests/1.json
@@ -17,21 +17,21 @@ class TransferRequestsController < ApplicationController
   # GET /transfer_requests/new
   def new
     # Use the form object.
-    @order = Movements::Form.new(TransferRequest.new date: Date.today,
+    @order = Orders::Form.new(TransferRequest.new date: Date.today,
                                                                 state: 'draft')
   end
 
   # GET /transfer_requests/1/edit
   def edit
     # wrap
-    @order = Movements::Form.new(@order)
+    @order = Orders::Form.new(@order)
   end
 
   
   # POST /transfer_requests or /transfer_requests.json
   def create
     # wrap
-    @order = Movements::Form.new(TransferRequest.new creator_id: current_user.id,
+    @order = Orders::Form.new(TransferRequest.new creator_id: current_user.id,
                                                      state: 'draft' )
     @order.assign transfer_request_params, params.require(:detail)
 
@@ -53,7 +53,7 @@ class TransferRequestsController < ApplicationController
   # PATCH/PUT /transfer_requests/1 or /transfer_requests/1.json
   def update
     # wrap
-    @order = Movements::Form.new(@order)
+    @order = Orders::Form.new(@order)
     @order.assign(xxx) # TODO: impl.
     
     begin
@@ -106,7 +106,7 @@ private
   # Only allow a list of trusted parameters through.
   def transfer_request_params
     # form object
-    params.require(:movements_form)
+    params.require(:orders_form)
           .permit(:date, :ship_date, :store_id, :delivery_date, :trans_to_id)
   end
 end

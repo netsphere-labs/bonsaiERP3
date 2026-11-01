@@ -8,8 +8,7 @@
   "packageManager": "yarn@4.16.0",
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
-    "@hotwired/turbo-rails": "^8.0.23",
-    "apexcharts": "^5.13.0"
+    "@hotwired/turbo-rails": "^8.0.23"
   },
   "scripts": {
     "build:css": "sass ./app/assets/stylesheets/application.sass.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules",

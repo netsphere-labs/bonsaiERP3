@@ -1,21 +1,16 @@
 
 <% @page_title = "New Account" %>
-<% @crumbs = [
-     ["Back", accounts_path]] %>
 
+
+<p><%= link_to "Back", "/accounts/" %>
 
 <%= bootstrap_form_for @account, layout: :horizontal do |f| %>
-  <%= render partial: "form", locals: {form: f} %>
 
-<% if ['new', 'create'].include?(action_name) %>
   <%= f.select :subtype,
-            Account::SUBTYPES.filter {|k, v| k != 'CASH'}. map {|k, v| [v, k]},
-            help:"Only new record" %>
-<% else %>
-  <div class="row">
-    <%= @account.subtype %>
-  </div>
-<% end %>
+        Account::SUBTYPES.filter {|k, v| k != 'A:CASH'}. map {|k, v| [v, k]},
+        help:"Only new record" %>
+
+  <%= render partial: "form", locals: {form: f} %>
 
   <%= f.submit class:"btn btn-primary" %>
 <% end %>

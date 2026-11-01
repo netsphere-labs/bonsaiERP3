@@ -1,7 +1,9 @@
 
-<% @page_title = "Resource: " + @resource.name %>
+<% @page_title = "Resource: " + @resource.name 
+   @crumbs = [
+     ["Resource Master", resources_path] ] %>
 
-<%= link_to 'Back', resources_path, :class => 'list' %>
+
 
 <% content_for :links do %>
   <%= link_to 'Edit...', edit_resource_path(@resource), class: 'btn' %>

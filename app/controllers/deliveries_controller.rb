@@ -4,7 +4,7 @@
 
 # 倉庫での出荷/納入. 受注 (Sales Order) は `SalesOrdersController`
 class DeliveriesController < ApplicationController
-  before_action :set_store
+  before_action :set_store, only: %i[new create]
   
   before_action :set_invt,
                 only: %i[show edit update destroy confirm void]
@@ -25,7 +25,7 @@ class DeliveriesController < ApplicationController
     @order = SalesOrder.find params[:order_id]
 
     # form object
-    @invt = Incomes::InventoryOut.new(
+    @invt = Movements::IncomeOut.new(
       Inventory.new store_id: @store.id, order: @order,
                     date: Time.zone.today,
                     description: "Entregar mercadería ingreso SO##{@order.id}"
@@ -39,12 +39,13 @@ class DeliveriesController < ApplicationController
   def create
     @order = SalesOrder.find params[:order_id]
     # wrap
-    @invt = Incomes::InventoryOut.new(
+    @invt = Movements::IncomeOut.new(
                 Inventory.new store_id: @store.id, order: @order,
+                              curr_code: @order.currency,
                               creator_id: current_user.id,
                               operation: 'inc_out',
                               state: 'draft' )
-    @invt.assign inventory_params, params.require(:detail), @store.id
+    @invt.assign inventory_params, params.require(:detail), @store.id, current_organisation
 
     begin
       ActiveRecord::Base.transaction do
@@ -62,20 +63,23 @@ class DeliveriesController < ApplicationController
 
   
   def show
+    @store = @invt.store
   end
 
   def edit
     @order = @invt.order
+    @store = @invt.store
     # warp
-    @invt = Incomes::InventoryOut.new(@invt)
+    @invt = Movements::IncomeOut.new(@invt)
   end
 
   
   def update
     @order = @invt.order
+    @store = @invt.store
     # warp
-    @invt = Incomes::InventoryOut.new(@invt)
-    @invt.assign inventory_params, params.require(:detail), @store.id
+    @invt = Movements::IncomeOut.new(@invt)
+    @invt.assign inventory_params, params.require(:detail), @store.id, current_organisation
     
     begin
       ActiveRecord::Base.transaction do
@@ -130,7 +134,7 @@ class DeliveriesController < ApplicationController
         @invt.order.state = 'delivered' # closed
         @invt.order.save!
 
-        @invt.gen_je_for_delivery(current_user)
+        @invt.gen_je_for_delivery(current_user, current_organisation)
       end # transaction
     rescue ActiveRecord::RecordInvalid => e
       raise e.inspect
@@ -146,6 +150,7 @@ class DeliveriesController < ApplicationController
     authorize @invt
 
     # TODO: impl.
+    raise NotImplementedError 
   end
 
   
@@ -163,7 +168,7 @@ private
 
   def inventory_params
     # form object
-    params.require(:incomes_inventory_out).permit(
+    params.require(:movements_income_out).permit(
         :description, :date, :account_id, 
       #inventory_details_attributes: [:item_id, :quantity]
     )

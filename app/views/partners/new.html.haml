@@ -1,9 +1,10 @@
 
 :ruby 
   @page_title = "New Business Partner"
-  @crumbs = [
-    ["Back", partners_path] ]
+  @crumbs = []
 
+
+= link_to "Back", partners_path 
 
 = bootstrap_form_with model: @partner, url:{action:"create"},
                       layout: :horizontal do |f|

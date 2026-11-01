@@ -1,3 +1,7 @@
-%h1 New impuesto
+
+:ruby
+  @page_title = "New impuesto"
+
+= link_to "Back", action: "index"
 
 = render 'taxes/form', tax: @tax

@@ -10,11 +10,14 @@ class Movements::ExpenseIn < Inventories::Form
   # @param detail_params  [Hash{lineno => Hash}] params
   #   {"1"=>{"item_id"=>"1", "quantity"=>"567"},
   #    "2"=>{"item_id"=>"1", "quantity"=>"0.0"},
-  def self.create_details_from_params model_obj, detail_params, store_id
+  def self.create_details_from_params model_obj, detail_params, store_id, org
     raise TypeError if !model_obj.is_a?(Inventory)
+    raise ArgumentError if !(store_id.to_i > 0)
+    raise TypeError if !org.is_a?(Organisation)
     
     ary = []
-    exponent = Money::Currency.find(model_obj.curr_code).exponent
+    funct_curr = Money::Currency.find(org.currency)
+    
     detail_params.each do |_lineno, h|
       m = InventoryDetail.new(
             h.permit(:item_id, :txn_price, :quantity, :txn_amount) )
@@ -27,11 +30,16 @@ class Movements::ExpenseIn < Inventories::Form
       #                  end
       #m.store_id = store_id
       if m.quantity && m.quantity != 0.0
-        if h[:txn_amount].blank?
-          m.txn_amount = (m.txn_price || 0.0) * m.quantity * (10 ** exponent)
-        else
-          m.txn_amount = m.txn_amount * (10 ** exponent)
-        end
+        m.txn_amount = if h[:txn_amount].blank?
+                         nominal_amount((m.txn_price || 0.0) * m.quantity,
+                                        model_obj.curr_code)
+                       else
+                         nominal_amount(m.txn_amount, model_obj.curr_code)
+                       end
+        m.txn_funct_amount = CurrXchg.convert(
+                        Money.from_cents(m.txn_amount, model_obj.curr_code),
+                        funct_curr,
+                        model_obj.date)
         ary << m
       end
     end
@@ -48,29 +56,6 @@ class Movements::ExpenseIn < Inventories::Form
                                           quantity: det.balance)
     end
   end
-
-
-=begin
-    res = true
-
-    save do
-      update_expense_details
-      update_expense_balanace
-      expense.operation_type = 'inventory_in'
-
-      expense_errors.set_errors
-      res = expense.save
-      res = res && update_stocks
-      Inventories::Errors.new(@inventory, stocks).set_errors
-      @inventory.account_id = @expense.id
-      @inventory.contact_id = @expense.contact_id
-      res && @inventory.save
-    end
-=end
-
-  #def movement_detail(item_id)
-  #  @expense.details.find {|det| det.item_id === item_id }
-  #end
 
   
 private

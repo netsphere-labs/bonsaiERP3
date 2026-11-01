@@ -1,8 +1,16 @@
-%form(name='tag-group')
+
+= error_messages_for 'tag_group'
+
+%div
   .row-fluid
     .span6
       %label Name
-      %input(type='text' size='45' ng-model='name')
+      = f.text_field :name
+
+  .row-fluid
+    .span6
+      %label BG Color:
+      = f.text_field :bgcolor
   .row-fluid
     .span6
       %label

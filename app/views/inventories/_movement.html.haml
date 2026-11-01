@@ -5,7 +5,7 @@
 
 %div.row
   %div.col-1
-    = link_to inventory.id, {controller:"goods_receipt_pos", action:"show", store_id: inventory.store_id, id: inventory.id}, class: 'no-tab' 
+    = link_to inventory.id, {controller: inventory.map_controller, action:"show", store_id: inventory.store_id, id: inventory.id}, class: 'no-tab' 
 
   %div.col-3
     %strong(title='Tipo de operación')= inventory.operation

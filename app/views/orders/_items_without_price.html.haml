@@ -1,0 +1,38 @@
+
+-# @param @order sales_order or purchase_order
+
+#items
+  %h2 Items
+
+  %table(class='table table-sm')
+    %thead
+      %tr
+        %th Item
+        %th Unit Price (#{@order.currency})
+        %th Qty
+        %th UoM
+        %th description
+        %th Undelivered qty
+
+      - @order.details.includes(:item => [:unit]).each do |det|
+        %tr
+          %td= link_to det.item.name, det.item, 'data-title' => det.item
+          %td(style='text-align:right')= det.quantity
+          %td(style='text-align:right')= det.item.unit
+          %td= det.description
+          %td(style='text-align:right')= det.balance
+
+    %tr.extra.pad_top
+      %td
+      %td.cur{:colspan => 3} Subtotal
+
+    %tr.extra
+      %td
+      %td.cur{:colspan => 3}
+        %i.icon-minus-sign
+
+    %tr.extra
+      %td
+        %td.cur.b.dark{:colspan => 3} Total
+
+

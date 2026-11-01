@@ -48,7 +48,7 @@ class CreateTransactions < ActiveRecord::Migration[5.2]
         # if any. "TOKYO CY", "LONG BEACH CY"
         t.string  :delivery_loc
         
-        t.string  :incoterms, limit:10
+        t.string  :incoterms, limit:40
         
         # sales_order: nullable
         t.date    :delivery_date #, null:false

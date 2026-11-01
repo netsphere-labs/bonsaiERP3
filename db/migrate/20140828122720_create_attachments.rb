@@ -6,9 +6,9 @@ class CreateAttachments < ActiveRecord::Migration[5.2]
         t.string :name, null:false
 
         # attach to. one of:
-        t.references :item, foreign_key:true
-        t.references :order, foreign_key:true
-        t.references :inventory, foreign_key:true
+        t.references :item, type: :integer, foreign_key:true
+        t.references :order, type: :integer, foreign_key:true
+        t.references :inventory, type: :integer, foreign_key:true
         
         #t.integer :attachable_id
         #t.string :attachable_type

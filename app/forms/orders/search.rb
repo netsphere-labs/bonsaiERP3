@@ -7,7 +7,7 @@ class Orders::Search < BaseForm
   attribute :arrival_date_start, :date
   attribute :arrival_date_end, :date
 
-  attribute :state, array: true, default: ['draft', 'confirmed']
+  attribute :state, array: true, default: %w[draft confirmed in_transit delivered]
   attribute :overdue, :integer
 
   

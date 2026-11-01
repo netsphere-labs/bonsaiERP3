@@ -7,7 +7,7 @@
 <% if ['new', 'create'].include?(action_name) %>
   <%= f.select :contact_id,
             options_from_collection_for_select(Contact.where(supplier:true), :id, :name, @order.contact_id),
-            required:false, label:"Partner:", help: "Only new record" %>
+            required:false, label:"Partner:", help: "Only new record. You can not change it." %>
 <% else %>
   <div class="row">
     <label><%= t('general.contact') %></label>
@@ -24,6 +24,7 @@
   <div class="col-sm-3">
     <%= f.date_field :ship_date, wrapper:false %>
   </div>
+  
   <%= f.label :delivery_loc, "Location:", class: "col-sm-1 col-form-label" %>
   <div class="col-sm-3">
     <%= f.text_field :delivery_loc, wrapper:false %>
@@ -34,8 +35,14 @@
   </div>
 </div>
 <div class="row mb-3">
-  <div class="col-12">
+  <div class="col-5">
     <div class="form-text">If FOB and *CIF*, the date on the port of departure</div>
+  </div>
+  <div class="col-4">
+    <div class="form-text">If CIF, port of departure</div>
+  </div>
+  <div class="col-3">
+    <div class="form-text">ex) If CIF, "CIF Barcelona, Spain" = port of destination.</div>
   </div>
 </div>
 

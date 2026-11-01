@@ -7,6 +7,9 @@
 
 
 <% content_for :links do %>
+  State: <%= tag.span class: @invt.display_state do %> <%= @invt.state %><% end %>
+
+
   <div class="btn-group" role="group">
 <% if policy(@invt).update? %>
   <%= link_to 'Edit...', {action:"edit", id:@invt} %>
@@ -24,11 +27,6 @@
 
 
 
-<table>
-  <tr><th>Account: <td><%= @invt.account.name %>
-  <tr><th>State: <td><%= @invt.state %>
-</table>
-
 
   
 <table class="table">
@@ -41,8 +39,9 @@
   <% @invt.details.each do |detail| %>
   <tr>
     <td><%= detail.item.name %>
-    <td><%= detail.txn_price %>
+    <td><%= format_amount(detail.unit_price, @invt.curr_code) %>
     <td><%= detail.quantity %>
-    <td><%= detail.txn_price * detail.quantity %>
+    <td><%= format_amount(detail.txn_amount, @invt.curr_code) %>
+      <%= @invt.curr_code %>
   <% end %>
 </table>

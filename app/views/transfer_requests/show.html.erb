@@ -4,7 +4,7 @@
      ['Inventory Transfer Requests', transfer_requests_path] ] %>
 
 <% content_for :links do %>
-  <span class="<%= @order.display_state %>"><%= @order.state %></span>
+  <%= tag.span class: @order.display_state do %><%= @order.state %><% end %>
 
   <div class="btn-group" role="group">
     <% if policy(@order).confirm? %>
@@ -23,3 +23,4 @@
 </table>
 
 
+<%= render "orders/items_without_price" %>

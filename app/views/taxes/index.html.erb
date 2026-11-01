@@ -7,7 +7,19 @@
   </div>
 <% end %>
 
-
+<table class="table">
+  <tr>
+    <th>Country
+    <th>Name
+    <th>Abbr.
+    <th>%
+      
 <% @taxes.each do |tax| %>
-  <%= tax.inspect %>
+  <tr>
+    <td><%= tax.country_code %>
+    <td><%= tax.name %>
+    <td><%= tax.abbreviation %>
+    <td><%= tax.percentage %>
+    <td><%= link_to "Edit...", action:"edit", id: tax %>
 <% end %>
+</table>

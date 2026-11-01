@@ -1,0 +1,11 @@
+
+
+<% @page_title = "Edit BoM Structure" %>
+
+<%= link_to "Back", {action:"show"} %>
+
+
+<%= render :partial => "form" %>
+
+<%= link_to "Lista", bom_structure_path(@bom_structure), :class => 'edit' %>
+<%= link_to "Lista", bom_structures_path, :class => 'list' %>

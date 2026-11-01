@@ -2,7 +2,7 @@
 -# @param @order sales_order or purchase_order
 
 #items
-  %h2 Items
+  %h2 Products
 
   %table(class='table table-sm')
     %thead
@@ -17,7 +17,7 @@
 
       - @order.details.includes(:item => [:unit]).each do |det|
         %tr
-          %td= link_to det.item.name, det.item, 'data-title' => det.item
+          %td= link_to det.item.name, {controller:"products", action:"show", id:det.item}, target:"prod"
           %td(style='text-align:right')= format_amount(det.unit_price, @order.currency)
           %td(style='text-align:right')= det.quantity
           %td(style='text-align:right')= det.item.unit

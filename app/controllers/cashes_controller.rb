@@ -20,7 +20,7 @@ class CashesController < ApplicationController
     #ac = Account.new accountable: Cash.new(),
     # TODO: 組織の機能通貨を初期値にする
     @cash = Cash.new account: Account.new(currency: "JPY", active:true,
-                                          subtype: 'CASH')
+                                          subtype: 'A:CASH')
   end
 
   
@@ -39,7 +39,7 @@ class CashesController < ApplicationController
         # @cash.save だと cash しか作られない!
         @cash.save!
         @cash.account.accountable = @cash
-        @cash.account.subtype = 'CASH'
+        @cash.account.subtype = 'A:CASH'
         @cash.account.creator_id = current_user.id
         @cash.account.save!
       end

@@ -12,10 +12,11 @@
 <div class="row">
   <label class="col-sm-2">Purchase Order:</label>
   <div class="col-sm-10">
-    <%= link_to @order.id, @order, target: '_blank' %>
+    <%= link_to "PO##{@order.id}", @order, target: '_blank' %>
   </div>
 </div>
 
+<% if @order.state == 'confirmed' %>
 <fieldset>
   <legend>Payment Information</legend>
 <%= f.fields_for :invoice, @invoice do |inv_f| %>
@@ -28,19 +29,15 @@
           include_blank: true %>
 <% end %>
 </fieldset>
+<% end %>
+
 
   <%= f.date_field :date, label: '入庫日:' %>
 
   <% # なぜかエラーになる. why? => must call `super()` in `initialize()` %>
   <%= f.text_field :description, label: 'Description:' %>
 
-<!-- 
-  f.select :account_id,
-            options_from_collection_for_select(
-                    ContactAccount.joins(:account).where('contact_accounts.contact_id = ? AND accounts.currency = ?', @order.contact_id, @order.currency), 
-                    :account_id, :name, @invt.account_id),
-            required:false %>
-  -->
+
   
 <div class="row text-bg-secondary">
   <div class="col-3">Item</div>

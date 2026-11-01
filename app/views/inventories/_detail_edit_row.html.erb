@@ -31,10 +31,11 @@
       <%= order_det.item.unit.symbol %>
     </div>
     <div class="col-1" style="text-align:right">
-      <%= order_det.balance %>
+      <%= order_det.quantity - (qty_hash[detail_obj.item_id] || 0) %>
     </div>
     <div class="col-2" style="text-align:right">
-      <%= df.hidden_field :txn_price, value: edit_amount(order_det.unit_price, @order.currency) %>
+      <%= df.hidden_field :txn_price,
+	        value: edit_amount(order_det.unit_price, @order.currency) %>
       <%= format_amount(order_det.unit_price, @order.currency) %>
     </div>
 <% else %>
@@ -57,7 +58,13 @@
       <%= df.number_field :quantity, step: "0.01", class:"form-control" %>
     </div>
     <div class="col-2">
-      <%= df.number_field :txn_amount, step: "0.01", class:"form-control" %>
+      <% if (df.object.txn_price || order_det &.unit_price || 0) * (df.object.quantity || 0) == df.object.txn_amount %>
+        <%= df.number_field :txn_amount,
+	                step: "0.01", class:"form-control", value:"" %>
+      <% else %>
+        <%= df.number_field :txn_amount, step: "0.01", class:"form-control",
+	                value: edit_amount(df.object.txn_amount, @order.currency) %>
+      <% end %>
     </div>
   </div>
 <%   end # fields_for %>

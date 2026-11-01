@@ -9,9 +9,8 @@ class MaterialLedgerController < ApplicationController
       @search = MatLedgerSearch.new(params.require(:mat_ledger_search)
                                       .permit(*MatLedgerSearch.attribute_names))
       # Array of InventoryDetail
-      @ledgers = @search.search()
-            .order('inventories.date, inventories.id, inventory_details.id')
-            .page(params[:page])
+      @pagy, @ledgers = pagy(:offset, @search.search()
+            .order('inventories.date, inventories.id, inventory_details.id'))
     end
   end
 end

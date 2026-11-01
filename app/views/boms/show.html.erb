@@ -1,0 +1,34 @@
+
+
+<% @page_title = "Product: " + @item.name
+   @crumbs = [
+     ["Product/Item Master", products_path()] ] %>
+
+
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <%= link_to "General", product_path(@item), class:"nav-link" %>
+  <li class="nav-item">
+    <%= link_to "Purchase", product_pur_item_prices_path(@item), class:"nav-link" %>
+  <li class="nav-item">
+    <a class="nav-link active" aria-current="page">BoM Structure</a>
+</ul>
+
+
+<%= link_to 'Edit BoM Structure...', {action:"edit"}, class: 'btn' %>
+
+
+
+<table class="table table-sm">
+  <tr>
+    <th>Type
+    <th>Item
+    <th>Qty
+    <th>Description
+
+  <% @children.each do |bom_structure| %>
+  <tr>
+    <td><%= bom_structure.inspect %>
+  <% end %>
+</table>
+

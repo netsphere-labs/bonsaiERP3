@@ -6,9 +6,10 @@
     =link_to "New Prod. Order...", new_prod_order_path, class: 'btn'
 
 
-= paginate(@orders)
+- paginate_html = @pagy.series_nav(:bootstrap).html_safe
+=paginate_html
 
-%table.table.table-striped
+%table(class='table')
   %thead
     %tr
       %th Name
@@ -30,3 +31,5 @@
         %td
           = link_to icon_edit, edit_project_path(project.id), class: 'dark'
           = link_to icon_delete, project, class: 'dark', method: 'delete', confirm: 'Esta segur@ de eliminar el proyecto?'
+
+=paginate_html

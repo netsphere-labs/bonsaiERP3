@@ -8,13 +8,19 @@ class Inventories::Out < Inventories::Form
   # @param detail_params  [Hash{lineno => Hash}] params
   #   {"1"=>{"item_id"=>"1", "quantity"=>"567"},
   #    "2"=>{"item_id"=>"1", "quantity"=>"0.0"},
-  def self.create_details_from_params detail_params, store_id
+  def self.create_details_from_params model_obj, detail_params, store_id, org
+    raise TypeError if !model_obj.is_a?(Inventory)
+    raise ArgumentError if !(store_id.to_i > 0)
+    raise TypeError if !org.is_a?(Organisation)
+
     ary = []
     detail_params.each do |_lineno, h|
       m = InventoryDetail.new h.permit(:item_id, :quantity)  # `price` がない
-      m.movement_type = 303  # Goods issue for transfer ここが異なるので別に定義
-      m.store_id = store_id
-      (ary << m) if m.quantity != 0.0
+      #m.movement_type = 303  # Goods issue for transfer ここが異なるので別に定義
+      #m.store_id = store_id
+      if m.quantity && m.quantity != 0.0
+        ary << m
+      end
     end
 
     return ary

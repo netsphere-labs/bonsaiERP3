@@ -1,5 +1,13 @@
 # encoding: utf-8
 FactoryBot.define do
+  factory :pur_item_price do
+    
+  end
+
+  factory :invoice_detail do
+    
+  end
+
   factory :resource do
     
   end

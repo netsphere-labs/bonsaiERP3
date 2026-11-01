@@ -1,4 +1,7 @@
-<h1>invoice</h1>
+
+<% @page_title = "Purchase Invoice ##{@invoice.id}"
+   @crumbs = [
+     ["Purchase Invoice", invoices_path] ] %>
 
 
 <%= link_to 'Editar', edit_invoice_path(@invoice), :class => 'edit' %>

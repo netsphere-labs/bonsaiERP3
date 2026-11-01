@@ -1,0 +1,64 @@
+
+:ruby
+  @page_title = "Product: " + @item.name
+  @crumbs = [
+    ["Product/Item Master", products_path] ]
+
+
+- content_for :links do
+  %div.btn-group{role: "group"}
+    = link_to "Edit this item...", edit_product_path(@item), {class: 'btn btn-outline-primary'}
+    = button_to "Destroy", {action:"destroy", id:@item}, class: 'btn btn-outline-danger', data:{turbo_confirm: "Esta seguro de borra el ítem"}, method: :delete
+    = link_to "Bill of Material", bom_path(@item), {class: "btn btn-outline-primary"}
+
+  
+
+%ul.nav.nav-tabs
+  %li.nav-item
+    %a.nav-link.active(aria-current="page") General 
+  %li.nav-item
+    = link_to "Purchase", product_pur_item_prices_path(@item), class:"nav-link"
+
+
+%div.row
+  %div.col Name:
+  %div.col= @item.name
+
+%div.row
+  %div.col Code:
+  %div.col= @item.code
+
+%div.row
+  %div.col Active:
+  %div.col= @item.active
+
+  .span3
+    %span.text-muted.muted Venta:
+    %span.for_sale.icon(class="icon-large icon-#{@item.for_sale}")
+
+  .span6
+    %span.text-muted.muted Unidad:
+    %span.unit= @item.unit
+
+.row-fluid
+  .span6.well.well-small
+    %span.text-muted.muted Precio de VENTA:
+
+    %strong= @item.price
+
+.row-fluid
+  .span6
+    %label Description
+    = @item.description
+
+.row-fluid
+  .span6
+    %h3 Adjuntos
+    = render 'attachments/attachments', attachable: @item
+
+  .span6
+    %h3.n Historial
+
+    %ul.unstyled
+      = render partial: 'histories/history', collection: @item.histories
+

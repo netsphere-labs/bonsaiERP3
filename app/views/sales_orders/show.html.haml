@@ -70,17 +70,22 @@
 
 
 
--#Tours
--#= render 'incomes/tour_devolution'
 
-:javascript
-  $( function() {
-    // null income
-    $('#null-income-form').submit(function(event) {
-      if(confirm('Esta segur@ de anular el Ingreso?')) {
-        return true;
-      }else{
-        return false;
-      }
-    })
-  });
+.row
+  .col-6
+    %h2 Deliveries
+
+    - Inventory.where(operation:'inc_out', order:@order).each do |invt|
+      = render 'inventories/movement', inventory: invt
+
+
+
+  .col-6
+    %h2 Invoices
+
+    %ul
+      - Invoice.where(inv_type:'sales', order: @order).each do |inv|
+        %li 
+          = link_to "Invoice ##{inv.id}", inv 
+
+

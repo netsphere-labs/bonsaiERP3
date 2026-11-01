@@ -12,7 +12,7 @@ class Order < BusinessRecord
   # TODO: `partial`: PO = Partially Received, SO = Partially Fulfilled
   #       `partial` は, 納品スケジュール表が必要
   #
-  # PO: `in_transit` は、未着品 (納品前の支払い) の意味で使う. 仕入れを計上する.
+  # PO: `in_transit` は、未着品 (arrival 前の支払い) の意味で使う. 仕入れを計上する.
   # PO:
   #   ●TODO: 未着品計上し、商品受領したときに差異があった場合どうするか?
   STATES = %w(draft confirmed in_transit delivered void).freeze
@@ -44,40 +44,40 @@ class Order < BusinessRecord
   validate  :greater_or_equal_ship_date
 
   
-  ########################################
-  # Delegations
-  #delegate :name, :percentage, :percentage_dec, to: :tax, prefix: true, allow_nil: true
-  
-  #def self.movements
-  #  Account.where(type: ['Income', 'Expense'])
-  #end
+  # include not-yet-confirmed records
+  # @param ops [Array of String]   ex. ['exp_in', 'pur_tran']
+  # @return [Hash{item_id => qty}]
+  def qty_delivered ops, invt
+    raise ArgumentError if !ops.is_a?(Array) || ops.empty? || !ops.first.is_a?(String)
+    raise TypeError if !invt.is_a?(Inventory)
+    
+    ods = OrderDetail.select("order_details.id, order_details.item_id, order_details.quantity, SUM(inventory_details.quantity) AS qty_delivered")
+            .joins("LEFT JOIN inventories ON order_details.order_id = inventories.order_id")
+            .joins("JOIN inventory_details ON inventories.id = inventory_details.inventory_id")
+            .where("order_details.order_id = ?", self.id)
+            .where("inventories.operation": ops)  # SQL `IN`
+            .where("order_details.item_id = inventory_details.item_id")
+            .group("order_details.id, order_details.item_id, order_details.quantity")
+    ods = ods.where("inventories.id <> ?", invt.id) if invt.id.to_i > 0
 
-  
-  ########################################
-  # Aliases, alias and alias_method not working
-#  [[:ref_number, :name], [:balance, :amount]].each do |meth|
-#    define_method meth.first do
-#      self.send(meth.last)
-#    end
-
-#    define_method :"#{meth.first}=" do |val|
-#      self.send(:"#{meth.last}=", val)
-#    end
-#  end
-
-  
-  def to_param
-    "#{id}"
+    item_qty_h = {}
+    ods.each do |od|
+      item_qty_h[od.item_id] = od.qty_delivered
+    end
+    return item_qty_h
   end
 
+  
   def display_state
     case state
-      when 'draft';     "badge text-bg-warning" 
-      when 'confirmed'; "badge text-bg-success"
-      #when 'partial';   "badge text-bg-info"
-      when 'in_transit'; "badge text-bg-info"
-      when 'delivered'; "badge text-bg-primary"   # closed
-      when 'void';      "badge text-bg-dark"  
+    when 'draft';     "badge text-bg-warning" 
+    when 'confirmed'; "badge text-bg-success"
+    #when 'partial';   "badge text-bg-info"
+    when 'in_transit'; "badge text-bg-info"
+    when 'delivered'; "badge text-bg-primary"   # closed
+    when 'void';      "badge text-bg-dark"
+    else
+      raise "internal error"
     end
   end
   

@@ -18,8 +18,10 @@
 %table.table
   %tr
     %th Name:
-    %td= @account.name
-
+    %td
+      = @account.name
+      -if @account.subtype == "A:CASH"
+        = link_to "Detail", controller:"cashes", action:"show", id: @account.accountable
 
 
 :javascript

@@ -14,7 +14,8 @@ class CreateInventoryOperationDetails < ActiveRecord::Migration[5.2]
         # 例えば, 購買入庫で数量違いの場合、取引通貨での金額が必要. nullable
         # 端数を考えると, 単価ではなく, 行金額.
         t.bigint :txn_amount, comment:"取引通貨建ての line amount (if any)"
-
+        t.bigint :txn_funct_amount
+        
         # Use `Stock#unitary_cost`
         # 移動平均を考えると、出庫伝票に単価があると、レコードの挿入のたびに、ほかの伝票の単価を変更しなければならない
         #t.decimal :unitary_cost, precision: 14, scale: 2, null:false, default:0.0, comment:"原価 (機能通貨)"

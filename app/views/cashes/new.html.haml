@@ -1,9 +1,10 @@
 
 :ruby
   @page_title = "New Cash/Bank Account"
-  @crumbs = [
-    ['Cash / Bank Account', cashes_path] ]
+  @crumbs = []
 
+
+= link_to "Back", cashes_path
 
 = render "cashes/form"
 

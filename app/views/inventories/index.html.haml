@@ -5,20 +5,26 @@
 
 = render 'search'
 
-- paginate_html = paginate @invts
-
+- paginate_html = @pagy.series_nav(:bootstrap).html_safe
 = paginate_html
 
-%table.table
+%table(class="table table-sm")
   %tr
     %th Ref.Number
     %th Date
     %th Operation
     %th Store
+    %th Transfer To
     %th Item
+    %th Qty
 
+  - cur_invt_id = nil
   - @invts.each do |invt_detail|
-    = render partial: "inventory", locals:{detail: invt_detail}
+    - if cur_invt_id != invt_detail.inventory.id
+      - cur_invt_id = invt_detail.inventory.id; firstline = true
+    - else
+      - firstline = false
+    = render partial: "inventory", locals:{detail: invt_detail, firstline:firstline}
 
 
 = paginate_html

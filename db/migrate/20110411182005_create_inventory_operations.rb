@@ -31,8 +31,8 @@ class CreateInventoryOperations < ActiveRecord::Migration[5.2]
         t.integer  :creator_id, null:false
         #t.integer  :transference_id
 
-        # Use `TransferRequest#trans_to`
-        #t.integer  :store_to_id
+        # transfer-out. nullable
+        t.references :store_to, type: :integer, foreign_key:{to_table: :stores}
         
         #t.references :project, type: :integer, foreign_key:true
 

@@ -41,14 +41,15 @@ class Item < ApplicationRecord
 
   ##########################################
   # Validations
-  validates_presence_of   :name, :unit_id
+  validates_presence_of   :name
   #validates_uniqueness_of :name
 
   validates_presence_of   :code
   validates_uniqueness_of :code
 
   validates :price, numericality: { greater_than_or_equal_to: 0 }
-  validates :buy_price, numericality: { greater_than_or_equal_to: 0 }
+  validates :last_buy_price, numericality: { greater_than_or_equal_to: 0 },
+                             allow_nil: true
   validates_lengths_from_database
 
 

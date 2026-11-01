@@ -1,5 +1,5 @@
 
-<% @page_title = "Material Ledger" %>
+<% @page_title = "商品有高帳 Material Ledger" %>
 
 
 <%= form_with model: @search, url: '/material_ledger', method: 'get', class: 'form-inline' do |f| %>
@@ -21,9 +21,9 @@
 <% if @ledgers %>
 <h2><%= Item.find(@search.item_id).name %></h2>
   
-  <%= paginate @ledgers %>
+  <%== @pagy.series_nav(:bootstrap) %>
 
-<table class="table">
+<table class="table table-sm">
   <tr>
     <th rowspan="2">日付
     <th rowspan="2">Ref.Number
@@ -44,13 +44,13 @@
   <% @ledgers.each do |ledger| %>
   <tr>
     <td><%= ledger.inventory.date %>
-    <td><%= link_to ledger.inventory.ref_number, ledger.inventory %>
+    <td><%= link_to "Show", {controller: ledger.inventory.map_controller, action:"show", id: ledger.inventory} %>
     <td><%= ledger.inventory.description %>
 <% # 受入れ
    if %w(exp_in pur_tran pit_in inc_in in).include? ledger.inventory.operation %>
     <td><%= ledger.quantity %>
     <td><%= ledger.txn_price %>
-    <td><%= ledger.quantity * ledger.txn_price %>
+    <td><%= (ledger.quantity || 0.0) * (ledger.txn_price || 0.0) %>
     <td>
     <td>
     <td>
@@ -61,7 +61,7 @@
     <td>
     <td><%= ledger.quantity %>
     <td><%= ledger.txn_price %>
-    <td><%= ledger.quantity * ledger.txn_price %>
+    <td><%= (ledger.quantity || 0.0) * (ledger.txn_price || 0.0) %>
 <% else
      raise "internal error"
    end %>   
@@ -72,5 +72,5 @@
   <% end %>
 </table>
 
-  <%= paginate @ledgers %>
+  <%== @pagy.series_nav(:bootstrap) %>
 <% end %>

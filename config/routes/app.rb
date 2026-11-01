@@ -37,12 +37,12 @@ end
 # Master Data
 
 # 商品・アイテム
-resources :items do
+resources :products do
   get :search_income, on: :collection
   get :search_expense, on: :collection
   get :search_inventory, on: :member
 
-  resources :bom_structures
+  resources :pur_item_prices
 end
 
 # UoM
@@ -88,7 +88,7 @@ end
 resources :staff_accounts
 
 # G/L. 単数形リソース
-resource :account_ledger, only: [:show, :update] do
+resource :account_ledger, controller:"account_ledger", only: [:show, :update] do
   post :transference, on: :collection
   patch :conciliate, on: :member
   patch :null, on: :member
@@ -163,6 +163,8 @@ resources :devolutions do
   end
 end
 
+resources :sales_invoices
+
 
 ######################################################################
 # Purchasing
@@ -190,6 +192,9 @@ resources :pur_in_transits  do
   end
 end
 
+# purchase invoice
+resources :invoices
+
 
 ######################################################################
 # Inventory
@@ -201,34 +206,48 @@ resources :transfer_requests do
   end
 end
 
+
+# movement ###########################################################
+
+resources :goods_receipt_pos do
+  member do
+    post :confirm
+  end
+end
+
+# return to supplier
+resources :goods_returns
+
+# 出荷/納入
+resources :deliveries do
+  member do
+    post :confirm
+  end
+end
+
+resources :customer_returns
+
+# inventory transfer in two-steps (out)
+resources :inventory_outs do
+  member do
+    post :confirm
+  end
+end
+  
+# inventory transfer in two-steps (in)
+resources :inventory_ins do
+  member do
+    post :confirm
+  end
+end
+
+
 # In-Store Operations
 resources :stores do
   member do
     get :inbound_orders
     get :outbound_orders
   end
-  
-  resources :goods_receipt_pos do
-    member do
-      post :confirm
-    end
-  end
-
-  # return to supplier
-  resources :goods_returns
-
-  # 出荷/納入
-  resources :deliveries do
-    member do
-      post :confirm
-    end
-  end
-
-  resources :customer_returns
-
-  # inventory transfer in two-steps
-  resources :inventory_outs
-  resources :inventory_ins
 
   # one-step transfer w/o order
   resources :inventory_transferences #, only: [:new, :create, :show]
@@ -248,12 +267,17 @@ end
 # 品目元帳 material ledger. 単数形
 resource :material_ledger, controller:"material_ledger"
 
+# stock data. 単数形
+resource :stock
+
 
 ######################################################################
 # Project
 
 # Production Orders
 resources :prod_orders
+
+resources :boms
 
 
 ######################################################################

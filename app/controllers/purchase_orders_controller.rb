@@ -67,6 +67,7 @@ class PurchaseOrdersController < ApplicationController
   
   # GET /expenses/1/edit
   def edit
+    authorize @order, :update?
     # wrap
     @order = Orders::Form.new(@order)
   end
@@ -74,6 +75,8 @@ class PurchaseOrdersController < ApplicationController
 
   # PATCH /expenses/:id
   def update
+    authorize @order
+
     # wrap
     @order = Orders::Form.new(@order)
     @order.assign expense_params, params.require(:detail)
@@ -86,7 +89,6 @@ class PurchaseOrdersController < ApplicationController
       render :edit, status: :unprocessable_entity
       return
     end
-
     
     redirect_to @order.model_obj, notice: 'El Egreso fue actualizado!.'
   end

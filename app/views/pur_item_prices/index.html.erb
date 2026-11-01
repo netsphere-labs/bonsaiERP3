@@ -1,0 +1,16 @@
+<h1>pur_item_prices</h1>
+
+<%= link_to 'New Pur item price', new_pur_item_price_path, :class => 'new' %>
+
+<table class="decorated nwl">
+  <tr>
+    <th></th>
+  </tr>
+
+<% @pur_item_prices.each do |pur_item_price| %>
+  <tr>
+        <td><%= bonsai_links(pur_item_price) %></td>
+  </tr>
+<% end %>
+</table>
+

@@ -21,7 +21,7 @@
 
   - @journal_entry.lines.each do |je_line|
     %tr
-      %td= je_line.account.name
+      %td= link_to je_line.account.name, {controller:"account_ledger", action:"show", "account_ledgers_query[account_id]": je_line.account_id}
       %td= je_line.partner &.name
       %td= je_line.description
       - if je_line.funct_amount >= 0

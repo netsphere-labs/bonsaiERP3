@@ -1,9 +1,12 @@
 
 <% @page_title = "Purchase In Transit ##{@invt.id}" %>
 <% @crumbs = [
-     ["Purchase In Transit", {action:"index"}] ] %>
+     ["Purchase Order", purchase_orders_path],
+     ["Purchase Order ##{@invt.order.id}", {controller:"purchase_orders", action:"show", id: @invt.order}] ] %>
 
 <% content_for :links do %>
+  State: <%= tag.span class:@invt.display_state do %><%= @invt.state %><% end %>
+
   <div class="btn-group" role="group">
 <% if policy(@invt).update? %>
   <%= link_to 'Edit...', {action:"edit", id:@invt} %>
@@ -19,9 +22,27 @@
   <li>受領登録のときの price は外貨建てだが, <code>InventoryDetail</code> クラスは機能通貨建て。ここで換算が必要
 </ul>
 
-<table>
-  <tr><th>State: <td><%= @invt.state %>
-</table>
+
+<fieldset>
+<p>Date: <%= @invt.date %>
+
+<p>Store: <%= @invt.store.name %>  
+
+<p>Purchase Order: <%= link_to "##{@invt.invoice.order.id}", @invt.invoice.order, target:"_blank" %>
+</fieldset>
+
+
+<fieldset>
+  <legend>Payment Information</legend>
+  <table class="table table-sm">
+    <tr><th>Partner:   <td><%= @invt.invoice.partner.name %>
+    <tr><th>Bank Account: <td><%= @invt.invoice.bp_bank_account &.long_name %>
+  
+    <tr><th>Due Date: <td><%= @invt.invoice.due_date %>
+    <tr><th>Currency: <td><%= @invt.invoice.curr_code %>
+  </table>
+</fieldset>
+
 
 
   
@@ -37,7 +58,8 @@
     <td><%= detail.item.name %>
     <td><%= format_amount(detail.unit_price, @invt.curr_code) %>
     <td><%= detail.quantity %>
-    <td><%= format_amount(detail.txn_amount, @invt.curr_code) %>
+    <td>
+      <%= format_amount(detail.txn_amount, @invt.curr_code) %>
       <%= @invt.curr_code %>
   <% end %>
 </table>

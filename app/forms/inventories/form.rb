@@ -28,10 +28,8 @@ class Inventories::Form < BaseForm
     return @order
   end
   
-  #delegate :stocks, :stock, :stocks_to, :detail, :item_ids, :item_quantity,
-  #         to: :klass_details
 
-  # field required red star
+  # field "required" red star
   validates_presence_of :date
 
   validate :validate_details
@@ -45,11 +43,13 @@ class Inventories::Form < BaseForm
   end
 
   
-  def assign model_params, detail_params, store_id
-    raise TypeError if !store_id
+  def assign model_params, detail_params, store_id, org
+    raise ArgumentError if !(store_id.to_i > 0)
+    raise TypeError if !org.is_a?(Organisation)
     
     model_obj.assign_attributes model_params
-    @details = self.class.create_details_from_params(model_obj, detail_params, store_id)
+    @details = self.class.create_details_from_params(model_obj, detail_params,
+                                                     store_id, org)
   end
 
 
@@ -99,19 +99,6 @@ private
     errors.add :details, "Item not unique" if !UniqueItem.new(self).valid?
   end
 
-=begin
-  def inventory
-    @inventory ||= begin
-      i = Inventory.new(
-        store_id: store_id, date: date, description: description,
-        inventory_details_attributes: get_inventory_details,
-        operation: operation
-      )
-      i.set_ref_number
-      i
-    end
-  end
-=end
   
   def details_serialized
     details.map do |v|

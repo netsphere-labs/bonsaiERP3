@@ -1,0 +1,16 @@
+
+<div class="row text-bg-secondary">
+  <div class="col-3"> Item</div>
+  <div class="col-2"> Ordered Qty </div>
+  <div class="col-1"> Not yet delivered </div>
+  <div class="col-2"> 数量 </div>
+</div>
+
+<% lines = [@invt.details.length + 2, 6].max 
+   (0.. lines - 1).each do |idx|  
+     detail_obj = @invt.details[idx] || InventoryDetail.new  %>
+
+  <%= render partial: "inventories/detail_edit_row_without_price",
+             locals: {lineno: idx + 1, detail_obj: detail_obj}  %>
+<% end %>
+  

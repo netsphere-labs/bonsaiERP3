@@ -22,9 +22,10 @@ class Inventory < BusinessRecord
   # 親
   belongs_to :store
 
-  # transfer-out の場合   => Use `TransferRequest#trans_to`
-  #belongs_to :store_to, class_name: "Store", optional:true
-    
+  # transfer-out の場合
+  belongs_to :store_to, class_name: "Store", optional:true
+  validates_presence_of :store_to_id, if: -> r { r.operation == 'out'}
+  
   # 購買入庫、販売出庫の場合
   belongs_to :order, optional: true
   validates_presence_of :order_id,
@@ -61,20 +62,33 @@ class Inventory < BusinessRecord
   validates_inclusion_of :operation, in: OPERATIONS
   validates_lengths_from_database
 
-  OPERATIONS.each do |_op|
-    define_method :"is_#{_op}?" do
-      _op === operation
+
+  def map_controller
+    case self.operation
+    when 'pit_in'; 'goods_receipt_pos'
+    when 'exp_in'; 'goods_receipt_pos'
+    when 'pur_tran'; 'pur_in_transits'
+    when 'inc_out'; 'deliveries'
+    when 'out'; 'inventory_outs'
+    when 'in'; 'inventory_ins'
+    else raise "internal error"
     end
   end
 
-
-  def to_s
-    ref_number
+  
+  def display_state
+    case state
+    when 'draft';     "badge text-bg-warning" 
+    when 'confirmed'; "badge text-bg-success"
+    when 'void';      "badge text-bg-dark"
+    else
+      raise "internal error"
+    end
   end
 
-  # Returns an array with the details fo the transaction
-  def get_transaction_items
-    transaction.transaction_details
+  
+  def to_s
+    ref_number
   end
 
   
@@ -88,16 +102,6 @@ class Inventory < BusinessRecord
     end
   end
 
-=begin
-  def movement
-    case
-    when(is_inc_in? || is_inc_out?)
-      income
-    when(is_exp_in? || is_exp_out?)
-      expense
-    end
-  end
-=end
 
 =begin   pur_tran は in なのか?  blocked にするのは outなのか? など、単純ではない
   def is_in?
@@ -130,16 +134,23 @@ class Inventory < BusinessRecord
   # 債権債務が絡む取引は、都度つど仕訳を作る
   # The caller must initiate a transaction
   def gen_je_for_goods_received user, org
+    raise TypeError if !user.is_a?(User)
+    
     amt = {}
     self.details.each do |detail|
       # 三分法でやってみる
-      amt[detail.item.accounting.purchase_ac_id] =
-                        (amt[detail.item.accounting.purchase_ac_id] || 0) +
-                        detail.txn_amount   # ここは取引通貨
+      ac_id = case self.operation
+              when 'pur_tran'
+                Account.where(subtype: 'A:IN-TRANSIT').take.id
+              else
+                detail.item.accounting.purchase_ac_id
+              end
+      amt[ac_id] = (amt[ac_id] || 0) + detail.txn_amount   # ここは取引通貨
     end
 
     entry_no = rand(2_000_000_000)
     funct_curr = Money::Currency.find(org.currency)
+    
     # Dr.
     sum_amt = 0; funct_amt = 0.0
     amt.each do |pur_ac_id, a|
@@ -182,41 +193,46 @@ class Inventory < BusinessRecord
   # journal entry
   # 債権債務が絡む取引は、都度つど仕訳を作る
   # The caller must initiate a transaction
-  def gen_je_for_delivery user
+  def gen_je_for_delivery user, org
     raise TypeError if !user.is_a?(User)
     
     amt = {}
     self.details.each do |detail|
-      amt[detail.item.accounting.revenue_ac_id] =
-                        (amt[detail.item.accounting.revenue_ac_id] || 0) +
-                        detail.txn_price * detail.quantity  # ここは取引通貨
+      ac_id = detail.item.accounting.revenue_ac_id 
+      amt[ac_id] = (amt[ac_id] || 0) + detail.txn_amount # ここは取引通貨
     end
 
     entry_no = rand(2_000_000_000)
+    funct_curr = Money::Currency.find(org.currency)
+    
     # Cr.
-    sum_amt = 0
+    sum_amt = 0; funct_amt = 0.0
     amt.each do |rev_ac_id, a|
-      # TODO: 仕訳の金額は取引通貨。仕訳のほうで, 機能通貨建ての金額も必要
-      #       仕訳の側で, 換算が必要。
+      # 仕訳のほうで, 機能通貨建ての金額も必要
+      converted = CurrXchg.convert(Money.from_cents(a, order.currency),
+                                   funct_curr, self.date)
       r = AccountLedger.new date: self.date, entry_no: entry_no,
                             operation: 'trans',
                             account_id: rev_ac_id,  # Cr.
-                            amount: -a,  # 取引通貨, 貸方マイナス
-                            currency: self.order.currency,
+                            fx_amount: -a,  # 取引通貨, 貸方マイナス
+                            fx_curr_code: order.currency,
+                            funct_amount: -converted,
                             description: "delivery",
                             creator_id: user.id,
                             status: 'approved',
                             inventory_id: self.id
       r.save!
       sum_amt += a
+      funct_amt += converted
     end
 
     # Dr.
     r = AccountLedger.new date: self.date, entry_no: entry_no,
                             operation: 'trans',
-                            account_id: self.account_id,
-                            amount: sum_amt,  # 取引通貨
-                            currency: self.order.currency,
+                            account_id: Account.where(subtype: "A:AR", currency: order.currency).take.id, # AR
+                            fx_amount: sum_amt,  # 取引通貨
+                            fx_curr_code: order.currency,
+                            funct_amount: funct_amt,  
                             description: "delivery",
                             creator_id: user.id,
                             status: 'approved',

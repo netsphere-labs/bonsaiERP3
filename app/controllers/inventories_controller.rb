@@ -6,7 +6,7 @@
 class InventoriesController < ApplicationController
   include Controllers::Print
 
-  before_action :set_invt, only: %i[show]
+  #before_action :set_invt, only: %i[show]
 
   
   # GET /inventories
@@ -21,11 +21,11 @@ class InventoriesController < ApplicationController
       @invts = get_invt_details()
     end
 
-    @invts = @invts.order('inventories.date, inventories.id, inventory_details.id')
-                   .page(params[:page])
+    @pagy, @invts = pagy(:offset,
+                         @invts.order('inventories.date, inventories.id, inventory_details.id') )
   end
 
-  
+=begin  
   # GET /inventories/1
   def show
     respond_to do |format|
@@ -34,7 +34,7 @@ class InventoriesController < ApplicationController
       #format.pdf { print_pdf 'show.print', "Inv-#{@inventory}" }
     end
   end
-
+=end
   
   # GET /inventories/1/show_movement
   def show_movement

@@ -1,12 +1,26 @@
 
 -# @param detail 明細行
+-# @param firstline if true, the first line.
 
 %tr
-  %td= link_to detail.inventory.ref_number, detail.inventory
-  %td= detail.inventory.date
+  %td
+    - if firstline
+      = link_to detail.inventory.ref_number, {controller: detail.inventory.map_controller, action: "show", id: detail.inventory.id}
+  
+  %td
+    - if firstline
+      = detail.inventory.date
 
-  %td= detail.inventory.operation
+  %td
+    - if firstline
+      = detail.inventory.operation
 
-  %td= link_to detail.inventory.store, detail.inventory.store
+  %td
+    - if firstline
+      = link_to detail.inventory.store, detail.inventory.store
+  %td
+    - if firstline && detail.inventory.operation == 'out'
+      = link_to detail.inventory.order.trans_to, detail.inventory.order.trans_to
 
-  %td= detail.item
+  %td= detail.item.name
+  %td= detail.quantity

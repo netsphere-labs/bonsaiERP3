@@ -1,0 +1,17 @@
+
+-# called from `index.html.haml`
+
+%tr
+  %td= item.code
+  %td
+    = link_to item.name, {action:"show", id:item}
+
+  %td= item.unit.symbol
+  %td= item.active
+  %td= item.description
+  %td= item.for_sale
+  %td= item.stockable
+
+  %td= item.last_buy_price
+  %td= item.price
+

@@ -6,11 +6,11 @@
      ["Inbound Delivery", {controller:"stores", id: @store, action:"inbound_orders"}] ] %>
 
 <% content_for :links do %>
-  State: <%= @invt.state %>
+  State: <%= tag.span class: @invt.display_state do %> <%= @invt.state %><% end %>
 
   <div class="btn-group" role="group">
 <% if policy(@invt).update? %>
-  <%= link_to 'Edit...', {action:"edit", id:@invt}, class:'btn' %>
+  <%= link_to 'Edit...', {action:"edit", id:@invt }, class:'btn' %>
 <% else %>
   <span class="btn">Edit...</span>  
 <% end %>
@@ -29,19 +29,13 @@
 <em style="color:red">● TODO:</em>
 <ul>
   <li>受領登録のときの <code>OrderDetail#price</code> は取引通貨. <code>InventoryDetail#txn_price</code> も取引通貨。<code>unitary_cost</code> は機能通貨建て。ここで換算が必要
+  <li style="color:red">When confirm, pur-in-transitからの入庫の場合に、仕訳が生成されない
 </ul>
 
 
-<fieldset>
-  <legend>Payment Information</legend>
-  Partner: <%= @invt.invoice.partner.name %>
-  Bank Account: <%= @invt.invoice.bp_bank_account &.long_name %>
+
+<p>Order: <%= link_to "PO##{@invt.order.id}", @invt.order %>
   
-  Due Date: <%= @invt.invoice.due_date %>
-  Currency: <%= @invt.invoice.curr_code %>
-</fieldset>
-
-
 <p>Date: <%= @invt.date %>
 
 <p>Store: <%= @invt.store.name %>  

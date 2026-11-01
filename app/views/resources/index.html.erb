@@ -1,16 +1,19 @@
 
 <% @page_title = "Resource Master" %>
 
-<p><%= link_to 'New Resource...', new_resource_path, :class => 'new' %>
+<% content_for :links do %>
+  <%= link_to 'New Resource...', new_resource_path, :class => 'new' %>
+<% end %>
 
-<table class="decorated nwl">
+
+<table class="table">
   <tr>
     <th></th>
   </tr>
 
 <% @resources.each do |resource| %>
   <tr>
-        <td><%= bonsai_links(resource) %></td>
+    <td><%= link_to "Show", resource %>
   </tr>
 <% end %>
 </table>

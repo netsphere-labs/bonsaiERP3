@@ -8,19 +8,13 @@ class CurrenciesController < ApplicationController
     if params[:text_search].blank? || !params[:reset].blank?
       @search = TextSearch.new
       
-      # 日本円が２つある。一つは "銭" があり, exponent = 2 になっている。
-      #   -> config/currency_backwards_compatible.json
-      # Loader.load_currencies(): 除外する方法がない
-
       # @note `pagy_array()` has been removed.
-      @pagy, @currencies = pagy(:offset, Money::Currency.all.filter {|r|
-                !(r.iso_code == "JPY" && r.priority == 100) })
+      @pagy, @currencies = pagy(:offset, Money::Currency.all)
     else
       @search = TextSearch.new params.require(:text_search).permit(:search)
       @pagy, @currencies = pagy(:offset, Money::Currency.all.filter {|r|
-                !(r.iso_code == "JPY" && r.priority == 100) && (
                 r.name.downcase.index(@search.search.downcase) ||
-                r.iso_code.downcase.index(@search.search.downcase) )})
+                r.iso_code.downcase.index(@search.search.downcase) })
     end
   end
 

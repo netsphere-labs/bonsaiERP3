@@ -2,7 +2,9 @@ class AddItemsBuyPrice < ActiveRecord::Migration[5.2]
   def up
     PgTools.with_schemas except: 'common' do
       change_table :items do |t|
-        t.decimal :buy_price, precision: 14, scale: 2, null:false, default: 0.0
+        t.bigint :last_buy_price #, null:false, default: 0.0
+        t.column :last_buy_curr, "CHAR(3)"
+        t.date   :last_buy_date
       end
     end
   end
@@ -10,7 +12,9 @@ class AddItemsBuyPrice < ActiveRecord::Migration[5.2]
   def down
     PgTools.with_schemas except: 'common' do
       change_table :items do |t|
-        t.remove :buy_price
+        t.remove :last_buy_price
+        t.remove :last_buy_curr
+        t.remove :last_buy_date
       end
     end
   end

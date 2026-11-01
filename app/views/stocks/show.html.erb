@@ -1,0 +1,9 @@
+
+<% @page_title = "Stock" %>
+
+<table class="table table-sm">
+  <% @stocks.each do |stock| %>
+  <tr>
+    <td><%= stock.inspect %>
+  <% end %>
+</table>

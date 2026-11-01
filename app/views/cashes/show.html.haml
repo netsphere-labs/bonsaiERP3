@@ -33,5 +33,5 @@
 
 
 %ul.unstyled.listing
-  = render partial: 'account_ledgers/money', collection: txn, as: :ledger, locals: { current_account_id: @cash.account.id }
+  = render partial: 'account_ledger/money', collection: txn, as: :ledger, locals: { current_account_id: @cash.account.id }
 

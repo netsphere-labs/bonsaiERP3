@@ -23,7 +23,7 @@
             <li><a href="/partners/" class="dropdown-item">Business Partners</a>
             <li><%= link_to "Units of Measure", units_path,
                             class:"dropdown-item" %>
-            <li><%= link_to "Product/Item Master", items_path,
+            <li><%= link_to "Product/Item Master", products_path,
                             class:"dropdown-item" %>
             <li><%= link_to "Store/Warehouse", stores_path, class:"dropdown-item" %>
             <li><%= link_to "Resource Master", "/resources/", class:"dropdown-item" %>
@@ -53,13 +53,13 @@
                             class:"dropdown-item" %>
               <!--
             <li><a class="dropdown-item" href="/staff_accounts/">Staff Accounts</a> -->
-            <li><%= link_to t('views.menu.etiquetas'), tag_groups_path,
+            <li><%= link_to 'Tag Group', tag_groups_path,
                             class:"dropdown-item" %>
 
             <li><%= link_to t("views.menu.reports"), report_path,
                     class:"dropdown-item" %></li>
             <li>
-              <%= link_to t("views.menu.inventory"), inventory_report_path,
+              <%= link_to "Inventory Report", inventory_report_path,
                   class:"dropdown-item" %>
             </li>
           </ul>
@@ -72,8 +72,8 @@
           </a>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="/purchase_orders/">Purchase Order</a>
-            <li><a class="dropdown-item" href="/pur_in_transits/">Purchase In Transit</a>
             <li><a class="dropdown-item" href="/goods_return_requests/">Goods Return Request</a>
+            <li><a class="dropdown-item" href="/invoices/">Purchase Invoice</a>
           </ul>
         </li>
 
@@ -85,6 +85,7 @@
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" href="/sales_orders/">Sales Order</a>
             <li><a class="dropdown-item" href="/devolutions/">Customer Return Request</a>
+            <li><a class="dropdown-item" href="/sales_invoices/">Sales Invoice</a>
           </ul>
         </li>
 
@@ -98,6 +99,7 @@
 	    <li><a class="dropdown-item" href="/inventory_counts/">Inventory Count</a>
             <li><%= link_to "入出庫伝票", inventories_path, class: "dropdown-item" %>
             <li><%= link_to "Material Ledger", material_ledger_path, class: "dropdown-item" %>
+            <li><%= link_to "Stock", stock_path, class: "dropdown-item" %>
 	      
 	    <li><hr class="dropdown-divider"></li>
 <% Store.all.each do |store| %>            
@@ -112,6 +114,7 @@
             Project
           </a>
           <ul class="dropdown-menu">
+	    <li><a class="dropdown-item" href="/boms/">Bill of Material</a>
             <li><a class="dropdown-item" href="/prod_orders/">Production Order</a>
           </ul>
         </li>

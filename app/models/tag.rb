@@ -1,6 +1,8 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 class Tag < ApplicationRecord
+  belongs_to :tag_group
+  
   validates :name, presence: true, uniqueness: true,
             format: { with: /\A[\w\s\ñ]+\z/ },
             length: { in: 3..20 }

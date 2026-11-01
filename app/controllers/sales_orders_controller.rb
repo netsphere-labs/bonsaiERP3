@@ -19,9 +19,12 @@ class SalesOrdersController < ApplicationController
     else
       @search = Orders::Search.new( params.require(:orders_search)
                                   .permit(*Orders::Search.attribute_names) )
+      # `permit()` returns `Parameters {}`. why?
+      @search.state = params.require(:orders_search)['state']
     end
     
-    @pagy, @orders = pagy(:offset, @search.search_by_text(SalesOrder).order(date: :desc) )
+    @pagy, @orders = pagy(:offset,
+                        @search.search_by_text(SalesOrder).order(date: :desc) )
   end
 
   
@@ -69,6 +72,7 @@ class SalesOrdersController < ApplicationController
   
   # GET /incomes/1/edit
   def edit
+    authorize @order, :update?
     # wrap
     @order = Orders::Form.new(@order)
   end
@@ -76,15 +80,22 @@ class SalesOrdersController < ApplicationController
 
   # PATCH /incomes/:id
   def update
+    authorize @order
+
     # wrap
     @order = Orders::Form.new(@order)
     @order.assign income_params, params.require(:detail)
-    
-    if update_or_approve
-      redirect_to income_path(@is.income), notice: 'El Ingreso fue actualizado!.'
-    else
+    begin
+      ActiveRecord::Base.transaction do
+        # atomic save
+        @order.save!
+      end
+    rescue ActiveRecord::RecordInvalid => e
       render :edit, status: :unprocessable_entity 
+      return
     end
+    
+    redirect_to @order.model_obj, notice: 'El Ingreso fue actualizado!.'
   end
 
   

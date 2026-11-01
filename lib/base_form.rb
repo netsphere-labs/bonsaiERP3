@@ -57,13 +57,15 @@ class BaseForm
   # Both of Rails 6 and Rails 7/8
   include ::ActiveModel::Model
 
-  # Rails 5.2-
+  # Rails 5.2+
   # `attribute` class method. `#attributes` プロパティ, `#attributes=` mass-assignment.
   # Rails 5.1 までの ActiveModel::AttributeMethods だと, attr_accessor と
   # define_attribute_methods を組み合わせていた.
   # gem virtus (後継の dry-core gem `Dry::Types::Struct` class) など似たようなライブラリが多数.
   include ::ActiveModel::Attributes
-
+  # Rails 7.1+. `normalize()` method
+  include ::ActiveModel::Attributes::Normalization
+  
   # こっちも追加で必要。Ref 公式ドキュメント
   include ::ActiveModel::Validations::Callbacks  # before_validation()
 

@@ -13,7 +13,9 @@ if RUBY_VERSION >= "4.0.0"
 end
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 8.1.3"
+# rails 8.1.4: Revert: Sort table columns by name when dumping schema
+#              https://github.com/rails/rails/pull/56842 
+gem "rails", "~> 8.1.4" #, ">= 8.1.3.1"
 
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 # "propshaft" 単体ではトランスパイルを行わない。TypeScript, Sass を使う場合は,

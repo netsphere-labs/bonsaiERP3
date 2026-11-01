@@ -1,0 +1,33 @@
+
+- @page_title = "Product/Item Master"
+
+- content_for :links do
+  %div.btn-group{role: "group"}
+    = link_to "New Product...", new_product_path, class: 'btn btn-secondary'
+
+
+= render 'search'
+%p
+  = @search.nothing? ? "" : "Search: " + @search.attributes.inspect
+
+
+- paginate_html = @pagy.series_nav(:bootstrap).html_safe
+= paginate_html
+
+%table(class='table table-sm')
+  %tr
+    %th Code
+    %th Name
+    %th UoM
+    %th Active?
+    %th Description
+    %th saleable?
+    %th stockable?
+    %th last buy price
+    %th sales price
+  - @items.each do |item|
+    =render partial:"item", locals:{item:item}
+
+= paginate_html
+
+

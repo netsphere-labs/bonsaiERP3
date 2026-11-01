@@ -16,15 +16,12 @@
 -# なぜかエラーになる. why? => must call `super()` in `initialize()` 
 = f.text_field :description, label: 'Description:'
 
-= f.select :account_id,
-            options_from_collection_for_select(ContactAccount.joins(:account).where('contact_accounts.contact_id = ? AND accounts.currency = ?', @order.contact_id, @order.currency), :account_id, :name, @invt.account_id),
-            required:false 
 
 %div.row.text-bg-secondary
   %div.col-3 Item
   %div.col-2 Ordered Qty
-  %div.col-2 Unit Price
   %div.col-1 Not yet delivered
+  %div.col-2 Unit Price
   %div.col-2 数量
   %div.col-2 Amount override
 

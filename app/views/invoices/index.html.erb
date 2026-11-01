@@ -1,5 +1,5 @@
 
-<% @page_title = "Invoice Checking" %>
+<% @page_title = "Purchase Invoice" %>
 
 <% content_for :links do %>
   <%= link_to 'New Purchase Invoice...', new_invoice_path, class: "btn btn-secondary" %>
@@ -18,7 +18,7 @@
 
 <% @invoices.each do |invoice| %>
   <tr>
-        <td><%= bonsai_links(invoice) %></td>
+    <td><%= link_to "Show", invoice %>
   </tr>
 <% end %>
 </table>

@@ -12,11 +12,6 @@
     - if policy(@order).confirm?
       = button_to 'Confirm', confirm_purchase_order_path(@order.id), class: 'btn btn-success', method: :patch  
 
-    - if @order.state == "confirmed"
-      = link_to "Purchase-in-Transit...", new_pur_in_transit_path(po_id: @order.id), class:"btn" 
-    - else
-      %a(class="btn disabled") Purchase-in-Transit...
-
     - if policy(@order).destroy?
       = button_to 'Delete', purchase_order_path(@order.id), method: :delete, class: 'btn btn-outline-danger', data:{turbo_confirm: 'Sure?'}  
     - elsif policy(@order).void?
@@ -62,41 +57,30 @@
 
 
 .row-fluid
-  .span6
-    %h3 Adjuntos
-    = render 'attachments/attachments', attachable: @order
+  %h3 Adjuntos
+  = render 'attachments/attachments', attachable: @order
+
+
+.row
+  .col-6
+    %h2 Goods Receipt POs
+
+    - Inventory.where(operation:['pit_in', 'exp_in'], order:@order).each do |invt|
+      = render 'inventories/movement', inventory: invt
 
 
 
-%h2 Purchase In Transit
+  .col-6
+    %h2 Invoices
 
-%em{style:"color:red"} TODO:
-%ul
-  %li リンクがおかしい
+    - if @order.state == "confirmed" || @order.state == "in_transit"
+      = link_to "New Purchase-in-Transit...", new_pur_in_transit_path(po_id: @order.id), class:"btn btn-secondary" 
+    - else
+      %a(class="btn disabled") New Purchase-in-Transit...
 
-- Inventory.where(operation:'pur_tran', order: @order).each do |invt|
-  = render 'inventories/movement', inventory: invt
-
-
-%h2 Goods Receipt PO
-
-- Inventory.where(operation:['pit_in', 'exp_in'], order:@order).each do |invt|
-  = render 'inventories/movement', inventory: invt
+    %ul
+      - Invoice.where(inv_type: 'purchase', order: @order).each do |inv|
+        %li 
+          = link_to "Invoice ##{inv.id}", inv 
 
 
-
-
--#Tours
--#= render 'expenses/tour_devolution'
-
-:javascript
-  $( function() {
-    // null expense
-    $('#null-expense-form').submit(function(event) {
-      if(confirm('Esta segur@ de anular el Ingreso?')) {
-        return true;
-      }else{
-        return false;
-      }
-    })
-  });

@@ -16,7 +16,7 @@ class ProdOrdersController < ApplicationController
   
   # GET /projects
   def index
-    @orders = ProdOrder.page(params[:page])
+    @pagy, @orders = pagy(:offset, ProdOrder.all)
   end
 
   # GET /projects/1

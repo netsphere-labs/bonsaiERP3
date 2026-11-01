@@ -4,12 +4,15 @@ class CreateInvoices < ActiveRecord::Migration[8.1]
     # purchase invoice / sales invoice
     create_table :invoices do |t|
       # parent
-      t.references :partner, null:false, foreign_key: {to_table: :contacts}
+      t.references :partner, type: :integer, null:false, foreign_key: {to_table: :contacts}
 
       t.string :inv_type, limit:10, null:false
       
       t.date :date, null:false
       t.string "doc_no" #, null: false
+
+      # nullable
+      t.references :order, type: :integer, foreign_key:true
       
       # only pur-inv. nullable
       t.references :bp_bank_account, foreign_key: {to_table: :contact_accounts}

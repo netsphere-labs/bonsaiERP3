@@ -1,0 +1,57 @@
+
+<% @page_title = "Goods Receipt PO ##{@invt.id}" %>
+<% @crumbs = [
+     ["Store/Warehouse", stores_path],
+     [@store.name, @store],
+     ["Inbound Delivery", {controller:"stores", id: @store, action:"inbound_orders"}] ] %>
+
+<% content_for :links do %>
+  State: <%= @invt.state %>
+
+  <div class="btn-group" role="group">
+<% if policy(@invt).update? %>
+  <%= link_to 'Edit...', {action:"edit", id:@invt }, class:'btn' %>
+<% else %>
+  <span class="btn">Edit...</span>  
+<% end %>
+  
+<% if policy(@invt).destroy? %>
+  <%= button_to 'Destroy', {action:"destroy", id:@invt.id}, method: :delete, class: 'btn btn-outline-danger',
+                data:{turbo_confirm: 'Sure?'}  %>
+<% end %>
+  
+<% if policy(@invt).confirm? %>
+  <%= button_to 'Confirm', {action:"confirm", id:@invt}, class:"btn" %>
+<% end %>
+  </div>
+<% end %>
+
+<em style="color:red">● TODO:</em>
+<ul>
+  <li>受領登録のときの <code>OrderDetail#price</code> は取引通貨. <code>InventoryDetail#txn_price</code> も取引通貨。<code>unitary_cost</code> は機能通貨建て。ここで換算が必要
+  <li style="color:red">When confirm, pur-in-transitからの入庫の場合に、仕訳が生成されない
+</ul>
+
+
+
+<p>Order: <%= link_to "PO##{@invt.order.id}", @invt.order %>
+  
+<p>Date: <%= @invt.date %>
+
+<p>Store: <%= @invt.store.name %>  
+  
+<table class="table">
+  <tr>
+    <th>Item
+    <th>Price (取引通貨)
+    <th>Qty
+    <th>Amount
+      
+  <% @invt.details.each do |detail| %>
+  <tr>
+    <td><%= detail.item.name %>
+    <td><%= format_amount(detail.unit_price, @invt.curr_code) %>
+    <td><%= detail.quantity %>
+    <td><%= format_amount(detail.txn_amount, @invt.curr_code) %> <%= @invt.curr_code %>
+  <% end %>
+</table>

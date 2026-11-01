@@ -1,6 +1,6 @@
 
 <% # @param form form object 
-   # サブクラスの form からも呼び出される %>
+   # サブクラスの form からも呼び出される => omit `subtype` field %>
 
 <em style="color:red">● TODO:</em>
 <ul>
@@ -10,13 +10,17 @@
 
   <%= error_messages_for form.object %>
 
+
   <%= form.text_field :name, help: "e.g. Expenses:Health:Medical" %>  
   <%= form.check_box  :active  %>
 
   <% if ["new", "create"].include?(action_name) %>
     <%= form.select :currency,
-            options_from_collection_for_select(Money::Currency.all, :iso_code, :iso_code, form.object.currency), include_blank:true,
-            required:false, label:"Currency:", help:"資金と債権債務は通貨が必須。後から変更できません" %>  
+            options_from_collection_for_select(Money::Currency.all, :iso_code, :iso_code, form.object.currency),
+	    include_blank: !['A:CASH', 'A:AR', 'L:AP'].include?(form.object.subtype),
+            required:false,
+	    label:"Currency:",
+	    help:"資金と債権債務は通貨が必須。後から変更できません" %>  
   <% else %>
     <div class="row">  
       <label class="col-2">Currency:</label>  

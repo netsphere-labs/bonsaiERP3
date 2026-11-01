@@ -1,0 +1,24 @@
+
+%tr
+  %td= l ledger.date
+  %td
+    = link_to ledger.entry_no, {controller:'transferences', action:"show", entry_no: ledger.entry_no}, class: 'code', title: 'Código'
+  %td ●未実装
+
+  - if ledger.funct_amount >= 0
+    %td
+      = format_amount(ledger.funct_amount, current_organisation.currency)
+    %td
+  - else
+    %td
+    %td
+      = format_amount(-ledger.funct_amount, current_organisation.currency)
+
+  %td ●未実装
+
+  %td
+    = ledger.updater
+    = ledger.creator
+    = ledger.approver
+    = ledger.nuller
+

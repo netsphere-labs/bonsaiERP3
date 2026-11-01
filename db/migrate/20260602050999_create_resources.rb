@@ -6,7 +6,7 @@ class CreateResources < ActiveRecord::Migration[8.1]
       t.column :res_type, "SMALLINT NOT NULL"
 
       t.string :name, null:false, index: {unique:true}
-      t.references :unit, null:false, foreign_key: true
+      t.references :unit, type: :integer, null:false, foreign_key: true
       
       t.timestamps
     end

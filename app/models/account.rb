@@ -2,7 +2,7 @@
 # author: Boris Barroso
 # email: boriscyber@gmail.com
 
-# 勘定科目マスタ. マスタに見えないが, マスタ.
+# 勘定科目マスタ. 
 #
 # 次のようにレコードを作る. Cash だけ作ると, Account ができない.
 #   x = Account.new accountable: Cash.new()
@@ -57,6 +57,7 @@ class Account < ApplicationRecord
     'A:CASH'  => 'assets:Cash and Bank Account',
     'A:AR'    => 'assets:Accounts Receivable',
     'A:INV'   => 'assets:Inventory',  # stock は完成品のみ, inventory は材料も含むイメージ
+    'A:IN-TRANSIT' => 'assets:Goods-in-Transit',  # 未着品
     'A:OTHER' => 'assets:Other',
     
     'L:AP'    => 'liabilities:Accounts Payable',

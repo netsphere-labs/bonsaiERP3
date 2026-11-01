@@ -10,7 +10,7 @@ class DevolutionsController < ApplicationController
 
   
   def index
-    @orders = CustomerReturnRequest.page(params[:page])
+    @pagy, @orders = pagy(:offset, CustomerReturnRequest.all)
   end
 
   
