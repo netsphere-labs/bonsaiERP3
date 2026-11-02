@@ -44,13 +44,18 @@ gem "puma", ">= 5.0"
 
 # Bundle and transpile JavaScript [https://github.com/rails/jsbundling-rails]
 # vite を使う場合, 不要.
-gem "jsbundling-rails"
+#gem "jsbundling-rails"
 
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-gem "turbo-rails"
+# Remove TURBO: Use Inertia
+# gem "turbo-rails"
 
 # Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem "stimulus-rails"
+# Remove. Use Inertia
+# gem "stimulus-rails"
+
+# Inertia.js v3.0 (React 19+)
+gem "inertia_rails", '~> 3.19'
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
@@ -107,8 +112,9 @@ gem 'bootstrap_form', '~> 5.4'
 gem 'haml' 
 
 # Pagination
-#gem 'kaminari', '~> 1.2' 
+# v43 includes breaking changes! `Pagy::Backend` module to `Pagy::Method`.
 gem 'pagy', '>= 43.5'
+#gem 'kaminari', '~> 1.2'
     
 # ActiveRecord Classes to encode in JSON
 # v0.10.15  2024 Dec
@@ -252,8 +258,8 @@ gem "rack-cors"
 #gem "active_hash"
 
 # do `bundle exec vite install`
-# サブドメイン (multi tenant) で上手く動かせなかった. 剥がす
-#gem "vite_rails"
+# TODO: サブドメイン (multi tenant) で上手く動かせない?
+gem "vite_rails", ">= 3.11.1"
 
 # 各テナントを PostgreSQL のスキーマを使って完全に分ける
 #   ros-apartment 3.2  rails >=6.1.0, < 8.1

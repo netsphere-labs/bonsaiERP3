@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   # maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
+
   # リクエストの前後でタイムゾーンを設定・リセットする
   # See https://engineerjutsu.com/rails-os-db-timezones/
   around_action :switch_timezone
@@ -63,12 +64,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-=begin
-  # Add some helper methods to the controllers
-  def help
-    Helper.instance
-  end
-=end
   
   # @return [Organisation | nil] 組織
   def current_organisation
@@ -81,12 +76,6 @@ end
   end
   helper_method :current_organisation
 
-=begin
-  def current_link
-    @link ||= current_user.links.org_links(current_organisation.id).first!
-  end
-  helper_method :current_link
-=end
   
   def user_with_role
     @user_with_role ||= Link.where(organisation_id: current_organisation.id,
@@ -106,7 +95,7 @@ end
 
   
 private
-
+  
   # Sorcery: 未ログインの状態で要ログインのページにアクセスした時に呼び出される
   def not_authenticated
     flash[:alert] = "ログインしてください。"

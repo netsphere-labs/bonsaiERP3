@@ -1,17 +1,33 @@
 {
   "private": true,
+  "type": "module",
+  "dependencies": {
+    "@inertiajs/react": "^3.10.0",
+    "@inertiajs/vite": "^3.10.0",
+    "@mantine/core": "^9.7.4",
+    "@mantine/dates": "^9.7.4",
+    "@mantine/form": "^9.7.4",
+    "@mantine/hooks": "^9.7.4",
+    "axios": "^1.21.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
   "devDependencies": {
-    "sass": "^1.100.0",
-    "webpack": "^5.107.2",
-    "webpack-cli": "^7.0.3"
+    "@babel/core": "^8.0.10",
+    "@eslint/js": "^10.0.1",
+    "@rolldown/plugin-babel": "0.2.4",
+    "@vitejs/plugin-react": "^6.1.2",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "eslint": "^10.14.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.13.0",
+    "sass": "^1.107.1",
+    "vite": "^8.3.5",
+    "vite-plugin-ruby": "^5.2.6"
   },
   "packageManager": "yarn@4.16.0",
-  "dependencies": {
-    "@hotwired/stimulus": "^3.2.2",
-    "@hotwired/turbo-rails": "^8.0.23"
-  },
   "scripts": {
-    "build:css": "sass ./app/assets/stylesheets/application.sass.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules",
-    "build": "webpack --config webpack.config.cjs"
+    "build:css": "sass ./app/assets/stylesheets/application.sass.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules"
   }
 }
